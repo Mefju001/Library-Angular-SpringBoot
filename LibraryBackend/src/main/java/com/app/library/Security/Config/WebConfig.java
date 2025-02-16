@@ -16,8 +16,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -46,13 +51,6 @@ public class WebConfig implements WebMvcConfigurer {
         return authProvider;
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")  // Allow all endpoints
-                .allowedOrigins("http://localhost:4200")  // Specify your frontend's URL
-                .allowedMethods("GET", "POST", "PUT", "DELETE")  // Allowed HTTP methods
-                .allowedHeaders("*");  // Allow all headers
-    }
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
@@ -70,14 +68,21 @@ public class WebConfig implements WebMvcConfigurer {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                                .requestMatchers("/api/books/**").hasAnyRole("ADMIN", "USER")
-                                .requestMatchers("/Library/**").hasAnyRole("ADMIN", "USER")
-                                .requestMatchers("/Books/**").hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/api/books/**").permitAll()    //hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/api/library/**").permitAll()       //hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/Books/**").permitAll()  //hasAnyRole("ADMIN", "USER")
                                 .anyRequest().authenticated()
                 );
+        http.cors(cors -> cors.configurationSource(request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedOrigins(List.of("http://localhost:4200")); // Pozwól na frontend
+            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Obsługiwane metody
+            config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+            config.setAllowCredentials(true); // Zezwól na ciasteczka/sesje
+            return config;
+        }));
 
         http.authenticationProvider(authenticationProvider());
-
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

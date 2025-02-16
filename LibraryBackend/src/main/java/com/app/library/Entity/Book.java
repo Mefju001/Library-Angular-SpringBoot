@@ -2,12 +2,9 @@ package com.app.library.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
+@Data
 @Entity
-@Getter
-@Setter
 @Table(name = "Books")
 public class Book {
     @Id
@@ -20,7 +17,7 @@ public class Book {
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
     @Column(name = "publication_year")
-    private int publication_year;
+    private int publicationYear;
     @Column(name = "isbn")
     private long isbn;
     @ManyToOne
@@ -63,12 +60,12 @@ public class Book {
         this.author = author;
     }
 
-    public int getPublication_year() {
-        return publication_year;
+    public int getPublicationYear() {
+        return publicationYear;
     }
 
-    public void setPublication_year(int publication_year) {
-        this.publication_year = publication_year;
+    public void setPublicationYear(int publicationYear) {
+        this.publicationYear = publicationYear;
     }
 
     public long getIsbn() {

@@ -1,20 +1,16 @@
-package com.app.library.Entity;
+package com.app.library.DTO.Response;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
+public class GenreResponse {
 
-@Entity
-
-@Table(name = "Publishers")
-public class Publisher {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Publisher_id")
     private Integer id;
-    @Column(name = "Publisher_name")
     private String name;
 
-    public Publisher() {
+    public GenreResponse() {
     }
 
     public Integer getId() {

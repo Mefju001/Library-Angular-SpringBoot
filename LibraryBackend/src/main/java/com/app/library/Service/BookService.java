@@ -1,5 +1,9 @@
 package com.app.library.Service;
 
+import com.app.library.DTO.Mapper.BookMapper;
+import com.app.library.DTO.Mapper.GenreMapper;
+import com.app.library.DTO.Response.BookResponse;
+import com.app.library.DTO.Response.GenreResponse;
 import com.app.library.Entity.Author;
 import com.app.library.Entity.Book;
 import com.app.library.Entity.Genre;
@@ -8,13 +12,13 @@ import com.app.library.Repository.AuthorRepository;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.GenreRepository;
 import com.app.library.Repository.PublisherRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookService {
@@ -22,63 +26,103 @@ public class BookService {
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;
     private final AuthorRepository authorRepository;
-
+    private final BookMapper bookMapper;
+    private final GenreMapper genreMapper;
 
     @Autowired
-    public BookService(BookRepository bookRepository, GenreRepository genreRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository) {
+    public BookService(BookRepository bookRepository, GenreRepository genreRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository, BookMapper bookMapper, GenreMapper genreMapper) {
         this.bookRepository = bookRepository;
         this.genreRepository = genreRepository;
         this.publisherRepository = publisherRepository;
         this.authorRepository = authorRepository;
+        this.bookMapper = bookMapper;
+        this.genreMapper = genreMapper;
     }
 
 
-    public ResponseEntity<List<Book>> findall() {
+    public ResponseEntity<List<BookResponse>> findall() {
         try {
             List<Book> books = bookRepository.findAll();
-            return new ResponseEntity<>(books, HttpStatus.OK);
+            List<BookResponse>bookResponses = books.stream()
+                                                    .map(bookMapper::toDto)
+                                                    .toList();
+            return new ResponseEntity<>(bookResponses, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    public ResponseEntity<List<GenreResponse>> findallgenres() {
+        try {
+            List<Genre> genres = genreRepository.findAll();
+            List<GenreResponse>genreResponses = genres.stream()
+                                                    .map(genreMapper::toDto)
+                                                    .toList();
+            return new ResponseEntity<>(genreResponses, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<List<Book>> findbooksbygenre(String name) {
+    public ResponseEntity<List<BookResponse>> findbooksbygenre(String name) {
         try {
             List<Book> books = bookRepository.findBooksByGenreName(name);
-            return new ResponseEntity<>(books, HttpStatus.OK);
+            List<BookResponse>bookResponses = books.stream()
+                                                    .map(bookMapper::toDto)
+                                                    .toList();
+            return new ResponseEntity<>(bookResponses, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<List<Book>> findbooksbypublisher(String name) {
+    public ResponseEntity<List<BookResponse>> findbooksbypublisher(String name) {
         try {
             List<Book> books = bookRepository.findBooksByPublisherName(name);
-            return new ResponseEntity<>(books, HttpStatus.OK);
+            List<BookResponse>bookResponses = books.stream()
+                                                    .map(bookMapper::toDto)
+                                                    .toList();
+            return new ResponseEntity<>(bookResponses, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<List<Book>> findbooksbytitle(String title) {
+    public ResponseEntity<List<BookResponse>> findbooksbytitle(String title) {
         try {
-            List<Book> books = bookRepository.findBooksByTitle(title);
-            return new ResponseEntity<>(books, HttpStatus.OK);
+            List<Book> books = bookRepository.findBooksByTitleContaining(title);
+            List<BookResponse>bookResponses = books.stream()
+                                                    .map(bookMapper::toDto)
+                                                    .toList();
+            return new ResponseEntity<>(bookResponses, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<List<Book>> findbooksbyauthor(String name, String surname) {
+    public ResponseEntity<List<BookResponse>> findbooksbyauthor(String name, String surname) {
         List<Book> books = bookRepository.findBooksByAuthor_NameOrAuthor_Surname(name, surname);
-        return new ResponseEntity<>(books, HttpStatus.OK);
+        List<BookResponse>bookResponses = books.stream()
+                                                .map(bookMapper::toDto)
+                                                .toList();
+        return new ResponseEntity<>(bookResponses, HttpStatus.OK);
     }
 
-    public ResponseEntity<List<Book>> findbooksbyprice(Float min, Float max) {
+    public ResponseEntity<List<BookResponse>> findbooksbyprice(Float min, Float max) {
         List<Book> books = bookRepository.findBooksByPriceIsBetween(min, max);
-        return new ResponseEntity<>(books, HttpStatus.OK);
+        List<BookResponse>bookResponses = books.stream()
+                                                .map(bookMapper::toDto)
+                                                .toList();
+        return new ResponseEntity<>(bookResponses, HttpStatus.OK);
     }
+    public ResponseEntity<List<BookResponse>> findbooksbyyear(Integer year1, Integer year2) {
+        List<Book> books = bookRepository.findBooksByPriceIsBetween(year1, year2);
+        List<BookResponse>bookResponses = books.stream()
+                                                .map(bookMapper::toDto)
+                                                .toList();
+        return new ResponseEntity<>(bookResponses, HttpStatus.OK);
 
+    }
+    @Transactional
     public ResponseEntity<Book> addbook(Book book) {
         try {
             // Sprawdzamy, czy książka już istnieje (na podstawie ISBN)
@@ -112,7 +156,7 @@ public class BookService {
             // Tworzymy nową książkę
             Book addbook = new Book();
             addbook.setTitle(book.getTitle());
-            addbook.setPublication_year(book.getPublication_year());
+            addbook.setPublicationYear(book.getPublicationYear());
             addbook.setIsbn(book.getIsbn());
             addbook.setLanguage(book.getLanguage());
             addbook.setPages(book.getPages());
@@ -134,7 +178,7 @@ public class BookService {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
     }
-
+    @Transactional
     public ResponseEntity<Book> updateBook(Book book){
         // Sprawdzamy, czy książka istnieje w bazie
         Book existingBook = bookRepository.findBookByIsbnIs(book.getIsbn());
@@ -145,7 +189,7 @@ public class BookService {
 
         // Aktualizujemy dane książki
         existingBook.setTitle(book.getTitle());
-        existingBook.setPublication_year(book.getPublication_year());
+        existingBook.setPublicationYear(book.getPublicationYear());
         existingBook.setIsbn(book.getIsbn());
         existingBook.setLanguage(book.getLanguage());
         existingBook.setPages(book.getPages());
@@ -170,6 +214,7 @@ public class BookService {
         // Zapisujemy zaktualizowaną książkę w bazie danych
         return new ResponseEntity<>(existingBook,HttpStatus.OK);
     }
+    @Transactional
     public ResponseEntity<Book> deletebook(Integer id) {
         bookRepository.deleteById(id);
         if(bookRepository.findById(id).isPresent()) {

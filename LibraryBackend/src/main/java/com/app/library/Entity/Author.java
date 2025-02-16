@@ -1,12 +1,8 @@
 package com.app.library.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
-@Data
 @Table(name = "Authors")
 public class Author {
         @Id

@@ -1,10 +1,9 @@
 package com.app.library.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+
 
 @Entity
-@Data
 @Table(name = "Genres")
 public class Genre {
     @Id

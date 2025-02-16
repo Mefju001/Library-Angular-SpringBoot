@@ -9,33 +9,36 @@ interface Genre {
   providedIn: 'root'
 })
 export class MyServiceService {
-  private apiUrl = 'http://localhost:8080/api'; // Dostosuj do swojego backendu
+  private apiUrl = 'http://localhost:8080/api/books'; // Dostosuj do swojego backendu
 
   constructor(private http: HttpClient) {}
   // Pobiera wszystkie książki
   getAllBooks(): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.apiUrl}/books`);
+    return this.http.get<Book[]>(`${this.apiUrl}/`);
   }
+  //nie ma
   getData(): Observable<any[]> {
-    return this.http.get<Genre[]>(`${this.apiUrl}/genreAll`);
+    return this.http.get<Genre[]>(`${this.apiUrl}/genres`);
   }
-  // Pobiera książki po autorze
-  getBooksByAuthor(searchName: string): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.apiUrl}/author`, {
-      params: new HttpParams().set('nameAndsurname', searchName)
+  getBooksByAuthor(name: string, surname: string): Observable<Book[]> {
+    return this.http.get<Book[]>(`${this.apiUrl}/search/author`, {
+      params: new HttpParams()
+        .set('name', name)
+        .set('surname', surname)
     });
   }
+  
 
   // Wyszukuje książki po nazwie
   searchBooks(searchName: string): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.apiUrl}/search`, {
-      params: new HttpParams().set('searchName', searchName)
+    return this.http.get<Book[]>(`${this.apiUrl}/search/title`, {
+      params: new HttpParams().set('title', searchName)
     });
   }
 
   // Pobiera książki z zakresu cenowego
   getBooksByPriceRange(price1: number, price2: number): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.apiUrl}/price`, {
+    return this.http.get<Book[]>(`${this.apiUrl}/search/price`, {
       params: new HttpParams()
         .set('price1', price1)
         .set('price2', price2)
@@ -44,14 +47,14 @@ export class MyServiceService {
 
   // Pobiera książki według zakresu lat
   getBooksByYearRange(year1: number, year2: number): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.apiUrl}/year`, {
+    return this.http.get<Book[]>(`${this.apiUrl}/search/year`, {
       params: new HttpParams()
         .set('year1', year1)
         .set('year2', year2)
     });
   }
 
-  // Sortuje książki
+  // nie ma
   sortBooks(sortBy: string, order: string): Observable<Book[]> {
     return this.http.get<Book[]>(`${this.apiUrl}/sort`, {
       params: new HttpParams()
@@ -60,13 +63,13 @@ export class MyServiceService {
     });
   }
 
-  // Pobiera książkę po ID
+  // nie ma
   getBookById(id: number): Observable<Book> {
     return this.http.get<Book>(`${this.apiUrl}/id`, {
       params: new HttpParams().set('id', id)
     });
   }
-  getBookByIsbn(isbn: string): Observable<Book> {
+    getBookByIsbn(isbn: string): Observable<Book> {//Nie ma
     return this.http.get<Book>(`${this.apiUrl}/${isbn}`, {
       params: new HttpParams().set('isbn', isbn)
     });

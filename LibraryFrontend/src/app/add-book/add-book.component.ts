@@ -11,6 +11,7 @@ export class AddBookComponent implements OnInit {
   isbn: string = ''; // ISBN książki (tylko przy edycji)
   isEditing: boolean = false; // Flaga sprawdzająca, czy edytujemy książkę
   book = {
+    id:0,
     title: '',
     authorName: '',
     authorSurname: '',

@@ -1,11 +1,5 @@
 <!DOCTYPE html>
 <html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Świat Książek</title>
-    <link rel="stylesheet" href="main-menu.component.css">
-</head>
 <body>
     <!-- Nagłówek strony -->
     <header class="header">
@@ -18,7 +12,7 @@
             <a>
                 <select [(ngModel)]="selectedItem">
                     <option value="">Kategorie</option>
-                    <option *ngFor="let item of items" [value]="item.id">{{ item.genreName }}</option>
+                    <option *ngFor="let item of items" [value]="item.id">{{ item.name }}</option>
                   </select>
             </a>
             <a href="#">Nowości</a>
@@ -36,34 +30,37 @@
             <form (submit)="applyFilters()">
               <label>Wyszukaj:</label>
               <input type="text" [(ngModel)]="filters.searchName" name="searchName">
-            
-              <label>Autor:</label>
-              <input type="text" [(ngModel)]="filters.nameAndsurname" name="nameAndsurname">
-            
+              <label>Autor</label><br>
+              <label>Imię:</label>
+              <input type="text" [(ngModel)]="filters.name" name="name">
+              <br>
+              <label>Nazwisko:</label>
+              <input type="text" [(ngModel)]="filters.surname" name="surname">              
+              <br>
               <label>Minimalna cena:</label>
               <input type="number" [(ngModel)]="filters.price1" name="price1">
-            
+              <br>
               <label>Maksymalna cena:</label>
               <input type="number" [(ngModel)]="filters.price2" name="price2">
-            
+              <br>
               <label>Rok wydania od:</label>
               <input type="number" [(ngModel)]="filters.year1" name="year1">
-            
+              <br>
               <label>Rok wydania do:</label>
               <input type="number" [(ngModel)]="filters.year2" name="year2">
-            
+              <br>
               <label>Sortowanie:</label>
               <select [(ngModel)]="filters.sortBy" name="sortBy">
                 <option value="title">Tytuł</option>
                 <option value="price">Cena</option>
               </select>
-            
+              <br>
               <label>Kolejność:</label>
               <select [(ngModel)]="filters.order" name="order">
                 <option value="asc">Rosnąco</option>
                 <option value="desc">Malejąco</option>
               </select>
-            
+              <br>
               <button type="submit">Zastosuj filtry</button>
               <button type="button" (click)="resetFilters()">Resetuj</button>
             </form>

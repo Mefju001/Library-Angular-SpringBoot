@@ -12,6 +12,7 @@ export class MainMenuComponent implements OnInit {
   items: any[] = []; // Tablica na pobrane dane
   selectedItem: string = ''; // Wybrana wartość
   book = {
+    id:0,
     isbn: '',
     title: '',
     authorName: '',
@@ -19,12 +20,13 @@ export class MainMenuComponent implements OnInit {
     publicationYear: 0,
     genre: '',
     language: '',
-    publisher: '',
+    publisherName: '',
     pages: 0,
     price: 0
   };
   filters = {
-    nameAndsurname: '',
+    name:'',
+    surname: '',
     searchName: '',
     price1: null,
     price2: null,
@@ -51,8 +53,8 @@ export class MainMenuComponent implements OnInit {
   }
 
   getBooksByAuthor(): void {
-    if (this.filters.nameAndsurname) {
-      this.myService.getBooksByAuthor(this.filters.nameAndsurname).subscribe(
+    if (this.filters.name,this.filters.surname) {
+      this.myService.getBooksByAuthor(this.filters.name,this.filters.surname).subscribe(
         data => this.books = data,
         error => console.error('Błąd:', error)
       );
@@ -97,7 +99,7 @@ export class MainMenuComponent implements OnInit {
   applyFilters(): void {
     if (this.filters.searchName) {
       this.searchBooks();
-    } else if (this.filters.nameAndsurname) {
+    } else if (this.filters.name,this.filters.surname) {
       this.getBooksByAuthor();
     } else if (this.filters.price1 !== null && this.filters.price2 !== null) {
       this.getBooksByPrice();
@@ -118,12 +120,14 @@ export class MainMenuComponent implements OnInit {
       sortBy: '',
       order: '',
       searchName: '',
-      nameAndsurname: ''
+      name: '',
+      surname:''
     };
     this.getAllBooks();
   }
   updateBookDetails(isbn: string): void {
     const updatedBook: Book = {
+      id: this.book.id,
       title: this.book.title,
       authorName: this.book.authorName,  // Dostosowane do właściwego klucza
       authorSurname: this.book.authorSurname,  // Dostosowane do właściwego klucza
@@ -131,7 +135,7 @@ export class MainMenuComponent implements OnInit {
       isbn: this.book.isbn,
       genreName: this.book.genre,  // Dostosowane do właściwego klucza
       language: this.book.language,
-      publisherName: this.book.publisher,  // Dostosowane do właściwego klucza
+      publisherName: this.book.publisherName,  // Dostosowane do właściwego klucza
       pages: this.book.pages,
       price: this.book.price
     };

@@ -2,19 +2,18 @@ package com.app.library.Entity;
 
 import jakarta.persistence.*;
 
-
 @Entity
-
-@Table(name = "Publishers")
-public class Publisher {
+public class Library {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Publisher_id")
+    @Column(name = "Library_id")
     private Integer id;
-    @Column(name = "Publisher_name")
+    @Column(name = "library_name")
     private String name;
+    @Column(name = "Library_address")
+    private String address;
 
-    public Publisher() {
+    public Library() {
     }
 
     public Integer getId() {
@@ -31,5 +30,13 @@ public class Publisher {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
