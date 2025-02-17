@@ -17,9 +17,9 @@ public class Role {
     public Role() {
     }
 
-    /*public Role(String rola) {
-        this.rola = ERole.valueOf(rola);
-    }*/
+    public Role(String rola) {
+        this.rola = rola;
+    }
 
     public void setId(Long id) {
         this.id = id;
