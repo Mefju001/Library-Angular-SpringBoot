@@ -70,7 +70,7 @@ public class WebConfig implements WebMvcConfigurer {
                         auth.requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                                 .requestMatchers("/api/books/**").permitAll()    //hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/library/**").permitAll()       //hasAnyRole("ADMIN", "USER")
-                                .requestMatchers("/Books/**").permitAll()  //hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/api/user/**").permitAll()  //hasAnyRole("ADMIN", "USER")
                                 .anyRequest().authenticated()
                 );
         http.cors(cors -> cors.configurationSource(request -> {

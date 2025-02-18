@@ -21,7 +21,6 @@ public class BookController {
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/")
     public ResponseEntity<List<BookResponse>>listofbooks()
     {
@@ -60,15 +59,17 @@ public class BookController {
         return bookService.findbooksbyyear(year1, year2);
     }
     //////
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<Book> addbook(@RequestBody Book book) {
         return bookService.addbook(book);
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update")
     public ResponseEntity<Book> updatebook(@RequestBody Book book) {
         return bookService.updateBook(book);
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete")
     public ResponseEntity<Book> delete(@RequestParam Integer id) {
         return bookService.deletebook(id);
