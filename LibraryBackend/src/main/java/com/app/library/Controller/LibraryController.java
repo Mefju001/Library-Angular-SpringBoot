@@ -1,5 +1,6 @@
 package com.app.library.Controller;
 
+import com.app.library.DTO.Response.LibraryBookResponse;
 import com.app.library.DTO.Response.LibraryResponse;
 import com.app.library.Entity.Library;
 import com.app.library.Entity.LibraryBook;
@@ -27,7 +28,7 @@ public class LibraryController {
         return libraryService.findall();
     }
     @GetMapping("/booksinlibrary")
-    public ResponseEntity<List<LibraryBook>> listofbooksinlibraries()
+    public ResponseEntity<List<LibraryBookResponse>> listofbooksinlibraries()
     {
         return libraryService.findallbookandlibrary();
     }

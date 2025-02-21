@@ -2,8 +2,7 @@ package com.app.library.Security.DTO.Request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import java.util.Set;
-public class AuthRequest {
+public class UserRequest {
     @NotBlank
     @Size(min = 3, max = 20)
     private String username;
@@ -12,7 +11,6 @@ public class AuthRequest {
     @Size(min = 3, max = 40)
     private String password;
 
-    private String role;
 
     public String getUsername() {
         return username;
@@ -30,11 +28,4 @@ public class AuthRequest {
         this.password = password;
     }
 
-    public String getRole() {
-        return this.role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 }

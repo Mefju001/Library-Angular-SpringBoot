@@ -2,6 +2,7 @@ package com.app.library.Service;
 
 import com.app.library.DTO.Mapper.BookMapper;
 import com.app.library.DTO.Mapper.GenreMapper;
+import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
 import com.app.library.Entity.Author;
@@ -12,16 +13,24 @@ import com.app.library.Repository.AuthorRepository;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.GenreRepository;
 import com.app.library.Repository.PublisherRepository;
+import com.app.library.Security.DTO.Response.MessageResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @Service
 public class BookService {
+
+
+    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
+
+
+
     private final BookRepository bookRepository;
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;
@@ -123,44 +132,44 @@ public class BookService {
 
     }
     @Transactional
-    public ResponseEntity<Book> addbook(Book book) {
+    public ResponseEntity<BookRequest> addbook(BookRequest bookRequest) {
         try {
             // Sprawdzamy, czy książka już istnieje (na podstawie ISBN)
-            if (bookRepository.findBookByIsbnIs(book.getIsbn()) != null) {
+            if (bookRepository.findBookByIsbnIs(bookRequest.getIsbn()) != null) {
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT); // Konflikt, książka już istnieje
             }
 
             // Pobieramy lub tworzymy encje związane z książką (Genre, Author, Publisher)
-            Genre existingGenre = genreRepository.findGenreByName(book.getGenre().getName());
-            Author existingAuthor = authorRepository.findAuthorByNameAndSurname(book.getAuthor().getName(), book.getAuthor().getSurname());
-            Publisher existingPublisher = publisherRepository.findPublisherByName(book.getPublisher().getName());
+            Genre existingGenre = genreRepository.findGenreByName(bookRequest.getGenreName());
+            Author existingAuthor = authorRepository.findAuthorByNameAndSurname(bookRequest.getAuthorName(), bookRequest.getAuthorSurname());
+            Publisher existingPublisher = publisherRepository.findPublisherByName(bookRequest.getPublisherName());
 
             // Jeśli encje nie istnieją, tworzymy je
             if (existingGenre == null) {
                 existingGenre = new Genre();
-                existingGenre.setName(book.getGenre().getName());
+                existingGenre.setName(bookRequest.getGenreName());
                 existingGenre = genreRepository.save(existingGenre);
             }
             if (existingAuthor == null) {
                 existingAuthor = new Author();
-                existingAuthor.setName(book.getAuthor().getName());
-                existingAuthor.setSurname(book.getAuthor().getSurname());
+                existingAuthor.setName(bookRequest.getAuthorName());
+                existingAuthor.setSurname(bookRequest.getAuthorSurname());
                 existingAuthor = authorRepository.save(existingAuthor);
             }
             if (existingPublisher == null) {
                 existingPublisher = new Publisher();
-                existingPublisher.setName(book.getPublisher().getName());
+                existingPublisher.setName(bookRequest.getPublisherName());
                 existingPublisher = publisherRepository.save(existingPublisher);
             }
 
             // Tworzymy nową książkę
             Book addbook = new Book();
-            addbook.setTitle(book.getTitle());
-            addbook.setPublicationYear(book.getPublicationYear());
-            addbook.setIsbn(book.getIsbn());
-            addbook.setLanguage(book.getLanguage());
-            addbook.setPages(book.getPages());
-            addbook.setPrice(book.getPrice());
+            addbook.setTitle(bookRequest.getTitle());
+            addbook.setPublicationYear(bookRequest.getPublicationYear());
+            addbook.setIsbn(bookRequest.getIsbn());
+            addbook.setLanguage(bookRequest.getLanguage());
+            addbook.setPages(bookRequest.getPages());
+            addbook.setPrice(bookRequest.getPrice());
             addbook.setGenre(existingGenre);
             addbook.setAuthor(existingAuthor);
             addbook.setPublisher(existingPublisher);
@@ -171,7 +180,7 @@ public class BookService {
 
             // Zwracamy odpowiedź z utworzoną książką
             //BookResponse bookResponse = new BookResponse(book);
-            return new ResponseEntity<>(addbook, HttpStatus.CREATED);
+            return new ResponseEntity<>(bookRequest, HttpStatus.CREATED);
 
         } catch (Exception e) {
             // W przypadku błędu zwracamy odpowiedź z błędem 409 (Konflikt)
@@ -179,43 +188,53 @@ public class BookService {
         }
     }
     @Transactional
-    public ResponseEntity<Book> updateBook(Book book){
+    public ResponseEntity<?> updateBook(BookRequest bookRequest){
         // Sprawdzamy, czy książka istnieje w bazie
-        Book existingBook = bookRepository.findBookByIsbnIs(book.getIsbn());
+        Book existingBook = bookRepository.findBookByIsbnIs(bookRequest.getIsbn());
         if (existingBook == null) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
 
 
         // Aktualizujemy dane książki
-        existingBook.setTitle(book.getTitle());
-        existingBook.setPublicationYear(book.getPublicationYear());
-        existingBook.setIsbn(book.getIsbn());
-        existingBook.setLanguage(book.getLanguage());
-        existingBook.setPages(book.getPages());
-        existingBook.setPrice(book.getPrice());
+        existingBook.setTitle(bookRequest.getTitle());
+        existingBook.setPublicationYear(bookRequest.getPublicationYear());
+        existingBook.setIsbn(bookRequest.getIsbn());
+        existingBook.setLanguage(bookRequest.getLanguage());
+        existingBook.setPages(bookRequest.getPages());
+        existingBook.setPrice(bookRequest.getPrice());
 
         // Jeśli zmienił się gatunek, autor lub wydawca, aktualizujemy również te encje
-        if (book.getGenre() != null) {
-            Genre existingGenre = genreRepository.findGenreByName(book.getGenre().getName());
-            existingBook.setGenre(existingGenre != null ? existingGenre : book.getGenre());
+        if (bookRequest.getGenreName() != null) {
+            Genre existingGenre = genreRepository.findGenreByName(bookRequest.getGenreName());
+            if (existingGenre != null) {
+                existingBook.setGenre(existingGenre);
+                logger.info("aktualizacja genre");
+            }
         }
 
-        if (book.getAuthor() != null) {
-            Author existingAuthor = authorRepository.findAuthorByNameAndSurname(book.getAuthor().getName(), book.getAuthor().getSurname());
-            existingBook.setAuthor(existingAuthor != null ? existingAuthor : book.getAuthor());
+
+        if (bookRequest.getAuthorName() != null || bookRequest.getAuthorSurname() != null) {
+            Author existingAuthor = authorRepository.findAuthorByNameAndSurname(bookRequest.getAuthorName(), bookRequest.getAuthorSurname());
+            if (existingAuthor != null) {
+                existingBook.setAuthor(existingAuthor);
+                logger.info("aktualizacja author");
+            }
         }
 
-        if (book.getPublisher() != null) {
-            Publisher existingPublisher = publisherRepository.findPublisherByName(book.getPublisher().getName());
-            existingBook.setPublisher(existingPublisher != null ? existingPublisher : book.getPublisher());
+        if (bookRequest.getPublisherName() != null) {
+            Publisher existingPublisher = publisherRepository.findPublisherByName(bookRequest.getPublisherName());
+            if (existingPublisher != null) {
+                existingBook.setPublisher(existingPublisher);
+                logger.info("aktualizacja publisher");
+            }
         }
         bookRepository.save(existingBook);
         // Zapisujemy zaktualizowaną książkę w bazie danych
-        return new ResponseEntity<>(existingBook,HttpStatus.OK);
+        return new ResponseEntity<>(bookRequest,HttpStatus.OK);
     }
     @Transactional
-    public ResponseEntity<Book> deletebook(Integer id) {
+    public ResponseEntity<?> deletebook(Integer id) {
         bookRepository.deleteById(id);
         if(bookRepository.findById(id).isPresent()) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

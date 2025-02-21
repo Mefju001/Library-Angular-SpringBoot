@@ -8,7 +8,7 @@ public class Favoritebooks {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "id")
-        private Long id;
+        private Integer id;
         @ManyToOne
         @JoinColumn(name = "books_id", nullable = false)
         private Book book;
@@ -16,11 +16,11 @@ public class Favoritebooks {
         @JoinColumn(name = "user_id", nullable = false)
         private User User;
 
-        public Long getId() {
+        public Integer getId() {
                 return id;
         }
 
-        public void setId(Long id) {
+        public void setId(Integer id) {
                 this.id = id;
         }
 

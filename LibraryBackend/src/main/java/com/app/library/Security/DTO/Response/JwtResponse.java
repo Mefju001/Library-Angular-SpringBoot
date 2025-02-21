@@ -1,17 +1,16 @@
 package com.app.library.Security.DTO.Response;
-import java.util.List;
+
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
     private Long id;
     private String username;
-    private List<String> role;
 
-    public JwtResponse(String accessToken, Long id, String username, List<String> role) {
+
+    public JwtResponse(String accessToken, Long id, String username) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
-        this.role = role;
     }
 
     public String getAccessToken() {
@@ -46,7 +45,4 @@ public class JwtResponse {
         this.username = username;
     }
 
-    public List<String> getRole() {
-        return role;
-    }
 }

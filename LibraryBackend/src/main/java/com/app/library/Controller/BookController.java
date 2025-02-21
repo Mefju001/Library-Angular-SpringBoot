@@ -1,9 +1,9 @@
 package com.app.library.Controller;
 
+import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
 import com.app.library.Entity.Book;
-import com.app.library.Entity.Genre;
 import com.app.library.Service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -61,17 +61,17 @@ public class BookController {
     //////
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<Book> addbook(@RequestBody Book book) {
-        return bookService.addbook(book);
+    public ResponseEntity<BookRequest> addbook(@RequestBody BookRequest bookRequest) {
+        return bookService.addbook(bookRequest);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update")
-    public ResponseEntity<Book> updatebook(@RequestBody Book book) {
-        return bookService.updateBook(book);
+    public ResponseEntity<?> updatebook(@RequestBody BookRequest bookRequest) {
+        return bookService.updateBook(bookRequest);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete")
-    public ResponseEntity<Book> delete(@RequestParam Integer id) {
+    public ResponseEntity<?> delete(@RequestParam Integer id) {
         return bookService.deletebook(id);
     }
 }

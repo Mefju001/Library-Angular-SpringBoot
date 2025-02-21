@@ -1,7 +1,8 @@
 package com.app.library.Service;
 
+import com.app.library.DTO.Mapper.LibraryBookMapper;
 import com.app.library.DTO.Mapper.LibraryMapper;
-import com.app.library.DTO.Response.BookResponse;
+import com.app.library.DTO.Response.LibraryBookResponse;
 import com.app.library.DTO.Response.LibraryResponse;
 import com.app.library.Entity.Library;
 import com.app.library.Entity.LibraryBook;
@@ -21,11 +22,13 @@ public class LibraryService {
     private final LibraryRepository libraryRepository;
     private final LibraryBookRepository libraryBookRepository;
     private final LibraryMapper libraryMapper;
+    private final LibraryBookMapper libraryBookMapper;
     @Autowired
-    public LibraryService(LibraryRepository libraryRepository, LibraryBookRepository libraryBookRepository, LibraryMapper libraryMapper) {
+    public LibraryService(LibraryRepository libraryRepository, LibraryBookRepository libraryBookRepository, LibraryMapper libraryMapper, LibraryBookMapper libraryBookMapper) {
         this.libraryRepository = libraryRepository;
         this.libraryBookRepository = libraryBookRepository;
         this.libraryMapper = libraryMapper;
+        this.libraryBookMapper = libraryBookMapper;
     }
     public ResponseEntity<List<LibraryResponse>>findall()
     {
@@ -33,11 +36,17 @@ public class LibraryService {
         List<LibraryResponse>libraryResponses = libraries.stream().map(libraryMapper::toDto).toList();
         return new ResponseEntity<>(libraryResponses, HttpStatus.OK);
     }
-    public ResponseEntity<List<LibraryBook>>findallbookandlibrary()
+    public ResponseEntity<List<LibraryResponse>>findlibrarybyname(String name)
+    {
+        List<Library> libraries = libraryRepository.findLibraryByName(name);
+        List<LibraryResponse>libraryResponses = libraries.stream().map(libraryMapper::toDto).toList();
+        return new ResponseEntity<>(libraryResponses, HttpStatus.OK);
+    }
+    public ResponseEntity<List<LibraryBookResponse>>findallbookandlibrary()
     {
         List<LibraryBook> libraries = libraryBookRepository.findAll();
-        //List<LibraryResponse>libraryResponses = libraries.stream().map(libraryMapper::toDto).toList();
-        return new ResponseEntity<>(libraries, HttpStatus.OK);
+        List<LibraryBookResponse>libraryBookResponses = libraries.stream().map(libraryBookMapper::toLibraryBookResponse).toList();
+        return new ResponseEntity<>(libraryBookResponses, HttpStatus.OK);
     }
     @Transactional
     public ResponseEntity<Library>addlibrary(Library library)
