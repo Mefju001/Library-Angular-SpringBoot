@@ -26,7 +26,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: '17'
-        distribution: 'adoptium'
+        distribution: 'temurin'
 
     - name: Build with Maven
       run: ./mvnw clean install
