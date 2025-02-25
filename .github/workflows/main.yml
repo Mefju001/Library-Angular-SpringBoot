@@ -19,7 +19,7 @@ jobs:
         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
         echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> $GITHUB_ENV
         echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> $GITHUB_ENV
-        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
+        echo "JWT_SECRET=${{ secrets.JWT_TOKEN }}" >> $GITHUB_ENV
 
     # Build the application (e.g. Maven)
     - name: Set up JDK 17
