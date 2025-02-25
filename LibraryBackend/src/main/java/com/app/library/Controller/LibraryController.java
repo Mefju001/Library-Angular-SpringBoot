@@ -27,6 +27,11 @@ public class LibraryController {
     {
         return libraryService.findall();
     }
+    @GetMapping("/search/name{name}")
+    public ResponseEntity<List<LibraryResponse>> listoflibrariesbyname(@PathVariable String name)
+    {
+        return libraryService.findlibrarybyname(name);
+    }
     @GetMapping("/booksinlibrary")
     public ResponseEntity<List<LibraryBookResponse>> listofbooksinlibraries()
     {

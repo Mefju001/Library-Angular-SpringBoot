@@ -11,7 +11,6 @@
     <groupId>com</groupId>
     <artifactId>LibraryBackend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <rola>Library</rola>
     <description>Library</description>
     <url/>
     <licenses>
@@ -26,8 +25,10 @@
         <tag/>
         <url/>
     </scm>
+
     <properties>
         <java.version>17</java.version>
+
     </properties>
     <dependencies>
         <dependency>
@@ -54,6 +55,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.5.2</version> <!-- Wersja, która nie ma luki -->
+        </dependency>
+
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -99,7 +106,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>annotationProcessor</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
