@@ -9,6 +9,11 @@ import { LibraryService } from 'src/app/Service/LibraryService';
 })
 export class LibraryComponent {
   Libraries: Library[] = [];
+  library={
+    id: 0,
+    name: "",
+    address: ""
+  };
   constructor(private Libraryservice: LibraryService) { }
   ngOnInit(): void {
     // Początkowe wywołanie, żeby pobrać książki (jeśli jakieś filtry byłyby ustawione)
@@ -26,4 +31,33 @@ export class LibraryComponent {
       }
     );
   }
+  updateLibraryDetails(id: number): void {
+    const updatedLibrary: Library = {
+      id: this.library.id,
+      name: this.library.name,
+      address:this.library.address
+    };
+    this.Libraryservice.updateLibrary(id, updatedLibrary).subscribe(
+      data => {
+        console.log('Książka została zaktualizowana:', data);
+      },
+      error => {
+        console.error('Błąd podczas aktualizacji książki:', error);
+      }
+    );
+  }
+  
+  
+    // Funkcja do usuwania książki
+    deleteLibrary(id: number) {
+      this.Libraryservice.deleteLibrary(id).subscribe(
+        data => {
+          console.log('Książka została usunięta:', data);
+          this.getLibraries();
+        },
+        error => {
+          console.error('Błąd podczas usuwania książki:', error);
+        }
+      );
+    }
 }

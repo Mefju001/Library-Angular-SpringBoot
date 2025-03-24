@@ -36,6 +36,16 @@ public class LibraryService {
         List<LibraryResponse>libraryResponses = libraries.stream().map(libraryMapper::toDto).toList();
         return new ResponseEntity<>(libraryResponses, HttpStatus.OK);
     }
+    public ResponseEntity<LibraryResponse>findbyid(Integer id)
+    {
+        Optional<Library> Optlibrary = libraryRepository.findById(id);
+        if(Optlibrary.isPresent())
+        {
+           LibraryResponse libraryResponses = Optlibrary.map(libraryMapper::toDto).orElseThrow();
+            return new ResponseEntity<>(libraryResponses, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
     public ResponseEntity<List<LibraryResponse>>findlibrarybyname(String name)
     {
         List<Library> libraries = libraryRepository.findLibraryByName(name);
@@ -51,8 +61,11 @@ public class LibraryService {
     @Transactional
     public ResponseEntity<Library>addlibrary(Library library)
     {
-        libraryRepository.save(library);
-        return new ResponseEntity<>(library,HttpStatus.CREATED);
+        Library savedLibrary = new Library();
+        savedLibrary.setName(library.getName());
+        savedLibrary.setAddress(library.getAddress());
+        libraryRepository.save(savedLibrary); // Zapisujemy i pobieramy obiekt z nowym ID
+        return new ResponseEntity<>(savedLibrary, HttpStatus.CREATED);
     }
     @Transactional
     public ResponseEntity<LibraryBook>addbooktolibrary(LibraryBook LibraryBook)

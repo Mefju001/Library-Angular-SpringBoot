@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';  // Dodaj import Router
 import { Observable, tap } from 'rxjs';
-import { User } from '../Models/User.model';
+import { User } from '../../Models/User.model';
 
 @Injectable({
   providedIn: 'root',

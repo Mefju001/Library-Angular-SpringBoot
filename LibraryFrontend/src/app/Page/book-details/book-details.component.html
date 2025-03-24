@@ -1,0 +1,29 @@
+<div *ngIf="book">
+    <h2>{{ book.title }}</h2>
+    <p><strong>Autor:</strong> {{ book.authorName }} {{ book.authorSurname }}</p>
+    <p><strong>Gatunek:</strong> {{ book.genreName }}</p>
+    <p><strong>Wydawca:</strong> {{ book.publisherName }}</p>
+    <p><strong>Rok wydania:</strong> {{ book.publicationYear }}</p>
+    <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+    <p><strong>Język:</strong> {{ book.language }}</p>
+    <p><strong>Cena:</strong> {{ book.price }} zł</p>
+    <p><strong>Liczba stron:</strong> {{ book.pages }}</p>
+    <div class="action-buttons">
+        <form >
+            <button type="submit"[routerLink]="['/addbook', book.id]" class="button">Edytuj</button>
+        </form>                        
+        <!-- Jeśli masz formularz do usuwania książki -->
+        <form (submit)="deleteBook(book.id)">
+            <button type="submit">Usuń książkę</button>
+        </form>
+        <form >
+            <div class="dropdown">
+                <button type="submit">Dostępność</button>
+                <div class="dropdown-content">
+                    <button class="dropdown-item" >name</button>
+                </div>
+              </div>
+        </form>
+      </div>
+    <button [routerLink]="['/MainMenu']">Powrót</button>
+</div>

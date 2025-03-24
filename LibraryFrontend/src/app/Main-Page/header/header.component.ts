@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MyServiceService } from '../Service/my-service.service';
-import { AuthService } from '../Auth/auth.service';
-import { UserService } from '../Service/UserService';
+import { MyServiceService } from 'src/app/Service/BookService';
+import { AuthService } from 'src/app/Service/Auth/auth.service';
+import { UserService } from 'src/app/Service/UserService';
 import { Router } from '@angular/router';
-import { MainMenuComponent } from '../main-menu/main-menu.component';
+import { MainMenuComponent } from 'src/app/Page/main-menu/main-menu.component';
 
 @Component({
   selector: 'app-header',

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { UserService } from '../Service/UserService';
+import { UserService } from 'src/app/Service/UserService';
 import { NgForm } from '@angular/forms';
-import { UserPassword } from '../Models/UserPassword.model';
+import { UserPassword } from 'src/app/Models/UserPassword.model';
 
 @Component({
   selector: 'app-formpassword',

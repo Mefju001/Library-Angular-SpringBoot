@@ -42,9 +42,14 @@
               <div class="dropdown">
                 <button class="dropbtn">Kategorie</button>
                 <div class="dropdown-content">
-                    <button class="dropdown-item" *ngFor="let item of items" [value]="item.id" (click)="getbooksbygenre(item.name)" [(ngModel)]="filters.genre" name="genre">{{ item.name }}</button>
+                  <button class="dropdown-item" *ngFor="let item of items"
+                    [value]="item.id"
+                    (click)="filters.genre = item.name; getbooksbygenre(item.name)">
+                    {{ item.name }}
+                  </button>
                 </div>
               </div>
+              
               <br>
               <button type="submit">Zastosuj filtry</button>
               <button type="button" (click)="resetFilters()">Resetuj</button>
@@ -58,33 +63,11 @@
 
             <!-- Książki -->
             <div class="books-container">
-                <div *ngFor="let book of books" class="book">
+                <div *ngFor="let book of books" class="book" [routerLink]="['/book', book.id]">
                     <h3>{{ book.title }}</h3>
                     <p>Autor: {{ book.authorName }} {{ book.authorSurname }}</p>
                     <p>Gatunek: {{ book.genreName }}</p>
-                    <p>Wydawca: {{ book.publisherName }}</p>
-                    <p>Rok wydania: {{ book.publicationYear }}</p>
-                    <p>ISBN: {{ book.isbn }}</p>
-                    <p>Jezyk: {{ book.language }}</p>
                     <p>Cena: {{ book.price }} zł</p>
-                    <p>Liczba stron: {{ book.pages }}</p>
-                    <div class="action-buttons">
-                        <form >
-                            <button type="submit"[routerLink]="['/add-book', book.id]" class="button">Edytuj</button>
-                        </form>                        
-                        <!-- Jeśli masz formularz do usuwania książki -->
-                        <form (submit)="deleteBook(book.id)">
-                            <button type="submit">Usuń książkę</button>
-                        </form>
-                        <form >
-                            <div class="dropdown">
-                                <button type="submit">Dostępność</button>
-                                <div class="dropdown-content">
-                                    <button class="dropdown-item" *ngFor="let item of items" [value]="item.id" (click)="getbooksbygenre(item.name)" [(ngModel)]="filters.genre" name="genre">{{ item.name }}</button>
-                                </div>
-                              </div>
-                        </form>
-                      </div>
                 </div>
                 <div *ngIf="books.length === 0">
                     <p>Brak książek w bazie danych.</p>

@@ -27,6 +27,11 @@ public class LibraryController {
     {
         return libraryService.findall();
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<LibraryResponse> listoflibrarybyId(@PathVariable Integer id)
+    {
+        return libraryService.findbyid(id);
+    }
     @GetMapping("/search/name{name}")
     public ResponseEntity<List<LibraryResponse>> listoflibrariesbyname(@PathVariable String name)
     {
@@ -38,7 +43,7 @@ public class LibraryController {
         return libraryService.findallbookandlibrary();
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/")
+    @PostMapping("/addlibrary")
     public ResponseEntity<Library>addlibrary(@RequestBody Library library)
     {
         return libraryService.addlibrary(library);
@@ -62,10 +67,10 @@ public class LibraryController {
         return libraryService.updatebookandlibrary(libraryBook);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/")
-    public ResponseEntity<Library>deletelibrary(@RequestParam Integer library)
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Library>deletelibrary(@PathVariable Integer id)
     {
-        return libraryService.deletelibrary(library);
+        return libraryService.deletelibrary(id);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/deletebookandlibrary")

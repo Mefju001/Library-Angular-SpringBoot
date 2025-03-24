@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MyServiceService } from '../Service/my-service.service';
-import { Book } from '../Models/book.model';
-import { User } from '../Models/User.model';
+import { MyServiceService } from '../../Service/BookService';
+import { Book } from '../../Models/book.model';
+import { User } from '../../Models/User.model';
 
 @Component({
   selector: 'app-main-menu',
@@ -140,7 +140,7 @@ export class MainMenuComponent implements OnInit {
     };
     this.getAllBooks();
   }
-  updateBookDetails(id: number): void {
+  /*updateBookDetails(id: number): void {
     const updatedBook: Book = {
       id: this.book.id,
       title: this.book.title,
@@ -164,7 +164,7 @@ export class MainMenuComponent implements OnInit {
         console.error('Błąd podczas aktualizacji książki:', error);
       }
     );
-  }
+  }*/
 
 
   // Funkcja do usuwania książki
