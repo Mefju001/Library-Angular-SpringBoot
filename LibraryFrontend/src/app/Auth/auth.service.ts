@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';  // Dodaj import Router
 import { Observable, tap } from 'rxjs';
+import { User } from '../Models/User.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,18 +22,22 @@ export class AuthService {
   }
 
   // Funkcja do przechowywania tokena w localStorage
-  storeToken(accessToken: string): void {
-    localStorage.setItem('jwt_token', accessToken);
+  storeToken(User: User): void {
+    localStorage.setItem('user', JSON.stringify(User));
   }
-
   // Funkcja do pobierania tokena z localStorage
   getToken(): string | null {
-    return localStorage.getItem('jwt_token');
+    const user = localStorage.getItem('user');
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      return parsedUser.accessToken; // Zwróć tylko token
+    }
+    return null;
   }
 
   // Funkcja do usuwania tokena (np. podczas wylogowania)
   removeToken(): void {
-    localStorage.removeItem('jwt_token');
+    localStorage.removeItem('user');
   }
 
   // Sprawdzenie, czy użytkownik jest zalogowany (ma token)

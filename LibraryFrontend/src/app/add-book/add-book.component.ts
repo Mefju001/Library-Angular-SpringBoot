@@ -8,7 +8,6 @@ import { Book } from '../Models/book.model';
   styleUrls: ['./add-book.component.css']
 })
 export class AddBookComponent implements OnInit {
-  isbn: string = ''; // ISBN książki (tylko przy edycji)
   isEditing: boolean = false; // Flaga sprawdzająca, czy edytujemy książkę
   book = {
     id:0,
@@ -29,10 +28,11 @@ export class AddBookComponent implements OnInit {
     private myService: MyServiceService,
     private router: Router) {}
     ngOnInit(): void {
-      const isbn = this.route.snapshot.paramMap.get('isbn');
-      if (isbn) {
+      const id = this.route.snapshot.paramMap.get('id'); // Pobranie ID z URL
+      console.log(id);
+      if (id) {
         this.isEditing = true;
-        this.myService.getBookByIsbn(isbn).subscribe(
+        this.myService.getBookById(+id).subscribe(
           (data) => {
             this.book = data;
           },
@@ -42,13 +42,11 @@ export class AddBookComponent implements OnInit {
         );
       }
     }
-    getIsbnFromRoute(): string | null {
-      return null; // tutaj powinno być pobieranie ISBN z URL
-    }
     saveBook(): void {
+      console.log("Dane książki przed zapisem:", this.book);
+    
       if (this.isEditing) {
-        // Jeśli książka już istnieje, aktualizujemy ją
-        this.myService.updateBook(this.book.isbn, this.book).subscribe(
+        this.myService.updateBook(this.book.id, this.book).subscribe(
           (data) => {
             console.log('Książka zaktualizowana:', data);
             alert('Książka została zaktualizowana!');
@@ -73,4 +71,5 @@ export class AddBookComponent implements OnInit {
         );
       }
     }
+       
     }

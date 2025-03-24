@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MyServiceService } from '../Service/my-service.service';
 import { Book } from '../Models/book.model';
+import { User } from '../Models/User.model';
 
 @Component({
   selector: 'app-main-menu',
@@ -33,13 +34,17 @@ export class MainMenuComponent implements OnInit {
     year1: null,
     year2: null,
     sortBy: '',
-    order: ''
+    order: '',
+    genre: ''
   };
 
   constructor(private myService: MyServiceService) {}
 
   ngOnInit(): void {
     this.getAllBooks();
+    this.myService.getData().subscribe(data => {
+      this.items = data; // Przypisujemy pobrane dane do zmiennej
+    });
     this.myService.getData().subscribe(data => {
       this.items = data; // Przypisujemy pobrane dane do zmiennej
     });
@@ -51,7 +56,14 @@ export class MainMenuComponent implements OnInit {
       error => console.error('Błąd podczas pobierania książek:', error)
     );
   }
-
+  
+  getbooksbygenre(genreName:string):void{
+    console.log(genreName)
+    this.myService.getbooksbygenre(genreName).subscribe(
+      data => this.books = data,
+      error => console.error('Błąd podczas pobierania książek:', error)
+    );
+  }
   getBooksByAuthor(): void {
     if (this.filters.name,this.filters.surname) {
       this.myService.getBooksByAuthor(this.filters.name,this.filters.surname).subscribe(
@@ -107,7 +119,9 @@ export class MainMenuComponent implements OnInit {
       this.getBooksByYear();
     } else if (this.filters.sortBy && this.filters.order) {
       this.sortBooks();
-    } else {
+    }else if(this.filters.genre){
+        this.getbooksbygenre(this.filters.genre);
+    }else {
       this.getAllBooks(); // Jeśli nie podano filtrów, pobierz wszystkie książki
     }
   }
@@ -121,11 +135,12 @@ export class MainMenuComponent implements OnInit {
       order: '',
       searchName: '',
       name: '',
-      surname:''
+      surname:'',
+      genre:''
     };
     this.getAllBooks();
   }
-  updateBookDetails(isbn: string): void {
+  updateBookDetails(id: number): void {
     const updatedBook: Book = {
       id: this.book.id,
       title: this.book.title,
@@ -141,7 +156,7 @@ export class MainMenuComponent implements OnInit {
     };
     
   
-    this.myService.updateBook(isbn, updatedBook).subscribe(
+    this.myService.updateBook(id, updatedBook).subscribe(
       data => {
         console.log('Książka została zaktualizowana:', data);
       },
@@ -150,13 +165,11 @@ export class MainMenuComponent implements OnInit {
       }
     );
   }
-  updateBook(isbn: string){
 
-  }
 
   // Funkcja do usuwania książki
-  deleteBook(isbn: string) {
-    this.myService.deleteBook(isbn).subscribe(
+  deleteBook(id: number) {
+    this.myService.deleteBook(id).subscribe(
       data => {
         console.log('Książka została usunięta:', data);
         this.getAllBooks(); // Opcjonalnie, jeśli chcesz odświeżyć listę książek

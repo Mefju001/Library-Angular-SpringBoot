@@ -1,0 +1,22 @@
+<div class="container">
+    <h2>Zmień dane użytkownika</h2>
+    
+    <form (ngSubmit)="onSubmit()">
+    
+      <label for="name">Imię:</label>
+      <input id="name" type="text" [(ngModel)]="userDetails.name" name="name" required />
+      
+      <label for="surname">Nazwisko:</label>
+      <input id="surname" type="text" [(ngModel)]="userDetails.surname" name="surname" required />
+      
+      <label for="email">Email:</label>
+      <input id="email" type="email" [(ngModel)]="userDetails.email" name="email" required />
+      
+      <button type="submit" [disabled]="isSubmitting">Zmień dane</button>
+  
+    </form>
+  
+    <p *ngIf="successMessage"routerLink="/mainmenu" class="success">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+  </div>
+  

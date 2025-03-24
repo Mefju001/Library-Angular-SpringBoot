@@ -1,16 +1,22 @@
 package com.app.library.Security.DTO.Response;
 
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
+
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
     private Long id;
     private String username;
+    private Collection<? extends GrantedAuthority> role;
 
 
-    public JwtResponse(String accessToken, Long id, String username) {
+    public JwtResponse(String accessToken, Long id, String username, Collection<? extends GrantedAuthority> role) {
         this.token = accessToken;
         this.id = id;
         this.username = username;
+        this.role = role;
     }
 
     public String getAccessToken() {
@@ -45,4 +51,11 @@ public class JwtResponse {
         this.username = username;
     }
 
+    public Collection<? extends GrantedAuthority> getRole() {
+        return role;
+    }
+
+    public void setRole(Collection<? extends GrantedAuthority> role) {
+        this.role = role;
+    }
 }

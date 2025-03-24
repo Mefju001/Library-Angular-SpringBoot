@@ -1,5 +1,4 @@
 body {
-    display: flex;
     align-items: center;
     margin: 0;
     font-family: Arial, sans-serif;
@@ -9,6 +8,8 @@ body {
     align-content: center;
 }
 .button-container {
+    display: flex;
+    justify-content: center;
     margin-bottom: 20px; /* odstęp od tabeli */
 }
 
@@ -45,6 +46,7 @@ h1 {
     font-size: 32px; /* Rozmiar czcionki */
 }
 .container {
+
     text-align: center;
     margin-top: 20px;
 }

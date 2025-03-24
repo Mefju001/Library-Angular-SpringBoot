@@ -1,27 +1,4 @@
-<!DOCTYPE html>
-<html lang="pl">
 <body>
-    <!-- Nagłówek strony -->
-    <header class="header">
-        <div class="logo">
-            <a href="#">Świat Książek</a>
-        </div>
-        <nav class="navbar">
-            <a href="#">Strona Główna</a>
-            <a routerLink="/add">Dodaj ksiazke</a>
-            <a>
-                <select [(ngModel)]="selectedItem">
-                    <option value="">Kategorie</option>
-                    <option *ngFor="let item of items" [value]="item.id">{{ item.name }}</option>
-                  </select>
-            </a>
-            <a href="#">Nowości</a>
-            <a routerLink="/library">Biblioteki</a>
-            <a href="#">Promocje</a>
-            <a href="#">Kontakt</a>
-        </nav>
-    </header>
-
     <!-- Sekcja główna -->
     <div class="main-container">
         <!-- Filtry -->
@@ -61,6 +38,14 @@
                 <option value="desc">Malejąco</option>
               </select>
               <br>
+              
+              <div class="dropdown">
+                <button class="dropbtn">Kategorie</button>
+                <div class="dropdown-content">
+                    <button class="dropdown-item" *ngFor="let item of items" [value]="item.id" (click)="getbooksbygenre(item.name)" [(ngModel)]="filters.genre" name="genre">{{ item.name }}</button>
+                </div>
+              </div>
+              <br>
               <button type="submit">Zastosuj filtry</button>
               <button type="button" (click)="resetFilters()">Resetuj</button>
             </form>
@@ -85,11 +70,19 @@
                     <p>Liczba stron: {{ book.pages }}</p>
                     <div class="action-buttons">
                         <form >
-                            <button type="submit"[routerLink]="['/add-book', book.isbn]" class="button">Edytuj</button>
+                            <button type="submit"[routerLink]="['/add-book', book.id]" class="button">Edytuj</button>
                         </form>                        
                         <!-- Jeśli masz formularz do usuwania książki -->
-                        <form (submit)="deleteBook(book.isbn)">
+                        <form (submit)="deleteBook(book.id)">
                             <button type="submit">Usuń książkę</button>
+                        </form>
+                        <form >
+                            <div class="dropdown">
+                                <button type="submit">Dostępność</button>
+                                <div class="dropdown-content">
+                                    <button class="dropdown-item" *ngFor="let item of items" [value]="item.id" (click)="getbooksbygenre(item.name)" [(ngModel)]="filters.genre" name="genre">{{ item.name }}</button>
+                                </div>
+                              </div>
                         </form>
                       </div>
                 </div>
@@ -99,12 +92,5 @@
             </div>
         </section>
     </div>
-
-    <!-- Stopka -->
-    <footer class="footer">
-        <div class="footer-content">
-            <p>© 2025 Świat Książek. Wszystkie prawa zastrzeżone.</p>
-        </div>
-    </footer>
 </body>
-</html>
+

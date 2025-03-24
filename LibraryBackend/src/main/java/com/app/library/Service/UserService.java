@@ -1,5 +1,7 @@
 package com.app.library.Service;
 
+import com.app.library.DTO.Request.UserDetailsRequest;
+import com.app.library.DTO.Request.UserPasswordRequest;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Entity.Role;
 import com.app.library.Entity.User;
@@ -19,13 +21,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -64,6 +64,17 @@ public class UserService {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    public ResponseEntity<User> findbyid(Long id) {
+        try {
+            Optional<User> users = userRepository.findById(id);
+            /*List<BookResponse>bookResponses = books.stream()
+                    .map(bookMapper::toDto)
+                    .toList();*/
+            return users.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     public ResponseEntity<JwtResponse> login(UserRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -75,8 +86,60 @@ public class UserService {
 
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
-                userDetails.getUsername()));
+                userDetails.getUsername(),
+                userDetails.getAuthorities()));
 
+    }
+    @Transactional
+    public ResponseEntity<?> changedetails(Long id, UserDetailsRequest userRequest) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (user.isPresent()) {
+            User existingUser = user.get();
+
+            // Aktualizacja pozostałych danych użytkownika (jeśli są dostarczone)
+            if (!existingUser.getName().equals(userRequest.getName())&&userRequest.getName()!=null) {
+                existingUser.setName(userRequest.getName());
+            }
+            if (!existingUser.getSurname().equals(userRequest.getSurname())&&userRequest.getSurname()!=null) {
+                existingUser.setSurname(userRequest.getSurname());
+            }
+            if (!existingUser.getEmail().equals(userRequest.getEmail())&&userRequest.getEmail()!=null){
+                existingUser.setEmail(userRequest.getEmail());
+            }
+            // Zapisz zmodyfikowanego użytkownika
+            userRepository.save(existingUser);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Użytkownik o podanym ID nie istnieje", HttpStatus.NOT_FOUND);
+        }
+    }
+    @Transactional
+    public ResponseEntity<?> changepassword(Long id, UserPasswordRequest userPasswordRequest) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            User existingUser = user.get();
+
+            // 1. Sprawdzanie, czy stare hasło jest poprawne
+            if (!encoder.matches(userPasswordRequest.getOldpassword(), existingUser.getPassword())) {
+                return new ResponseEntity<>("Stare hasło jest niepoprawne", HttpStatus.BAD_REQUEST);
+            }
+
+            // 2. Sprawdzanie, czy nowe hasło nie jest takie samo jak stare
+            if (userPasswordRequest.getOldpassword().equals(userPasswordRequest.getNewpassword())) {
+                return new ResponseEntity<>("Nowe hasło nie może być takie samo jak stare", HttpStatus.BAD_REQUEST);
+            }
+            if (!userPasswordRequest.getNewpassword().equals(userPasswordRequest.getConfirmpassword())) {
+                return new ResponseEntity<>("Hasła do siebie nie pasuja", HttpStatus.BAD_REQUEST);
+            }
+            // 3. Zaszyfrowanie nowego hasła
+            existingUser.setPassword(encoder.encode(userPasswordRequest.getNewpassword()));
+            userRepository.save(existingUser);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Użytkownik o podanym ID nie istnieje", HttpStatus.NOT_FOUND);
+        }
     }
     @Transactional
     public ResponseEntity<?> registerUp(UserRequest signUpRequest) {
@@ -96,6 +159,16 @@ public class UserService {
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User register!"));
+    }
+    @Transactional
+    public ResponseEntity<Favoritebooks>deleteuser(Long id)
+    {
+        Optional<User> existingdata = userRepository.findById(id);
+        if(existingdata.isPresent()) {
+            userRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @Transactional

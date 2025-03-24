@@ -27,7 +27,12 @@ export class MyServiceService {
         .set('surname', surname)
     });
   }
-  
+
+  getbooksbygenre(genreName:string): Observable<Book[]> {
+    return this.http.get<Book[]>(`${this.apiUrl}/search/genre`,{
+    params: new HttpParams()
+    .set('genre_name', genreName)});
+  }
 
   // Wyszukuje książki po nazwie
   searchBooks(searchName: string): Observable<Book[]> {
@@ -63,9 +68,9 @@ export class MyServiceService {
     });
   }
 
-  // nie ma
+
   getBookById(id: number): Observable<Book> {
-    return this.http.get<Book>(`${this.apiUrl}/id`, {
+    return this.http.get<Book>(`${this.apiUrl}/${id}`, {
       params: new HttpParams().set('id', id)
     });
   }
@@ -75,14 +80,14 @@ export class MyServiceService {
     });
   }
   saveBook(book: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/`, book);
+    return this.http.post(`${this.apiUrl}/add`, book);
   }
-  updateBook(isbn: string, book: Book): Observable<any> {
-      const params = new HttpParams().set('isbn', isbn); // tworzymy parametry
-      return this.http.put(`${this.apiUrl}/`, book, { params: params });
+  updateBook(id: number, book: Book): Observable<any> {
+      return this.http.put(`${this.apiUrl}/update/${id}`, book);
+      params: new HttpParams().set('id', id)
   }
   
-  deleteBook(isbn: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${isbn}`);
+  deleteBook(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/delete/${id}`);
   }
 }

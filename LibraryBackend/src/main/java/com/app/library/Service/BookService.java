@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -60,6 +61,16 @@ public class BookService {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    public ResponseEntity<BookResponse> findbyid(Integer id) {
+        try {
+            Optional<Book> books = bookRepository.findById(id);
+            BookResponse bookResponse = books.map(bookMapper::toDto).orElseThrow();
+            return new ResponseEntity<>(bookResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public ResponseEntity<List<GenreResponse>> findallgenres() {
         try {
             List<Genre> genres = genreRepository.findAll();
@@ -188,13 +199,13 @@ public class BookService {
         }
     }
     @Transactional
-    public ResponseEntity<?> updateBook(BookRequest bookRequest){
+    public ResponseEntity<?> updateBook(Integer id,BookRequest bookRequest){
         // Sprawdzamy, czy książka istnieje w bazie
-        Book existingBook = bookRepository.findBookByIsbnIs(bookRequest.getIsbn());
-        if (existingBook == null) {
+        Optional<Book> optionalBook = bookRepository.findById(id);
+        if (optionalBook.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
-
+        Book existingBook = bookRepository.findById(id).get();
 
         // Aktualizujemy dane książki
         existingBook.setTitle(bookRequest.getTitle());

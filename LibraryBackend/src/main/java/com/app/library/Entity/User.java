@@ -25,8 +25,6 @@ public class User {
     private Set<Role> roles = new HashSet<>();
     @Column(name = "name")
     private String name;
-
-
     @Column(name = "surname")
     private String surname;
     @Column(name = "email")
