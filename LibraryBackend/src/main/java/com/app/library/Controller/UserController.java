@@ -22,17 +22,17 @@ public class UserController {
         this.userService = userService;
     }
     @GetMapping("/")
-    public ResponseEntity<List<Favoritebooks>> listoffavoritebooks() {
-        return userService.findall();
+    public ResponseEntity<List<Favoritebooks>> listoffavoritebooksByUserId(@RequestParam Long userId) {
+        return userService.findall(userId);
     }
     @GetMapping("/{id}")
     public ResponseEntity<User> userfindbyid(@PathVariable Long id) {
         return userService.findbyid(id);
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<Favoritebooks> addfavoritebooks(@RequestBody Favoritebooks favoritebooks) {
-        return userService.addfavoritebooks(favoritebooks);
+    public ResponseEntity<Favoritebooks> addfavoritebooks(@RequestParam Integer bookId,@RequestParam Long userId ) {
+        return userService.addfavoritebooks(bookId,userId);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update")

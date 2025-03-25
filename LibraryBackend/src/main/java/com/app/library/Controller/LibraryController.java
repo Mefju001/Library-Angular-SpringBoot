@@ -55,10 +55,10 @@ public class LibraryController {
         return libraryService.addbooktolibrary(libraryBook);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/")
-    public ResponseEntity<Library>updatelibrary(@RequestBody Library library)
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Library>updatelibrary(@PathVariable Integer id,@RequestBody Library library)
     {
-        return libraryService.updatelibrary(library);
+        return libraryService.updatelibrary(id,library);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/updatebooksinlibrary")

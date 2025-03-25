@@ -2,9 +2,11 @@ package com.app.library.Service;
 
 import com.app.library.DTO.Request.UserDetailsRequest;
 import com.app.library.DTO.Request.UserPasswordRequest;
+import com.app.library.Entity.Book;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Entity.Role;
 import com.app.library.Entity.User;
+import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.FavoritebooksRepository;
 import com.app.library.Repository.RoleRepository;
 import com.app.library.Repository.UserRepository;
@@ -24,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -35,6 +38,7 @@ public class UserService {
 
 
     private final UserRepository userRepository;
+    private final BookRepository bookRepository;
 
 
     private final RoleRepository roleRepository;
@@ -45,17 +49,18 @@ public class UserService {
 
     private final JwtUtils jwtUtils;
     @Autowired
-    public UserService(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public UserService(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.favoritebooksRepository = favoritebooksRepository;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.bookRepository = bookRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
     }
-    public ResponseEntity<List<Favoritebooks>> findall() {
+    public ResponseEntity<List<Favoritebooks>> findall(Long userId) {
         try {
-            List<Favoritebooks> favoritebooks = favoritebooksRepository.findAll();
+            List<Favoritebooks> favoritebooks = favoritebooksRepository.findFavoritebooksByUser_Id(userId);
             /*List<BookResponse>bookResponses = books.stream()
                     .map(bookMapper::toDto)
                     .toList();*/
@@ -172,10 +177,24 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<Favoritebooks>addfavoritebooks(Favoritebooks favoritebooks)
+    public ResponseEntity<Favoritebooks>addfavoritebooks(Integer bookId, Long userId)
     {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+
+        boolean exists = favoritebooksRepository.existsByBookAndUser(book, user);
+        if (exists) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        Favoritebooks favoritebooks = new Favoritebooks(book,user);
         favoritebooksRepository.save(favoritebooks);
-        return new ResponseEntity<>(favoritebooks,HttpStatus.CREATED);
+
+        return new ResponseEntity<>(favoritebooks, HttpStatus.CREATED);
     }
     @Transactional
     public ResponseEntity<Favoritebooks>updatefavoritebooks(Favoritebooks favoritebooks)

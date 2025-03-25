@@ -74,9 +74,9 @@ public class LibraryService {
         return new ResponseEntity<>(LibraryBook,HttpStatus.CREATED);
     }
     @Transactional
-    public ResponseEntity<Library>updatelibrary(Library library)
+    public ResponseEntity<Library>updatelibrary(Integer id,Library library)
     {
-        Optional<Library> existinglibrary = libraryRepository.findById(library.getId());
+        Optional<Library> existinglibrary = libraryRepository.findById(id);
         if(existinglibrary.isPresent()) {
             Library updatedlibrary = existinglibrary.get();
             updatedlibrary.setName(library.getName());

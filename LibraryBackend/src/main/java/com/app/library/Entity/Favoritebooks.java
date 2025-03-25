@@ -3,8 +3,8 @@ package com.app.library.Entity;
 import jakarta.persistence.*;
 @Entity
 @Table(name = "favoritebooks_user")
-public class Favoritebooks {
-
+public class Favoritebooks
+{
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "id")
@@ -14,7 +14,15 @@ public class Favoritebooks {
         private Book book;
         @ManyToOne
         @JoinColumn(name = "user_id", nullable = false)
-        private User User;
+        private User user;
+
+        public Favoritebooks() {
+        }
+
+        public Favoritebooks(Book book, User user) {
+                this.book = book;
+                this.user = user;
+        }
 
         public Integer getId() {
                 return id;
@@ -32,11 +40,16 @@ public class Favoritebooks {
                 this.book = book;
         }
 
-        public com.app.library.Entity.User getUser() {
-                return User;
+        public User getUser() {
+                return user;
         }
 
-        public void setUser(com.app.library.Entity.User user) {
-                User = user;
+        public void setUser(User user) {
+                this.user = user;
+        }
+        public void setFavoriteBook(Book book, User user)
+        {
+                setUser(user);
+                setBook(book);
         }
 }

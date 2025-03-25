@@ -11,7 +11,10 @@
     <div class="action-buttons">
         <form >
             <button type="submit"[routerLink]="['/addbook', book.id]" class="button">Edytuj</button>
-        </form>                        
+        </form>               
+        <form (submit)="likedBook(book.id,userId)" >
+            <button type="submit" class="button">Polub</button>
+        </form>          
         <!-- Jeśli masz formularz do usuwania książki -->
         <form (submit)="deleteBook(book.id)">
             <button type="submit">Usuń książkę</button>

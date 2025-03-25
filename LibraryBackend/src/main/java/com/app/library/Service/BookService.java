@@ -31,7 +31,6 @@ public class BookService {
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
 
-
     private final BookRepository bookRepository;
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;
@@ -206,7 +205,6 @@ public class BookService {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
         Book existingBook = bookRepository.findById(id).get();
-
         // Aktualizujemy dane książki
         existingBook.setTitle(bookRequest.getTitle());
         existingBook.setPublicationYear(bookRequest.getPublicationYear());

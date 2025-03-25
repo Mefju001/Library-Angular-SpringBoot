@@ -58,7 +58,7 @@ export class AddLibraryComponent implements OnInit{
         (data)=>{
           console.log('Książka zaktualizowana:', data);
           alert('Książka została zaktualizowana!');
-          this.router.navigate(['/books']);
+          this.router.navigate(['/library']);
         },          
         (error) => {
           console.error('Błąd podczas aktualizacji książki:', error);
