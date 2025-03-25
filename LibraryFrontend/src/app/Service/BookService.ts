@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Book } from '../Models/book.model'; // Upewnij się, że masz model Book
+import { Book,PaginatedResponse  } from '../Models/book.model'; // Upewnij się, że masz model Book
 interface Genre {
   genreName: string;
 }
@@ -13,8 +13,8 @@ export class MyServiceService {
 
   constructor(private http: HttpClient) {}
   // Pobiera wszystkie książki
-  getAllBooks(): Observable<Book[]> {
-    return this.http.get<Book[]>(`${this.apiUrl}/`);
+  getAllBooks(page: number, size: number): Observable<PaginatedResponse<Book>> {
+    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/?page=${page}&size=${size}`);
   }
   //nie ma
   getData(): Observable<any[]> {

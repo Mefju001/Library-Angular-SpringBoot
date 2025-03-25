@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MyServiceService } from '../../Service/BookService';
 import { Book } from '../../Models/book.model';
 import { User } from '../../Models/User.model';
+import { UserService } from 'src/app/Service/UserService';
 
 @Component({
   selector: 'app-main-menu',
@@ -10,6 +11,9 @@ import { User } from '../../Models/User.model';
 })
 export class MainMenuComponent implements OnInit {
   books: Book[] = [];
+  currentPage = 0;
+  totalPages = 0;
+  pageSize = 10;
   items: any[] = []; // Tablica na pobrane dane
   selectedItem: string = ''; // Wybrana wartość
   book = {
@@ -38,7 +42,7 @@ export class MainMenuComponent implements OnInit {
     genre: ''
   };
 
-  constructor(private myService: MyServiceService) {}
+  constructor(private myService: MyServiceService,private userService: UserService) {}
 
   ngOnInit(): void {
     this.getAllBooks();
@@ -51,12 +55,25 @@ export class MainMenuComponent implements OnInit {
   }
   
   getAllBooks(): void {
-    this.myService.getAllBooks().subscribe(
-      data => this.books = data,
-      error => console.error('Błąd podczas pobierania książek:', error)
-    );
+    this.myService.getAllBooks(this.currentPage, this.pageSize).subscribe((response) => {
+      this.books = response.content;
+      this.totalPages = response.totalPages;
+      
+    },error => console.error('Błąd podczas pobierania książek:', error));
   }
-  
+  nextPage() {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.getAllBooks();
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.getAllBooks();
+    }
+  }
   getbooksbygenre(genreName:string):void{
     console.log(genreName)
     this.myService.getbooksbygenre(genreName).subscribe(

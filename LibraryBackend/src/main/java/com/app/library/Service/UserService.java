@@ -1,7 +1,9 @@
 package com.app.library.Service;
 
+import com.app.library.DTO.Mapper.FavoriteBooksMapper;
 import com.app.library.DTO.Request.UserDetailsRequest;
 import com.app.library.DTO.Request.UserPasswordRequest;
+import com.app.library.DTO.Response.FavoriteBooksResponse;
 import com.app.library.Entity.Book;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Entity.Role;
@@ -39,32 +41,30 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
-
-
     private final RoleRepository roleRepository;
-
-
+    private final FavoriteBooksMapper favoriteBooksMapper;
     private final PasswordEncoder encoder;
 
 
     private final JwtUtils jwtUtils;
     @Autowired
-    public UserService(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public UserService(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, FavoriteBooksMapper favoriteBooksMapper, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.favoritebooksRepository = favoritebooksRepository;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.roleRepository = roleRepository;
+        this.favoriteBooksMapper = favoriteBooksMapper;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
     }
-    public ResponseEntity<List<Favoritebooks>> findall(Long userId) {
+    public ResponseEntity<List<FavoriteBooksResponse>> findall(Long userId) {
         try {
             List<Favoritebooks> favoritebooks = favoritebooksRepository.findFavoritebooksByUser_Id(userId);
-            /*List<BookResponse>bookResponses = books.stream()
-                    .map(bookMapper::toDto)
-                    .toList();*/
-            return new ResponseEntity<>(favoritebooks, HttpStatus.OK);
+            List<FavoriteBooksResponse>favoriteBooksResponses = favoritebooks.stream()
+                    .map(favoriteBooksMapper::toDto)
+                    .toList();
+            return new ResponseEntity<>(favoriteBooksResponses, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

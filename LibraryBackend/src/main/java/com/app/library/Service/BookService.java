@@ -16,6 +16,9 @@ import com.app.library.Repository.PublisherRepository;
 import com.app.library.Security.DTO.Response.MessageResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -49,12 +52,11 @@ public class BookService {
     }
 
 
-    public ResponseEntity<List<BookResponse>> findall() {
+    public ResponseEntity<Page<BookResponse>> findall(int page, int size) {
         try {
-            List<Book> books = bookRepository.findAll();
-            List<BookResponse>bookResponses = books.stream()
-                                                    .map(bookMapper::toDto)
-                                                    .toList();
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Book> books = bookRepository.findAll(pageable);
+            Page<BookResponse>bookResponses = books.map(bookMapper::toDto);
             return new ResponseEntity<>(bookResponses, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

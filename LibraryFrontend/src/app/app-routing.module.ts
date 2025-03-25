@@ -9,6 +9,7 @@ import { AddBookComponent } from './FormPage/add-book/add-book.component';
 import { AddLibraryComponent } from './FormPage/add-library/add-library.component';
 import { FormdetailsComponent } from './FormPage/formdetails/formdetails.component';
 import { FormpasswordComponent } from './FormPage/formpassword/formpassword.component';
+import { LikedBooksComponent } from './Page/liked-books/liked-books.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -17,6 +18,8 @@ const routes: Routes = [
 
   { path: 'addbook', component: AddBookComponent },
   { path: 'addbook/:id', component: AddBookComponent },
+
+  { path: 'likedBooks', component: LikedBooksComponent },
 
   { path: 'addlibrary', component: AddLibraryComponent },
   { path: 'addlibrary/:id', component: AddLibraryComponent },

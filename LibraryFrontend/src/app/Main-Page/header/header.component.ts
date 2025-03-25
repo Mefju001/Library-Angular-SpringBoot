@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/Service/Auth/auth.service';
 import { UserService } from 'src/app/Service/UserService';
 import { Router } from '@angular/router';
 import { MainMenuComponent } from 'src/app/Page/main-menu/main-menu.component';
+import { Book } from 'src/app/Models/book.model';
 
 @Component({
   selector: 'app-header',
@@ -14,6 +15,7 @@ export class HeaderComponent implements OnInit{
   id: number = 0;
   items: any[] = []; // Tablica na pobrane dane
   selectedItem: string = '';
+  books: Book[] = [];
   username: string | null = null;
   constructor(private myService: MyServiceService,private authService: AuthService,private router: Router,private userService: UserService) {}
   ngOnInit(): void {
@@ -64,3 +66,4 @@ export class HeaderComponent implements OnInit{
   }
 
 }
+

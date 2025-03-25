@@ -2,6 +2,7 @@ package com.app.library.Controller;
 
 import com.app.library.DTO.Request.UserDetailsRequest;
 import com.app.library.DTO.Request.UserPasswordRequest;
+import com.app.library.DTO.Response.FavoriteBooksResponse;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Entity.User;
 import com.app.library.Service.UserService;
@@ -22,7 +23,7 @@ public class UserController {
         this.userService = userService;
     }
     @GetMapping("/")
-    public ResponseEntity<List<Favoritebooks>> listoffavoritebooksByUserId(@RequestParam Long userId) {
+    public ResponseEntity<List<FavoriteBooksResponse>> listoffavoritebooksByUserId(@RequestParam Long userId) {
         return userService.findall(userId);
     }
     @GetMapping("/{id}")

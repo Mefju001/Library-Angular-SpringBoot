@@ -3,7 +3,7 @@
         <a href="#">Książkowy świat</a>
     </div>
     <nav class="navbar">
-        <a href="#">Strona Główna</a>
+        <a routerLink="/MainMenu">Strona Główna</a>
         <a routerLink="/addbook">Dodaj ksiazke</a>
         
         <a href="#">Nowości</a>
@@ -12,7 +12,7 @@
         <a href="#">Rekomendacja</a>
         <a href="#">Zapowiedzi</a>
         <a href="#">Kontakt</a>
-        <a href="#">Polubione</a>
+        <a routerLink="/likedBooks">Polubione</a>
         <div class="dropdown">
             <button class="dropbtn">Zalogowany jako: <strong>{{ username }}</strong></button>
             <div class="dropdown-content">

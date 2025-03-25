@@ -32,8 +32,8 @@ export class UserService {
     // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.post(`${this.apiUrl}/add?bookId=${bookId}&userId=${userId}`,null);
   }
-  getLikedBook(): Observable<any> {
+  getLikedBook(userId:number): Observable<any> {
     // Wywołanie backendu, który zwróci dane w formacie Book[]
-    return this.http.get(`${this.apiUrl}/`);
+    return this.http.get(`${this.apiUrl}/?userId=${userId}`);
   }
   }

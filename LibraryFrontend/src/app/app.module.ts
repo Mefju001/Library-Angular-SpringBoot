@@ -15,6 +15,7 @@ import { FormdetailsComponent } from './FormPage/formdetails/formdetails.compone
 import { FormpasswordComponent } from './FormPage/formpassword/formpassword.component';
 import { BookDetailsComponent } from './Page/book-details/book-details.component';
 import { AddLibraryComponent } from './FormPage/add-library/add-library.component';
+import { LikedBooksComponent } from './Page/liked-books/liked-books.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { AddLibraryComponent } from './FormPage/add-library/add-library.componen
     FormdetailsComponent,
     FormpasswordComponent,
     BookDetailsComponent,
-    AddLibraryComponent
+    AddLibraryComponent,
+    LikedBooksComponent
   ],
   imports: [
     BrowserModule,

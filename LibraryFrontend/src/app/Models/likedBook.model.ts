@@ -1,5 +1,4 @@
-// book.model.ts
-export interface Book {
+export interface likedBook {
     id: number;
     title: string;
     authorName: string;
@@ -12,10 +11,3 @@ export interface Book {
     pages: number;
     price: number;
 }
-export interface PaginatedResponse<T> {
-    content: T[];
-    totalElements: number;
-    totalPages: number;
-    size: number;
-    number: number;
-  }
