@@ -24,42 +24,46 @@ public class UserController {
     }
     @GetMapping("/")
     public ResponseEntity<List<FavoriteBooksResponse>> listoffavoritebooksByUserId(@RequestParam Long userId) {
-        return userService.findall(userId);
+        return ResponseEntity.ok(userService.findall(userId));
     }
     @GetMapping("/{id}")
     public ResponseEntity<User> userfindbyid(@PathVariable Long id) {
-        return userService.findbyid(id);
+        return ResponseEntity.ok(userService.findbyid(id));
     }
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<Favoritebooks> addfavoritebooks(@RequestParam Integer bookId,@RequestParam Long userId ) {
-        return userService.addfavoritebooks(bookId,userId);
+        return ResponseEntity.ok(userService.addfavoritebooks(bookId,userId));
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update")
     public ResponseEntity<Favoritebooks> updatefavoritebooks(@RequestBody Favoritebooks favoritebooks) {
-        return userService.updatefavoritebooks(favoritebooks);
+        return ResponseEntity.ok(userService.updatefavoritebooks(favoritebooks));
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/favoritebook")
-    public ResponseEntity<Favoritebooks> deletefavoritebooks(@RequestParam Integer id) {
-        return userService.deletefavoritebooks(id);
+    public ResponseEntity<?> deletefavoritebooks(@RequestParam Integer id) {
+        userService.deletefavoritebooks(id);
+        return ResponseEntity.ok("Usunieto");
     }
 
     //user
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Favoritebooks> deleteuser(@PathVariable Long id) {
-        return userService.deleteuser(id);
+    public ResponseEntity<?> deleteuser(@PathVariable Long id) {
+        userService.deleteuser(id);
+        return ResponseEntity.ok("Usunieto");
     }
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/change/details/{id}")
     public ResponseEntity<?> changedetails(@PathVariable Long id, @RequestBody UserDetailsRequest userDetailsRequest) {
-        return userService.changedetails(id, userDetailsRequest);
+        userService.changedetails(id, userDetailsRequest);
+        return ResponseEntity.ok("Zmieniono");
     }
     @PutMapping("/change/password/{id}")
     public ResponseEntity<?> changepassword(@PathVariable Long id, @RequestBody UserPasswordRequest userPasswordRequest) {
-        return userService.changepassword(id,userPasswordRequest);
+        userService.changepassword(id,userPasswordRequest);
+        return ResponseEntity.ok("Zmieniono");
     }
 
 }

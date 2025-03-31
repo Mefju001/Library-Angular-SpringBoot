@@ -5,6 +5,7 @@ import com.app.library.DTO.Response.LibraryResponse;
 import com.app.library.Entity.Library;
 import com.app.library.Entity.LibraryBook;
 import com.app.library.Service.LibraryService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,57 +26,71 @@ public class LibraryController {
     @GetMapping("/")
     public ResponseEntity<List<LibraryResponse>> listoflibraries()
     {
-        return libraryService.findall();
+        List<LibraryResponse> libraryResponses = libraryService.findall();
+        return ResponseEntity.ok(libraryResponses);
     }
     @GetMapping("/{id}")
     public ResponseEntity<LibraryResponse> listoflibrarybyId(@PathVariable Integer id)
     {
-        return libraryService.findbyid(id);
+        LibraryResponse libraryResponse = libraryService.findbyid(id);
+        return ResponseEntity.ok(libraryResponse);
     }
     @GetMapping("/search/name{name}")
     public ResponseEntity<List<LibraryResponse>> listoflibrariesbyname(@PathVariable String name)
     {
-        return libraryService.findlibrarybyname(name);
+        List<LibraryResponse> libraryResponses = libraryService.findlibrarybyname(name);
+        return ResponseEntity.ok(libraryResponses);
     }
     @GetMapping("/booksinlibrary")
     public ResponseEntity<List<LibraryBookResponse>> listofbooksinlibraries()
     {
-        return libraryService.findallbookandlibrary();
+        List<LibraryBookResponse> libraryBookResponses = libraryService.findallbookandlibrary();
+        return ResponseEntity.ok(libraryBookResponses);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addlibrary")
     public ResponseEntity<Library>addlibrary(@RequestBody Library library)
     {
-        return libraryService.addlibrary(library);
+        return ResponseEntity.ok(libraryService.addlibrary(library));
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addbooktolibrary")
     public ResponseEntity<LibraryBook>addbooktolibrary(@RequestBody LibraryBook libraryBook)
     {
-        return libraryService.addbooktolibrary(libraryBook);
+        return ResponseEntity.ok(libraryService.addbooktolibrary(libraryBook));
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Library>updatelibrary(@PathVariable Integer id,@RequestBody Library library)
     {
-        return libraryService.updatelibrary(id,library);
+        return ResponseEntity.ok(libraryService.updatelibrary(id,library));
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/updatebooksinlibrary")
     public ResponseEntity<LibraryBook>updatebooksinlibrary(@RequestBody LibraryBook libraryBook)
     {
-        return libraryService.updatebookandlibrary(libraryBook);
+        return ResponseEntity.ok(libraryService.updatebookandlibrary(libraryBook));
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Library>deletelibrary(@PathVariable Integer id)
+    public ResponseEntity<?>deletelibrary(@PathVariable Integer id)
     {
-        return libraryService.deletelibrary(id);
+        try {
+            libraryService.deletelibrary(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/deletebookandlibrary")
     public ResponseEntity<LibraryBook>deletebookandlibrary(@RequestParam Integer id)
     {
-        return libraryService.deletebookandlibrary(id);
+        try {
+            libraryService.deletebookandlibrary(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

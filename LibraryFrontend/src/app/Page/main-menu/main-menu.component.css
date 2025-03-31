@@ -9,6 +9,7 @@
     gap: 20px;
     padding: 40px 20px;
     width: 100%;
+    
 }
 
 /* Filtry */
@@ -19,7 +20,46 @@
     border-radius: 8px;
     border: 1px solid #ddd;
 }
-
+/* Stylowanie formularza */
+.filtry {
+    display: flex; /* Ustawienie układu na flex */
+    flex-direction: column; /* Elementy w formularzu będą ustawione w kolumnie */
+    margin: 20px; /* Odstęp od innych elementów */
+    padding: 15px; /* Wewnętrzne odstępy formularza */
+    border: 1px solid #ccc; /* Obramowanie formularza */
+    border-radius: 8px; /* Zaokrąglone rogi formularza */
+    background-color: #f9f9f9; /* Kolor tła formularza */
+  }
+  
+  /* Stylowanie przycisku */
+  .filtry button {
+    background-color: blue;
+    color: white; /* Kolor tekstu */
+    padding: 10px 20px; /* Wewnętrzne odstępy przycisku */
+    border: none; /* Usunięcie obramowania */
+    border-radius: 5px; /* Zaokrąglone rogi przycisku */
+    cursor: pointer; /* Kursor wskazujący, że element jest klikany */
+  }
+  
+  .filtry button:hover {
+    background-color: grey; /* Zmiana koloru tła przycisku na hover */
+  }
+  
+  /* Stylowanie pól formularza */
+  .filtry input,
+  .filtry select {
+    padding: 10px; /* Wewnętrzne odstępy */
+    border: 1px solid #ccc; /* Obramowanie */
+    border-radius: 5px; /* Zaokrąglone rogi */
+    width: 100%; /* Szerokość pól na 100% */
+    box-sizing: border-box; /* Zmienia sposób obliczania szerokości, by uwzględniała padding */
+  }
+  
+  .filtry input:focus,
+  .filtry select:focus {
+    border-color: blue; /* Zmiana koloru obramowania na zielony po kliknięciu */
+  }
+  
 .sidebar h2 {
     font-size: 24px;
     margin-bottom: 20px;
@@ -67,6 +107,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    flex-direction: column;
 }
 
 .main-content h1 {
@@ -162,6 +203,7 @@
 }
 
 .dropdown-item {
+    color: black;
     background: none;
     border: none;
     padding: 10px;
@@ -171,6 +213,7 @@
 }
 
 .dropdown-item:hover {
+    color: red;
     background-color: #f1f1f1;
 }
 

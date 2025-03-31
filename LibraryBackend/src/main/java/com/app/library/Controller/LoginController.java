@@ -1,6 +1,7 @@
 package com.app.library.Controller;
 
 import com.app.library.Security.DTO.Request.UserRequest;
+import com.app.library.Security.DTO.Response.JwtResponse;
 import com.app.library.Service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,13 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody UserRequest userRequest) {
-
-        return userService.login(userRequest);
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody UserRequest userRequest) {
+        return ResponseEntity.ok(userService.login(userRequest));
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest userRequest) {
-        return userService.registerUp(userRequest);
+        userService.registerUp(userRequest);
+        return ResponseEntity.ok("Użytkownik został zarejestrowany!");
     }
 }

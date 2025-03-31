@@ -12,11 +12,12 @@ import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer> {
     Page<Book> findAll(Pageable pageable);
-    List<Book>findBooksByTitleContaining(String title);
+    Page<Book>findBooksByTitleContaining(String title,Pageable pageable);
     Book findBookByIsbnIs(Long isbn);
-    List<Book>findBooksByAuthor_NameOrAuthor_Surname(String name, String Surname);
-    List<Book>findBooksByPriceIsBetween(float minprice, float maxprice);
-    List<Book>findBooksByGenreName(String name);
-    List<Book>findBooksByPublisherName(String name);
-    List<Book>findBooksByPublicationYearBetween(Integer year1, Integer year2);
+    Page<Book>findBooksByAuthor_NameOrAuthor_Surname(String name, String Surname,Pageable pageable);
+    Page<Book>findBooksByPriceIsBetween(float minprice, float maxprice,Pageable pageable);
+    Page<Book>findBooksByGenreName(String name,Pageable pageable);
+    Page<Book>findBooksByPublisherName(String name,Pageable pageable);
+    Page<Book>findBooksByPublicationYearBetween(Integer year1, Integer year2,Pageable pageable);
+
 }

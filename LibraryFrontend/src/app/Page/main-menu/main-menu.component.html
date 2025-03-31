@@ -4,7 +4,7 @@
         <!-- Filtry -->
         <aside class="sidebar">
             <h2>Filtry</h2>
-            <form (submit)="applyFilters()">
+            <form class ="filtry" (submit)="applyFilters()">
               <label>Wyszukaj:</label>
               <input type="text" [(ngModel)]="filters.searchName" name="searchName">
               <label>Autor</label><br>
@@ -38,7 +38,6 @@
                 <option value="desc">Malejąco</option>
               </select>
               <br>
-              
               <div class="dropdown">
                 <button class="dropbtn">Kategorie</button>
                 <div class="dropdown-content">

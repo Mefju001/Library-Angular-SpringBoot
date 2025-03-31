@@ -14,23 +14,23 @@ import com.app.library.Repository.RoleRepository;
 import com.app.library.Repository.UserRepository;
 import com.app.library.Security.DTO.Request.UserRequest;
 import com.app.library.Security.DTO.Response.JwtResponse;
-import com.app.library.Security.DTO.Response.MessageResponse;
 import com.app.library.Security.JWT.JwtUtils;
 import com.app.library.Security.Service.UserDetailsImpl;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -58,29 +58,16 @@ public class UserService {
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
     }
-    public ResponseEntity<List<FavoriteBooksResponse>> findall(Long userId) {
-        try {
+    public List<FavoriteBooksResponse> findall(Long userId) {
             List<Favoritebooks> favoritebooks = favoritebooksRepository.findFavoritebooksByUser_Id(userId);
-            List<FavoriteBooksResponse>favoriteBooksResponses = favoritebooks.stream()
+        return favoritebooks.stream()
                     .map(favoriteBooksMapper::toDto)
                     .toList();
-            return new ResponseEntity<>(favoriteBooksResponses, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
-    public ResponseEntity<User> findbyid(Long id) {
-        try {
-            Optional<User> users = userRepository.findById(id);
-            /*List<BookResponse>bookResponses = books.stream()
-                    .map(bookMapper::toDto)
-                    .toList();*/
-            return users.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public User findbyid(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
-    public ResponseEntity<JwtResponse> login(UserRequest loginRequest) {
+    public JwtResponse login(UserRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -89,95 +76,81 @@ public class UserService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
+        return new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
-                userDetails.getAuthorities()));
+                userDetails.getAuthorities());
 
     }
     @Transactional
-    public ResponseEntity<?> changedetails(Long id, UserDetailsRequest userRequest) {
-        Optional<User> user = userRepository.findById(id);
+    public void changedetails(Long id, UserDetailsRequest userRequest) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Użytkownik o podanym ID nie istnieje"));
 
-        if (user.isPresent()) {
-            User existingUser = user.get();
-
-            // Aktualizacja pozostałych danych użytkownika (jeśli są dostarczone)
-            if (!existingUser.getName().equals(userRequest.getName())&&userRequest.getName()!=null) {
-                existingUser.setName(userRequest.getName());
-            }
-            if (!existingUser.getSurname().equals(userRequest.getSurname())&&userRequest.getSurname()!=null) {
-                existingUser.setSurname(userRequest.getSurname());
-            }
-            if (!existingUser.getEmail().equals(userRequest.getEmail())&&userRequest.getEmail()!=null){
-                existingUser.setEmail(userRequest.getEmail());
-            }
-            // Zapisz zmodyfikowanego użytkownika
-            userRepository.save(existingUser);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Użytkownik o podanym ID nie istnieje", HttpStatus.NOT_FOUND);
+        if (userRequest.getName() != null && !existingUser.getName().equals(userRequest.getName())) {
+            existingUser.setName(userRequest.getName());
         }
-    }
-    @Transactional
-    public ResponseEntity<?> changepassword(Long id, UserPasswordRequest userPasswordRequest) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            User existingUser = user.get();
-
-            // 1. Sprawdzanie, czy stare hasło jest poprawne
-            if (!encoder.matches(userPasswordRequest.getOldpassword(), existingUser.getPassword())) {
-                return new ResponseEntity<>("Stare hasło jest niepoprawne", HttpStatus.BAD_REQUEST);
-            }
-
-            // 2. Sprawdzanie, czy nowe hasło nie jest takie samo jak stare
-            if (userPasswordRequest.getOldpassword().equals(userPasswordRequest.getNewpassword())) {
-                return new ResponseEntity<>("Nowe hasło nie może być takie samo jak stare", HttpStatus.BAD_REQUEST);
-            }
-            if (!userPasswordRequest.getNewpassword().equals(userPasswordRequest.getConfirmpassword())) {
-                return new ResponseEntity<>("Hasła do siebie nie pasuja", HttpStatus.BAD_REQUEST);
-            }
-            // 3. Zaszyfrowanie nowego hasła
-            existingUser.setPassword(encoder.encode(userPasswordRequest.getNewpassword()));
-            userRepository.save(existingUser);
-
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Użytkownik o podanym ID nie istnieje", HttpStatus.NOT_FOUND);
+        if (userRequest.getSurname() != null && !existingUser.getSurname().equals(userRequest.getSurname())) {
+            existingUser.setSurname(userRequest.getSurname());
         }
+        if (userRequest.getEmail() != null && !existingUser.getEmail().equals(userRequest.getEmail())) {
+            existingUser.setEmail(userRequest.getEmail());
+        }
+
+        userRepository.save(existingUser);
     }
     @Transactional
-    public ResponseEntity<?> registerUp(UserRequest signUpRequest) {
+    public void changepassword(Long id, UserPasswordRequest userPasswordRequest) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Użytkownik o podanym ID nie istnieje"));
+
+        // 1. Sprawdzanie, czy stare hasło jest poprawne
+        if (!encoder.matches(userPasswordRequest.getOldpassword(), existingUser.getPassword())) {
+            throw new IllegalArgumentException("Stare hasło jest niepoprawne");
+        }
+
+        // 2. Sprawdzanie, czy nowe hasło nie jest takie samo jak stare
+        if (userPasswordRequest.getOldpassword().equals(userPasswordRequest.getNewpassword())) {
+            throw new IllegalArgumentException("Nowe hasło nie może być takie samo jak stare");
+        }
+
+        // 3. Sprawdzanie, czy nowe hasła pasują do siebie
+        if (!userPasswordRequest.getNewpassword().equals(userPasswordRequest.getConfirmpassword())) {
+            throw new IllegalArgumentException("Hasła do siebie nie pasują");
+        }
+
+        // 4. Zaszyfrowanie nowego hasła
+        existingUser.setPassword(encoder.encode(userPasswordRequest.getNewpassword()));
+        userRepository.save(existingUser);
+    }
+    @Transactional
+    public void registerUp(UserRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Username is taken"));
+            throw new IllegalArgumentException("Username is taken");
         }
 
         User user = new User(signUpRequest.getUsername(),
                 encoder.encode(signUpRequest.getPassword()));
 
         Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findByRola("ROLE_USER").orElseThrow());
+        roles.add(roleRepository.findByRola("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("Role not found")));
 
         user.setRoles(roles);
         userRepository.save(user);
-
-        return ResponseEntity.ok(new MessageResponse("User register!"));
     }
     @Transactional
-    public ResponseEntity<Favoritebooks>deleteuser(Long id)
+    public void deleteuser(Long id)
     {
-        Optional<User> existingdata = userRepository.findById(id);
-        if(existingdata.isPresent()) {
-            userRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+        Optional<User> existingUser = userRepository.findById(id);
+        if (existingUser.isEmpty()) {
+            throw new IllegalArgumentException("User with ID " + id + " not found.");
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        userRepository.deleteById(id);
     }
 
     @Transactional
-    public ResponseEntity<Favoritebooks>addfavoritebooks(Integer bookId, Long userId)
+    public Favoritebooks addfavoritebooks(Integer bookId, Long userId)
     {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
@@ -188,35 +161,31 @@ public class UserService {
 
         boolean exists = favoritebooksRepository.existsByBookAndUser(book, user);
         if (exists) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            throw new IllegalArgumentException("is exist");
         }
 
         Favoritebooks favoritebooks = new Favoritebooks(book,user);
         favoritebooksRepository.save(favoritebooks);
 
-        return new ResponseEntity<>(favoritebooks, HttpStatus.CREATED);
+        return favoritebooks;
     }
     @Transactional
-    public ResponseEntity<Favoritebooks>updatefavoritebooks(Favoritebooks favoritebooks)
+    public Favoritebooks updatefavoritebooks(Favoritebooks favoritebooks)
     {
-        Optional<Favoritebooks> existingdata = favoritebooksRepository.findById(favoritebooks.getId());
-        if(existingdata.isPresent()) {
-            Favoritebooks updatedata = existingdata.get();
-            updatedata.setUser(existingdata.get().getUser());
-            updatedata.setBook(existingdata.get().getBook());
-            favoritebooksRepository.save(updatedata);
-            return new ResponseEntity<>(updatedata, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Favoritebooks existingdata = favoritebooksRepository.findById(favoritebooks.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        existingdata.setUser(existingdata.getUser());
+        existingdata.setBook(existingdata.getBook());
+        favoritebooksRepository.save(existingdata);
+        return existingdata;
+
     }
     @Transactional
-    public ResponseEntity<Favoritebooks>deletefavoritebooks(Integer id)
+    public void deletefavoritebooks(Integer id)
     {
-        Optional<Favoritebooks> existingdata = favoritebooksRepository.findById(id);
-        if(existingdata.isPresent()) {
-            favoritebooksRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Favoritebooks existingdata = favoritebooksRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "not found"));
+            favoritebooksRepository.delete(existingdata);
     }
 }
