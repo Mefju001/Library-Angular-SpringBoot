@@ -2,6 +2,7 @@ package com.app.library.Service;
 
 import com.app.library.DTO.Mapper.BookMapper;
 import com.app.library.DTO.Mapper.GenreMapper;
+import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
 import com.app.library.Entity.Author;
@@ -12,16 +13,28 @@ import com.app.library.Repository.AuthorRepository;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.GenreRepository;
 import com.app.library.Repository.PublisherRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
+
+
+    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
+
+
     private final BookRepository bookRepository;
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;
@@ -38,190 +51,154 @@ public class BookService {
         this.bookMapper = bookMapper;
         this.genreMapper = genreMapper;
     }
-
-
-    public ResponseEntity<List<BookResponse>> findall() {
-        try {
-            List<Book> books = bookRepository.findAll();
-            List<BookResponse>bookResponses = books.stream()
-                                                    .map(bookMapper::toDto)
-                                                    .toList();
-            return new ResponseEntity<>(bookResponses, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public Page<BookResponse> findall(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books = bookRepository.findAll(pageable);
+        return books.map(bookMapper::toDto);
     }
-    public ResponseEntity<List<GenreResponse>> findallgenres() {
-        try {
+    public BookResponse findbyid(Integer id) {
+        Optional<Book> books = bookRepository.findById(id);
+        return books.map(bookMapper::toDto).orElseThrow();
+    }
+
+    public List<GenreResponse> findallgenres() {
             List<Genre> genres = genreRepository.findAll();
-            List<GenreResponse>genreResponses = genres.stream()
-                                                    .map(genreMapper::toDto)
-                                                    .toList();
-            return new ResponseEntity<>(genreResponses, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return genres.stream()
+                         .map(genreMapper::toDto)
+                         .toList();
+    }
+
+    public Page<BookResponse> findbooksbygenre(String name,int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books = bookRepository.findBooksByGenreName(name,pageable);
+        return books.map(bookMapper::toDto);
+    }
+
+    public Page<BookResponse> findbooksbypublisher(String name,int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books = bookRepository.findBooksByPublisherName(name,pageable);
+        return books.map(bookMapper::toDto);
+    }
+
+    public Page<BookResponse> findbooksbytitle(String title,int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books = bookRepository.findBooksByTitleContaining(title,pageable);
+        return books.map(bookMapper::toDto);
+    }
+
+    public Page<BookResponse> findbooksbyauthor(String name, String surname,int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books = bookRepository.findBooksByAuthor_NameOrAuthor_Surname(name, surname,pageable);
+        return books.map(bookMapper::toDto);
+    }
+
+    public Page<BookResponse> findbooksbyprice(Float min, Float max,int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books = bookRepository.findBooksByPriceIsBetween(min, max,pageable);
+        return books.map(bookMapper::toDto);
+    }
+    public Page<BookResponse> findbooksbyyear(Integer year1, Integer year2,int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books = bookRepository.findBooksByPublicationYearBetween(year1, year2,pageable);
+        return books.map(bookMapper::toDto);
+    }
+    public Page<BookResponse> findnewbooks(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        LocalDate date = LocalDate.now();
+        Page<Book> books = bookRepository.findBooksByPublicationYearIs(date.getYear(),pageable);
+        return books.map(bookMapper::toDto);
+    }
+    public Page<BookResponse> findforeshadowedbooks(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        LocalDate date = LocalDate.now();
+        Page<Book> books = bookRepository.findBooksByPublicationYearIsGreaterThan(date.getYear(),pageable);
+        return books.map(bookMapper::toDto);
+    }
+    public Page<BookResponse> sortbooktitle(int page, int size,String type) {
+        if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
+            throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
         }
-    }
 
-    public ResponseEntity<List<BookResponse>> findbooksbygenre(String name) {
-        try {
-            List<Book> books = bookRepository.findBooksByGenreName(name);
-            List<BookResponse>bookResponses = books.stream()
-                                                    .map(bookMapper::toDto)
-                                                    .toList();
-            return new ResponseEntity<>(bookResponses, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        Sort.Direction direction = type.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "title"));
+
+        Page<Book> books = bookRepository.findAll(pageable);
+        return books.map(bookMapper::toDto);
+    }
+    public Page<BookResponse> sortbookprice(int page, int size,String type){
+        if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
+            throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
         }
-    }
 
-    public ResponseEntity<List<BookResponse>> findbooksbypublisher(String name) {
-        try {
-            List<Book> books = bookRepository.findBooksByPublisherName(name);
-            List<BookResponse>bookResponses = books.stream()
-                                                    .map(bookMapper::toDto)
-                                                    .toList();
-            return new ResponseEntity<>(bookResponses, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        Sort.Direction direction = type.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "price"));
+
+        Page<Book> books = bookRepository.findAll(pageable);
+        return books.map(bookMapper::toDto);
+    }
+    public Page<BookResponse> sortbookyear(int page, int size,String type){
+        if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
+            throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
         }
+
+        Sort.Direction direction = type.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "publicationYear"));
+
+        Page<Book> books = bookRepository.findAll(pageable);
+        return books.map(bookMapper::toDto);
     }
 
-    public ResponseEntity<List<BookResponse>> findbooksbytitle(String title) {
-        try {
-            List<Book> books = bookRepository.findBooksByTitleContaining(title);
-            List<BookResponse>bookResponses = books.stream()
-                                                    .map(bookMapper::toDto)
-                                                    .toList();
-            return new ResponseEntity<>(bookResponses, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    private void setbook(Book book, BookRequest bookRequest){
+        book.setTitle(bookRequest.getTitle());
+        book.setPublicationYear(bookRequest.getPublicationYear());
+        book.setIsbn(bookRequest.getIsbn());
+        book.setLanguage(bookRequest.getLanguage());
+        book.setPages(bookRequest.getPages());
+        book.setPrice(bookRequest.getPrice());
+        book.setOldprice(bookRequest.getPrice());
+        book.setGenre(getOrCreateGenre(bookRequest.getGenreName()));
+        book.setAuthor(getOrCreateAuthor(bookRequest.getAuthorName(), bookRequest.getAuthorSurname()));
+        book.setPublisher(getOrCreatePublisher(bookRequest.getPublisherName()));
+        bookRepository.save(book);
+    }
+    private Genre getOrCreateGenre(String name) {
+        return genreRepository.findGenreByName(name)
+                .orElseGet(() -> genreRepository.save(new Genre(name)));
         }
+
+    private Author getOrCreateAuthor(String name, String surname) {
+        return authorRepository.findAuthorByNameAndSurname(name, surname)
+                .orElseGet(() -> authorRepository.save(new Author(name, surname)));
     }
 
-    public ResponseEntity<List<BookResponse>> findbooksbyauthor(String name, String surname) {
-        List<Book> books = bookRepository.findBooksByAuthor_NameOrAuthor_Surname(name, surname);
-        List<BookResponse>bookResponses = books.stream()
-                                                .map(bookMapper::toDto)
-                                                .toList();
-        return new ResponseEntity<>(bookResponses, HttpStatus.OK);
+    private Publisher getOrCreatePublisher(String name) {
+        return publisherRepository.findPublisherByName(name)
+                .orElseGet(() -> publisherRepository.save(new Publisher(name)));
     }
 
-    public ResponseEntity<List<BookResponse>> findbooksbyprice(Float min, Float max) {
-        List<Book> books = bookRepository.findBooksByPriceIsBetween(min, max);
-        List<BookResponse>bookResponses = books.stream()
-                                                .map(bookMapper::toDto)
-                                                .toList();
-        return new ResponseEntity<>(bookResponses, HttpStatus.OK);
-    }
-    public ResponseEntity<List<BookResponse>> findbooksbyyear(Integer year1, Integer year2) {
-        List<Book> books = bookRepository.findBooksByPriceIsBetween(year1, year2);
-        List<BookResponse>bookResponses = books.stream()
-                                                .map(bookMapper::toDto)
-                                                .toList();
-        return new ResponseEntity<>(bookResponses, HttpStatus.OK);
-
+    @Transactional
+    public BookRequest addbook(BookRequest bookRequest) {
+       if (bookRepository.findBookByIsbnIs(bookRequest.getIsbn()) != null) {
+           System.out.println("Książka z tym ISBN już istnieje");
+           logger.info("Książka z tym ISBN już istnieje");
+       }
+        Book newBook = new Book();
+        setbook(newBook, bookRequest);
+        return bookRequest;
     }
     @Transactional
-    public ResponseEntity<Book> addbook(Book book) {
-        try {
-            // Sprawdzamy, czy książka już istnieje (na podstawie ISBN)
-            if (bookRepository.findBookByIsbnIs(book.getIsbn()) != null) {
-                return new ResponseEntity<>(null, HttpStatus.CONFLICT); // Konflikt, książka już istnieje
-            }
-
-            // Pobieramy lub tworzymy encje związane z książką (Genre, Author, Publisher)
-            Genre existingGenre = genreRepository.findGenreByName(book.getGenre().getName());
-            Author existingAuthor = authorRepository.findAuthorByNameAndSurname(book.getAuthor().getName(), book.getAuthor().getSurname());
-            Publisher existingPublisher = publisherRepository.findPublisherByName(book.getPublisher().getName());
-
-            // Jeśli encje nie istnieją, tworzymy je
-            if (existingGenre == null) {
-                existingGenre = new Genre();
-                existingGenre.setName(book.getGenre().getName());
-                existingGenre = genreRepository.save(existingGenre);
-            }
-            if (existingAuthor == null) {
-                existingAuthor = new Author();
-                existingAuthor.setName(book.getAuthor().getName());
-                existingAuthor.setSurname(book.getAuthor().getSurname());
-                existingAuthor = authorRepository.save(existingAuthor);
-            }
-            if (existingPublisher == null) {
-                existingPublisher = new Publisher();
-                existingPublisher.setName(book.getPublisher().getName());
-                existingPublisher = publisherRepository.save(existingPublisher);
-            }
-
-            // Tworzymy nową książkę
-            Book addbook = new Book();
-            addbook.setTitle(book.getTitle());
-            addbook.setPublicationYear(book.getPublicationYear());
-            addbook.setIsbn(book.getIsbn());
-            addbook.setLanguage(book.getLanguage());
-            addbook.setPages(book.getPages());
-            addbook.setPrice(book.getPrice());
-            addbook.setGenre(existingGenre);
-            addbook.setAuthor(existingAuthor);
-            addbook.setPublisher(existingPublisher);
-
-            // Zapisujemy książkę w bazie danych
-            bookRepository.save(addbook);
-
-
-            // Zwracamy odpowiedź z utworzoną książką
-            //BookResponse bookResponse = new BookResponse(book);
-            return new ResponseEntity<>(addbook, HttpStatus.CREATED);
-
-        } catch (Exception e) {
-            // W przypadku błędu zwracamy odpowiedź z błędem 409 (Konflikt)
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-        }
+    public BookRequest updateBook(Integer id,BookRequest bookRequest){
+        Book Book = bookRepository.findById(id).orElseThrow(()->new RuntimeException("Książka nie znaleziona"));
+        setbook(Book, bookRequest);
+        return bookRequest;
     }
     @Transactional
-    public ResponseEntity<Book> updateBook(Book book){
-        // Sprawdzamy, czy książka istnieje w bazie
-        Book existingBook = bookRepository.findBookByIsbnIs(book.getIsbn());
-        if (existingBook == null) {
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+    public void deletebook(Integer id) {
+        if(!bookRepository.existsById(id))
+        {
+            throw new EntityNotFoundException("Book not found with id like"+id);
         }
-
-
-        // Aktualizujemy dane książki
-        existingBook.setTitle(book.getTitle());
-        existingBook.setPublicationYear(book.getPublicationYear());
-        existingBook.setIsbn(book.getIsbn());
-        existingBook.setLanguage(book.getLanguage());
-        existingBook.setPages(book.getPages());
-        existingBook.setPrice(book.getPrice());
-
-        // Jeśli zmienił się gatunek, autor lub wydawca, aktualizujemy również te encje
-        if (book.getGenre() != null) {
-            Genre existingGenre = genreRepository.findGenreByName(book.getGenre().getName());
-            existingBook.setGenre(existingGenre != null ? existingGenre : book.getGenre());
-        }
-
-        if (book.getAuthor() != null) {
-            Author existingAuthor = authorRepository.findAuthorByNameAndSurname(book.getAuthor().getName(), book.getAuthor().getSurname());
-            existingBook.setAuthor(existingAuthor != null ? existingAuthor : book.getAuthor());
-        }
-
-        if (book.getPublisher() != null) {
-            Publisher existingPublisher = publisherRepository.findPublisherByName(book.getPublisher().getName());
-            existingBook.setPublisher(existingPublisher != null ? existingPublisher : book.getPublisher());
-        }
-        bookRepository.save(existingBook);
-        // Zapisujemy zaktualizowaną książkę w bazie danych
-        return new ResponseEntity<>(existingBook,HttpStatus.OK);
-    }
-    @Transactional
-    public ResponseEntity<Book> deletebook(Integer id) {
         bookRepository.deleteById(id);
-        if(bookRepository.findById(id).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
 

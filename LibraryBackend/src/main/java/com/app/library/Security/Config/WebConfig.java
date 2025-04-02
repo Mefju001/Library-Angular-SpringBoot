@@ -70,13 +70,13 @@ public class WebConfig implements WebMvcConfigurer {
                         auth.requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                                 .requestMatchers("/api/books/**").permitAll()    //hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/library/**").permitAll()       //hasAnyRole("ADMIN", "USER")
-                                .requestMatchers("/Books/**").permitAll()  //hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/api/user/**").permitAll()  //hasAnyRole("ADMIN", "USER")
                                 .anyRequest().authenticated()
                 );
         http.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedOrigins(List.of("http://localhost:4200")); // Pozwól na frontend
-            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Obsługiwane metody
+            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS")); // Obsługiwane metody
             config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
             config.setAllowCredentials(true); // Zezwól na ciasteczka/sesje
             return config;

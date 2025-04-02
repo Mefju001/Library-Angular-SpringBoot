@@ -1,6 +1,8 @@
+<!-- Jeśli nie jesteśmy na stronie logowania, pokazujemy header -->
+<app-header *ngIf="shouldShowHeaderAndFooter()"></app-header>
 
-    <router-outlet></router-outlet>
+<!-- Główna treść strony -->
+<router-outlet></router-outlet>
 
-
-
-  
+<!-- Jeśli nie jesteśmy na stronie logowania, pokazujemy footer -->
+<app-footer *ngIf="shouldShowHeaderAndFooter()"></app-footer>

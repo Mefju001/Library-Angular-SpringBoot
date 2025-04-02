@@ -1,0 +1,32 @@
+<body>
+<h1>Lista bibliotek</h1>
+<!-- Przyciski u góry tabeli -->
+<div class="button-container">
+    <button [routerLink]="'/addlibrary'">Dodaj bibliotekę</button>
+    <button onclick="window.location.href='/MainMenu'">Powrót do menu</button>
+</div>
+
+<div class="container">
+    <table>
+            <div *ngFor="let library of Libraries" class="libraries">
+                <td>Nazwa: {{ library.name }}</td>
+                <td>Adres: {{ library.address }}</td>
+                <td>
+                    <form [routerLink]="['/addlibrary', library.id]" class="button">
+                        <button type="submit">Edytuj książkę</button>
+                    </form>
+                </td>
+                <td>
+                    <form (submit)="deleteLibrary(library.id)">
+                        <button type="submit">Usuń książkę</button>
+                    </form>
+                </td>
+            </div>
+    </table>
+    <div *ngIf="Libraries.length === 0">
+        <p>Brak bibliotek w bazie danych.</p>
+    </div>
+</div>
+
+</body>
+

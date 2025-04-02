@@ -1,0 +1,109 @@
+body {
+    align-items: center;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: rgb(128, 128, 128);
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+}
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px; /* odstęp od tabeli */
+}
+
+.button-container button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #007bff; /* kolor tła przycisku */
+    color: #fff; /* kolor tekstu */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button-container button:hover {
+    background-color: #0056b3; /* kolor tła przycisku po najechaniu kursorem */
+}
+.button:hover {
+    background-color: #810303;
+}
+.button {
+    font-size: 15px;
+    background-color: #4660d7;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+h1 {
+    text-align: center; /* Wyrównanie tekstu do środka */
+    color: white; /* Kolor tekstu */
+    margin-top: 20px; /* Margines od góry */
+    font-size: 32px; /* Rozmiar czcionki */
+}
+.container {
+
+    text-align: center;
+    margin-top: 20px;
+}
+table {
+    border-collapse: collapse;
+    margin: 20px auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.lokalizacja {
+    /* position: relative; */
+    /* width: 100%; */
+    /* padding-top: 75%; */
+    overflow: hidden;
+    /* margin-top: 10px; */
+    /* border-radius: 5px;*/
+}
+
+.lokalizacja iframe {
+    width: 600px;
+    height: 350px;
+    border:0;
+    top: 0;
+    left: 0;
+    /* border: none; */
+    /* border-radius: 5px;*/
+}
+@media only screen and (max-width: 1300px) {
+    h1 {
+        font-size: 24px; /* zmniejszenie rozmiaru czcionki */
+    }
+
+    .container {
+        margin-top: 10px; /* zmniejszenie marginesu górnego */
+    }
+
+    table {
+        margin: 10px auto; /* zmniejszenie marginesu tabeli */
+    }
+
+    th, td {
+        padding: 8px; /* zmniejszenie paddingu w komórkach tabeli */
+    }
+
+    .lokalizacja iframe {
+        width: 100%; /* szerokość 100% dla responsywności */
+        height: auto; /* automatyczna wysokość dla responsywności */
+    }
+}

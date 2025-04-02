@@ -1,14 +1,16 @@
 package com.app.library.Service;
 
+import com.app.library.DTO.Mapper.LibraryBookMapper;
 import com.app.library.DTO.Mapper.LibraryMapper;
-import com.app.library.DTO.Response.BookResponse;
+import com.app.library.DTO.Response.LibraryBookResponse;
 import com.app.library.DTO.Response.LibraryResponse;
 import com.app.library.Entity.Library;
+import com.app.library.Entity.LibraryBook;
+import com.app.library.Repository.LibraryBookRepository;
 import com.app.library.Repository.LibraryRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,45 +19,101 @@ import java.util.Optional;
 @Service
 public class LibraryService {
     private final LibraryRepository libraryRepository;
+    private final LibraryBookRepository libraryBookRepository;
     private final LibraryMapper libraryMapper;
+    private final LibraryBookMapper libraryBookMapper;
     @Autowired
-    public LibraryService(LibraryRepository libraryRepository, LibraryMapper libraryMapper) {
+    public LibraryService(LibraryRepository libraryRepository, LibraryBookRepository libraryBookRepository, LibraryMapper libraryMapper, LibraryBookMapper libraryBookMapper) {
         this.libraryRepository = libraryRepository;
+        this.libraryBookRepository = libraryBookRepository;
         this.libraryMapper = libraryMapper;
+        this.libraryBookMapper = libraryBookMapper;
     }
-    public ResponseEntity<List<Library>>findall()
+    public List<LibraryResponse>findall()
     {
         List<Library> libraries = libraryRepository.findAll();
-        List<LibraryResponse>bookResponses = libraries.stream().map(libraryMapper::toDto).toList();
-        return new ResponseEntity<>(libraries, HttpStatus.OK);
+        return libraries.stream().map(libraryMapper::toDto).toList();
+    }
+    public LibraryResponse findbyid(Integer id)
+    {
+        Optional<Library> Optlibrary = libraryRepository.findById(id);
+        if(Optlibrary.isPresent())
+        {
+            return Optlibrary.map(libraryMapper::toDto).orElseThrow();
+        }
+        else {
+            throw new EntityNotFoundException("not found");
+        }
+    }
+    public List<LibraryResponse>findlibrarybyname(String name)
+    {
+        List<Library> libraries = libraryRepository.findLibraryByName(name);
+        return libraries.stream().map(libraryMapper::toDto).toList();
+    }
+    public List<LibraryBookResponse>findallbookandlibrary()
+    {
+        List<LibraryBook> libraries = libraryBookRepository.findAll();
+        return libraries.stream().map(libraryBookMapper::toLibraryBookResponse).toList();
     }
     @Transactional
-    public ResponseEntity<Library>addlibrary(Library library)
+    public Library addlibrary(Library library)
     {
-        libraryRepository.save(library);
-        return new ResponseEntity<>(library,HttpStatus.CREATED);
+        Library savedLibrary = new Library();
+        savedLibrary.setName(library.getName());
+        savedLibrary.setAddress(library.getAddress());
+        libraryRepository.save(savedLibrary);
+        return savedLibrary;
     }
     @Transactional
-    public ResponseEntity<Library>updatelibrary(Library library)
+    public LibraryBook addbooktolibrary(LibraryBook LibraryBook)
     {
-        Optional<Library> existinglibrary = libraryRepository.findById(library.getId());
+        libraryBookRepository.save(LibraryBook);
+        return LibraryBook;
+    }
+    @Transactional
+    public Library updatelibrary(Integer id,Library library)
+    {
+        Optional<Library> existinglibrary = libraryRepository.findById(id);
         if(existinglibrary.isPresent()) {
             Library updatedlibrary = existinglibrary.get();
             updatedlibrary.setName(library.getName());
             updatedlibrary.setAddress(library.getAddress());
             libraryRepository.save(updatedlibrary);
-            return new ResponseEntity<>(library, HttpStatus.OK);
+            return library;
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else {
+            throw new EntityNotFoundException("not found");
+        }
     }
     @Transactional
-    public ResponseEntity<Library>deletelibrary(Integer id)
+    public LibraryBook updatebookandlibrary(LibraryBook libraryBook)
     {
-        Optional<Library> existinglibrary = libraryRepository.findById(id);
-        if(existinglibrary.isPresent()) {
-            libraryRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+        Optional<LibraryBook> existingdata = libraryBookRepository.findById(libraryBook.getId());
+        if(existingdata.isPresent()) {
+            LibraryBook updatedlibrary = existingdata.get();
+            updatedlibrary.setBook(existingdata.get().getBook());
+            updatedlibrary.setLibrary(existingdata.get().getLibrary());
+            libraryBookRepository.save(updatedlibrary);
+            return updatedlibrary;
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else {
+            throw new EntityNotFoundException("not found");
+        }
+    }
+    @Transactional
+    public void deletelibrary(Integer id)
+    {
+        if(!libraryRepository.existsById(id)) {
+            throw new EntityNotFoundException("Library not found with id: " + id);
+        }
+        libraryRepository.deleteById(id);
+    }
+    @Transactional
+    public void deletebookandlibrary(Integer id)
+    {
+        if(!libraryBookRepository.existsById(id)) {
+            throw new EntityNotFoundException("Book in library not found with id: " + id);
+        }
+        libraryBookRepository.deleteById(id);
     }
 }

@@ -1,0 +1,84 @@
+<body>
+    <!-- Sekcja główna -->
+    <div class="main-container">
+        <!-- Filtry -->
+        <aside class="sidebar">
+            <h2>Filtry</h2>
+            <form class ="filtry" (submit)="applyFilters()">
+              <label>Wyszukaj:</label>
+              <input type="text" [(ngModel)]="filters.searchName" name="searchName">
+              <label>Autor</label><br>
+              <label>Imię:</label>
+              <input type="text" [(ngModel)]="filters.name" name="name">
+              <br>
+              <label>Nazwisko:</label>
+              <input type="text" [(ngModel)]="filters.surname" name="surname">              
+              <br>
+              <label>Minimalna cena:</label>
+              <input type="number" [(ngModel)]="filters.price1" name="price1">
+              <br>
+              <label>Maksymalna cena:</label>
+              <input type="number" [(ngModel)]="filters.price2" name="price2">
+              <br>
+              <label>Rok wydania od:</label>
+              <input type="number" [(ngModel)]="filters.year1" name="year1">
+              <br>
+              <label>Rok wydania do:</label>
+              <input type="number" [(ngModel)]="filters.year2" name="year2">
+              <br>
+              <div class="dropdown">
+                <button class="dropbtn">Kategorie</button>
+                <div class="dropdown-content">
+                  <button class="dropdown-item" *ngFor="let item of items"
+                    [value]="item.id"
+                    (click)="filters.genre = item.name; getbooksbygenre(item.name,0)">
+                    {{ item.name }}
+                  </button>
+                </div>
+              </div>
+              
+              <br>
+              <button type="submit">Zastosuj filtry</button>
+              <button type="button" (click)="resetFilters()">Resetuj</button>
+            </form>
+        </aside>
+
+        <!-- Książki -->
+        <section class="main-content">
+            <h1>Najlepsze Książki na Wyciągnięcie Ręki</h1>
+            <p class="subtitle">Znajdź swoją następną książkę w naszym szerokim wyborze</p>
+            <div class="pagination">
+              <div class="dropdown">
+                <button class="dropbtn">Posortuj według</button>
+                <div class="dropdown-content">
+                  <button class="dropdown-item" (click)="sortbytitle('asc',0)">Po nazwie A-Z</button>
+                  <button class="dropdown-item" (click)="sortbytitle('desc',0)">Po nazwie Z-A</button>
+                  <button class="dropdown-item" (click)="sortbyprice('asc',0)">Po cenie A-Z</button>
+                  <button class="dropdown-item" (click)="sortbyprice('desc',0)">Po cenie Z-A</button>
+                  <button class="dropdown-item" (click)="sortbyyear('asc',0)">Po roku A-Z</button>
+                  <button class="dropdown-item" (click)="sortbyyear('desc',0)">Po roku Z-A</button>
+
+                </div>
+              </div>
+            </div>
+            <!-- Książki -->
+            <div class="books-container">
+                <div *ngFor="let book of books" class="book" [routerLink]="['/book', book.id]">
+                    <h3>{{ book.title }}</h3>
+                    <p>Autor: {{ book.authorName }} {{ book.authorSurname }}</p>
+                    <p>Gatunek: {{ book.genreName }}</p>
+                    <p>Cena: {{ book.price }} zł</p>
+                </div>
+                <div *ngIf="books.length === 0">
+                    <p>Brak książek w bazie danych.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="pagination">
+      <button (click)="prevPage()" [disabled]="currentPage === 0">Poprzednia</button>
+      <span>Strona {{ currentPage + 1 }} z {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">Następna</button>
+    </div>
+</body>
+

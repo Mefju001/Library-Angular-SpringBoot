@@ -1,0 +1,26 @@
+<header class="header">
+    <div class="logo">
+        <a href="#">Książkowy świat</a>
+    </div>
+    <nav class="navbar">
+        <a routerLink="/MainMenu">Strona Główna</a>
+        <a routerLink="/addbook">Dodaj ksiazke</a>
+        
+        <a href="#">Nowości</a>
+        <a routerLink="/library">Biblioteki</a>
+        <a href="#">Promocje</a>
+        <a href="#">Rekomendacja</a>
+        <a href="#">Zapowiedzi</a>
+        <a href="#">Kontakt</a>
+        <a routerLink="/likedBooks">Polubione</a>
+        <div class="dropdown">
+            <button class="dropbtn">Zalogowany jako: <strong>{{ username }}</strong></button>
+            <div class="dropdown-content">
+                <button routerLink="/formdetails" class="dropdown-item">Zmiana danych konta</button>
+                <button routerLink="/formpassword" class="dropdown-item">Zmiana hasła konta</button>
+                <button class="dropdown-item"(click)="deleteUser(id)">Usuń konto</button>
+                <button (click)="logout()" class="dropdown-item">Wyloguj się</button>
+            </div>
+        </div>
+    </nav>
+</header>

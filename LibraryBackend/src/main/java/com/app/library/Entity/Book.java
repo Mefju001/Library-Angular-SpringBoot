@@ -32,7 +32,8 @@ public class Book {
     private int pages;
     @Column(name = "price")
     private float price;
-
+    @Column(name = "oldprice")
+    private Float oldprice;
     public Book() {
     }
 
@@ -112,7 +113,15 @@ public class Book {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public float getOldprice() {
+        return oldprice;
+    }
+
+    public void setOldprice(float oldprice) {
+        this.oldprice = oldprice;
     }
 }

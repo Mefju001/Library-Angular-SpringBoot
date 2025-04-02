@@ -1,0 +1,252 @@
+/* Resetowanie domyślnych styli */
+
+
+/* Układ strony: lewa kolumna z filtrami i prawa z książkami */
+.main-container {
+    display: flex;
+    flex: 1;
+    max-width: 100%;
+    gap: 20px;
+    padding: 40px 20px;
+    width: 100%;
+    
+}
+
+/* Filtry */
+.sidebar {
+    width: 25%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+/* Stylowanie formularza */
+.filtry {
+    display: flex; /* Ustawienie układu na flex */
+    flex-direction: column; /* Elementy w formularzu będą ustawione w kolumnie */
+    margin: 20px; /* Odstęp od innych elementów */
+    padding: 15px; /* Wewnętrzne odstępy formularza */
+    border: 1px solid #ccc; /* Obramowanie formularza */
+    border-radius: 8px; /* Zaokrąglone rogi formularza */
+    background-color: #f9f9f9; /* Kolor tła formularza */
+  }
+  
+  /* Stylowanie przycisku */
+  .filtry button {
+    background-color: blue;
+    color: white; /* Kolor tekstu */
+    padding: 10px 20px; /* Wewnętrzne odstępy przycisku */
+    border: none; /* Usunięcie obramowania */
+    border-radius: 5px; /* Zaokrąglone rogi przycisku */
+    cursor: pointer; /* Kursor wskazujący, że element jest klikany */
+  }
+  
+  .filtry button:hover {
+    background-color: grey; /* Zmiana koloru tła przycisku na hover */
+  }
+  
+  /* Stylowanie pól formularza */
+  .filtry input,
+  .filtry select {
+    padding: 10px; /* Wewnętrzne odstępy */
+    border: 1px solid #ccc; /* Obramowanie */
+    border-radius: 5px; /* Zaokrąglone rogi */
+    width: 100%; /* Szerokość pól na 100% */
+    box-sizing: border-box; /* Zmienia sposób obliczania szerokości, by uwzględniała padding */
+  }
+  
+  .filtry input:focus,
+  .filtry select:focus {
+    border-color: blue; /* Zmiana koloru obramowania na zielony po kliknięciu */
+  }
+  
+.sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.filter-section {
+    margin-bottom: 15px;
+}
+
+.filter-section label {
+    font-size: 16px;
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.filter-input, select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.filter-btn {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.filter-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Książki */
+.main-content {
+    width: 75%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    flex-direction: column;
+}
+
+.main-content h1 {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.books-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+}
+
+.book {
+    background-color: white;
+    width: calc(33.333% - 20px); /* Trzy książki w jednym wierszu */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: left;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.book img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.book h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.book p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.book button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.book button:hover {
+    background-color: #0056b3;
+}
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-item {
+    color: black;
+    background: none;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    color: red;
+    background-color: #f1f1f1;
+}
+
+  th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 15px;
+  }
+  
+  button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    background-color: #d6d6d6;
+    cursor: not-allowed;
+  }
+  
+  button {
+    margin: 5px;
+    padding: 5px 10px;
+  }
+  
