@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,21 +51,23 @@ public class PromotionService {
             Promotions promotion = promotionOpt.get();
             if (promotion.getDiscountType() == DiscountType.percentage) {
                 finalPrice = finalPrice.subtract(finalPrice.multiply(promotion.getDiscountValue().divide(BigDecimal.valueOf(100))));
+                finalPrice = finalPrice.setScale(2, RoundingMode.HALF_UP);
                 book.setPrice(finalPrice.floatValue());
                 bookRepository.save(book);
                 BookPromotion bookPromotion = new BookPromotion(book,promotion);
                 bookPromotionRepository.save(bookPromotion);
             } else if (promotion.getDiscountType() == DiscountType.fixed) {
                 finalPrice = finalPrice.subtract(promotion.getDiscountValue());
+                finalPrice = finalPrice.setScale(2, RoundingMode.HALF_UP);
                 book.setPrice(finalPrice.floatValue());
                 bookRepository.save(book);
-
                 BookPromotion bookPromotion = new BookPromotion(book,promotion);
                 bookPromotionRepository.save(bookPromotion);
             }
 
             if (finalPrice.compareTo(BigDecimal.ZERO) < 0) {
                 finalPrice = BigDecimal.valueOf(1);
+                finalPrice = finalPrice.setScale(2, RoundingMode.HALF_UP);
                 book.setPrice(finalPrice.floatValue());
                 bookRepository.save(book);
                 BookPromotion bookPromotion = new BookPromotion(book,promotion);

@@ -21,10 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,8 +101,53 @@ public class BookService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findBooksByPublicationYearBetween(year1, year2,pageable);
         return books.map(bookMapper::toDto);
-
     }
+    public Page<BookResponse> findnewbooks(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        LocalDate date = LocalDate.now();
+        Page<Book> books = bookRepository.findBooksByPublicationYearIs(date.getYear(),pageable);
+        return books.map(bookMapper::toDto);
+    }
+    public Page<BookResponse> findforeshadowedbooks(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        LocalDate date = LocalDate.now();
+        Page<Book> books = bookRepository.findBooksByPublicationYearIsGreaterThan(date.getYear(),pageable);
+        return books.map(bookMapper::toDto);
+    }
+    public Page<BookResponse> sortbooktitle(int page, int size,String type) {
+        if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
+            throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
+        }
+
+        Sort.Direction direction = type.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "title"));
+
+        Page<Book> books = bookRepository.findAll(pageable);
+        return books.map(bookMapper::toDto);
+    }
+    public Page<BookResponse> sortbookprice(int page, int size,String type){
+        if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
+            throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
+        }
+
+        Sort.Direction direction = type.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "price"));
+
+        Page<Book> books = bookRepository.findAll(pageable);
+        return books.map(bookMapper::toDto);
+    }
+    public Page<BookResponse> sortbookyear(int page, int size,String type){
+        if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
+            throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
+        }
+
+        Sort.Direction direction = type.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "publicationYear"));
+
+        Page<Book> books = bookRepository.findAll(pageable);
+        return books.map(bookMapper::toDto);
+    }
+
     private void setbook(Book book, BookRequest bookRequest){
         book.setTitle(bookRequest.getTitle());
         book.setPublicationYear(bookRequest.getPublicationYear());

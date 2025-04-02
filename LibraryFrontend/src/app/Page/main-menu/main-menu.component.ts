@@ -30,6 +30,7 @@ export class MainMenuComponent implements OnInit {
     price: 0
   };
   filters = {
+    
     name:'',
     surname: '',
     searchName: '',
@@ -45,7 +46,7 @@ export class MainMenuComponent implements OnInit {
   constructor(private myService: MyServiceService,private userService: UserService) {}
 
   ngOnInit(): void {
-    this.getAllBooks();
+    this.getAllBooks(0);
     this.myService.getData().subscribe(data => {
       this.items = data; // Przypisujemy pobrane dane do zmiennej
     });
@@ -53,143 +54,163 @@ export class MainMenuComponent implements OnInit {
       this.items = data; // Przypisujemy pobrane dane do zmiennej
     });
   }
-  
-  getAllBooks(): void {
-    this.myService.getAllBooks(this.currentPage, this.pageSize).subscribe((response) => {
-      this.books = response.content;
-      this.totalPages = response.totalPages;
-      
-    },error => console.error('Błąd podczas pobierania książek:', error));
+  getBooks(page: number = this.currentPage): void {
+    // Zależnie od filtra (np. gatunek, autor, cena, itd.), wywołaj odpowiednią metodę
+    if (this.filters.genre) {
+      this.getbooksbygenre(this.filters.genre, page);
+    } else if (this.filters.name && this.filters.surname) {
+      this.getBooksByAuthor(page);
+    } else if (this.filters.searchName) {
+      this.searchBooks(page);
+    } else if (this.filters.price1 != null && this.filters.price2 != null) {
+      this.getBooksByPrice(page);
+    } else if (this.filters.year1 != null && this.filters.year2 != null) {
+      this.getBooksByYear(page);
+    }else if (this.filters.sortBy === "price") {
+      this.sortbyprice(this.filters.order,page);
+    }else if (this.filters.sortBy === "title") {
+      this.sortbytitle(this.filters.order,page);
+    }else if (this.filters.sortBy === "title") {
+      this.sortbyyear(this.filters.order,page);
+    }else {
+      this.getAllBooks(page);
+    }
   }
+
   nextPage() {
     if (this.currentPage < this.totalPages - 1) {
       this.currentPage++;
-      this.getAllBooks();
+      this.getBooks();
     }
   }
 
   prevPage() {
     if (this.currentPage > 0) {
       this.currentPage--;
-      this.getAllBooks();
+      this.getBooks();
     }
   }
-  getbooksbygenre(genreName:string):void{
+  getAllBooks(page: number): void {
+    this.myService.getAllBooks(this.currentPage, this.pageSize).subscribe((response) => {
+      this.books = response.content;
+      this.totalPages = response.totalPages;
+      
+    },error => console.error('Błąd podczas pobierania książek:', error));
+  }
+  getbooksbygenre(genreName:string, page: number):void{
     console.log(genreName)
-    this.myService.getbooksbygenre(genreName).subscribe(
-      data => this.books = data,
-      error => console.error('Błąd podczas pobierania książek:', error)
+    this.myService.getbooksbygenre(this.currentPage, this.pageSize,genreName).subscribe((response) => {
+      this.books = response.content;
+      this.totalPages = response.totalPages;
+    },error => console.error('Błąd podczas pobierania książek:', error)
     );
   }
-  getBooksByAuthor(): void {
+  getBooksByAuthor(page: number): void {
     if (this.filters.name,this.filters.surname) {
-      this.myService.getBooksByAuthor(this.filters.name,this.filters.surname).subscribe(
-        data => this.books = data,
-        error => console.error('Błąd:', error)
-      );
-    }
+      this.myService.getBooksByAuthor(this.currentPage, this.pageSize,this.filters.name,this.filters.surname).subscribe((response)=>{
+        this.books = response.content,
+        this.totalPages = response.totalPages;
+      },error => console.error('Błąd:', error));}
   }
 
-  searchBooks(): void {
+  searchBooks(page: number): void {
     if (this.filters.searchName) {
-      this.myService.searchBooks(this.filters.searchName).subscribe(
-        data => this.books = data,
-        error => console.error('Błąd:', error)
+      this.myService.searchBooks(this.currentPage, this.pageSize,this.filters.searchName).subscribe((response)=>{
+        this.books = response.content,
+        this.totalPages = response.totalPages;
+      },error => console.error('Błąd:', error)
       );
     }
   }
 
-  getBooksByPrice(): void {
+  getBooksByPrice(page: number): void {
     if (this.filters.price1 != null && this.filters.price2 != null) {
-      this.myService.getBooksByPriceRange(this.filters.price1, this.filters.price2).subscribe(
-        data => this.books = data,
-        error => console.error('Błąd:', error)
+      this.myService.getBooksByPriceRange(this.currentPage, this.pageSize,this.filters.price1, this.filters.price2).subscribe((response)=>{
+        this.books = response.content,
+        this.totalPages = response.totalPages;
+      },error => console.error('Błąd:', error)
       );
     }
   }
 
-  getBooksByYear(): void {
+  getBooksByYear(page: number): void {
     if (this.filters.year1 != null && this.filters.year2 != null) {
-      this.myService.getBooksByYearRange(this.filters.year1, this.filters.year2).subscribe(
-        data => this.books = data,
+      this.myService.getBooksByYearRange(this.currentPage, this.pageSize,this.filters.year1, this.filters.year2).subscribe((response)=>{
+        this.books = response.content,
+        this.totalPages = response.totalPages;
+      },
         error => console.error('Błąd:', error)
       );
     }
   }
 
-  sortBooks(): void {
-    if (this.filters.sortBy && this.filters.order) {
-      this.myService.sortBooks(this.filters.sortBy, this.filters.order).subscribe(
-        data => this.books = data,
-        error => console.error('Błąd:', error)
+  sortbyprice(value:string,page: number): void {
+    console.log(value)
+    this.filters.sortBy = "price";
+    this.filters.order = value;
+    this.myService.sortbyprice(value,this.currentPage, this.pageSize).subscribe((response)=>{
+        this.books = response.content,
+        this.totalPages = response.totalPages;
+      },error => console.error('Błąd:', error)
       );
-    }
+  }
+  sortbytitle(value:string,page: number): void {
+    console.log(value)
+    this.filters.sortBy = "title";
+    this.filters.order = value;
+      this.myService.sortbytitle(value,this.currentPage, this.pageSize).subscribe((response)=>{
+        this.books = response.content,
+        this.totalPages = response.totalPages;
+      },error => console.error('Błąd:', error)
+      );
+  }
+  sortbyyear(value:string,page: number): void {
+    console.log(value)
+    this.filters.sortBy = "year";
+    this.filters.order = value;
+      this.myService.sortbyyear(value,this.currentPage, this.pageSize).subscribe((response)=>{
+        this.books = response.content,
+        this.totalPages = response.totalPages;
+      },error => console.error('Błąd:', error)
+      );
   }
   applyFilters(): void {
     if (this.filters.searchName) {
-      this.searchBooks();
+      this.searchBooks(0);
     } else if (this.filters.name,this.filters.surname) {
-      this.getBooksByAuthor();
+      this.getBooksByAuthor(0);
     } else if (this.filters.price1 !== null && this.filters.price2 !== null) {
-      this.getBooksByPrice();
+      this.getBooksByPrice(0);
     } else if (this.filters.year1 !== null && this.filters.year2 !== null) {
-      this.getBooksByYear();
-    } else if (this.filters.sortBy && this.filters.order) {
-      this.sortBooks();
+      this.getBooksByYear(0);
     }else if(this.filters.genre){
-        this.getbooksbygenre(this.filters.genre);
+        this.getbooksbygenre(this.filters.genre,0);
     }else {
-      this.getAllBooks(); // Jeśli nie podano filtrów, pobierz wszystkie książki
+      this.getAllBooks(0); // Jeśli nie podano filtrów, pobierz wszystkie książki
     }
   }
   resetFilters(): void {
     this.filters = {
+      searchName: '',
+      genre: '',
+      name: '',
+      surname: '',
       price1: null,
       price2: null,
       year1: null,
       year2: null,
       sortBy: '',
-      order: '',
-      searchName: '',
-      name: '',
-      surname:'',
-      genre:''
+      order: ''
     };
-    this.getAllBooks();
+    this.currentPage = 0;  // Resetujemy paginację
+    this.getAllBooks(0);     // Pobieramy wszystkie książki od nowa
   }
-  /*updateBookDetails(id: number): void {
-    const updatedBook: Book = {
-      id: this.book.id,
-      title: this.book.title,
-      authorName: this.book.authorName,  // Dostosowane do właściwego klucza
-      authorSurname: this.book.authorSurname,  // Dostosowane do właściwego klucza
-      publicationYear: this.book.publicationYear,
-      isbn: this.book.isbn,
-      genreName: this.book.genre,  // Dostosowane do właściwego klucza
-      language: this.book.language,
-      publisherName: this.book.publisherName,  // Dostosowane do właściwego klucza
-      pages: this.book.pages,
-      price: this.book.price
-    };
-    
-  
-    this.myService.updateBook(id, updatedBook).subscribe(
-      data => {
-        console.log('Książka została zaktualizowana:', data);
-      },
-      error => {
-        console.error('Błąd podczas aktualizacji książki:', error);
-      }
-    );
-  }*/
-
-
   // Funkcja do usuwania książki
   deleteBook(id: number) {
     this.myService.deleteBook(id).subscribe(
       data => {
         console.log('Książka została usunięta:', data);
-        this.getAllBooks(); // Opcjonalnie, jeśli chcesz odświeżyć listę książek
+        this.getAllBooks(0); // Opcjonalnie, jeśli chcesz odświeżyć listę książek
       },
       error => {
         console.error('Błąd podczas usuwania książki:', error);

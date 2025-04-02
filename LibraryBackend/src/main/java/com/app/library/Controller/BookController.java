@@ -19,12 +19,12 @@ import java.util.List;
 @RequestMapping("/api/books")
 @CrossOrigin(origins = "http://localhost:4200")
 public class BookController {
-    @Autowired
-    private PromotionService promotionService;
+    private final PromotionService promotionService;
     private final BookService bookService;
     @Autowired
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, PromotionService promotionService) {
         this.bookService = bookService;
+        this.promotionService = promotionService;
     }
     @GetMapping("/")
     public ResponseEntity<Page<BookResponse>>listofbooks(
@@ -35,8 +35,6 @@ public class BookController {
         Page<BookResponse>books=bookService.findall(page,size);
         return ResponseEntity.ok(books);
     }
-
-
     @GetMapping("/promotion")
     public void setpromontionspriceonbook(@RequestParam Integer bookId,
                                           @RequestParam long promotionId) {
@@ -90,6 +88,44 @@ public class BookController {
         Page<BookResponse> bookResponses= bookService.findbooksbypublisher(publisher_name,page,size);
         return ResponseEntity.ok(bookResponses);
     }
+    @GetMapping("/sort/title")
+    public ResponseEntity<Page<BookResponse>> listofsortbooksoftitle(@RequestParam String name,
+                                                                     @RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "10") int size)
+    {
+        Page<BookResponse> bookResponses= bookService.sortbooktitle(page,size,name);
+        return ResponseEntity.ok(bookResponses);
+    }
+    @GetMapping("/sort/price")
+    public ResponseEntity<Page<BookResponse>> listofsortbooksofprice(@RequestParam String name,
+                                                              @RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "10") int size)
+    {
+        Page<BookResponse> bookResponses= bookService.sortbookprice(page,size,name);
+        return ResponseEntity.ok(bookResponses);
+    }
+    @GetMapping("/sort/year")
+    public ResponseEntity<Page<BookResponse>> listofsortbooksofyear(@RequestParam String name,
+                                                                     @RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "10") int size)
+    {
+        Page<BookResponse> bookResponses= bookService.sortbookyear(page,size,name);
+        return ResponseEntity.ok(bookResponses);
+    }
+    @GetMapping("/news")
+    public ResponseEntity<Page<BookResponse>> listofnewsbooks (@RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "10") int size)
+    {
+        Page<BookResponse> bookResponses= bookService.findnewbooks(page,size);
+        return ResponseEntity.ok(bookResponses);
+    }
+    @GetMapping("/foreshadowed")
+    public ResponseEntity<Page<BookResponse>> listofforeshadowedbooks (@RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "10") int size)
+    {
+        Page<BookResponse> bookResponses= bookService.findforeshadowedbooks(page,size);
+        return ResponseEntity.ok(bookResponses);
+    }
     @GetMapping("/search/author")
     public ResponseEntity<Page<BookResponse>> listofbooksbyauthor(@RequestParam String name, @RequestParam String surname,
                                                                   @RequestParam(defaultValue = "0") int page,
@@ -99,10 +135,10 @@ public class BookController {
         return ResponseEntity.ok(bookResponses);
     }
     @GetMapping("/search/price")
-    public ResponseEntity<Page<BookResponse>> listofbooksbyprice(@RequestParam float min, @RequestParam float max,
+    public ResponseEntity<Page<BookResponse>> listofbooksbyprice(@RequestParam float price1, @RequestParam float price2,
                                                                  @RequestParam(defaultValue = "0") int page,
                                                                  @RequestParam(defaultValue = "10") int size) {
-        Page<BookResponse> bookResponses = bookService.findbooksbyprice(min, max,page,size);
+        Page<BookResponse> bookResponses = bookService.findbooksbyprice(price1, price2,page,size);
         return ResponseEntity.ok(bookResponses);
     }
     @GetMapping("/search/year")
@@ -113,7 +149,7 @@ public class BookController {
         return ResponseEntity.ok(bookResponses);
     }
     //////
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<BookRequest> addbook(@RequestBody BookRequest bookRequest) {
         BookRequest addedbook = bookService.addbook(bookRequest);

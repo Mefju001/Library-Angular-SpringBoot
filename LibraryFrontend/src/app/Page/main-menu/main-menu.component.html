@@ -26,24 +26,12 @@
               <label>Rok wydania do:</label>
               <input type="number" [(ngModel)]="filters.year2" name="year2">
               <br>
-              <label>Sortowanie:</label>
-              <select [(ngModel)]="filters.sortBy" name="sortBy">
-                <option value="title">Tytuł</option>
-                <option value="price">Cena</option>
-              </select>
-              <br>
-              <label>Kolejność:</label>
-              <select [(ngModel)]="filters.order" name="order">
-                <option value="asc">Rosnąco</option>
-                <option value="desc">Malejąco</option>
-              </select>
-              <br>
               <div class="dropdown">
                 <button class="dropbtn">Kategorie</button>
                 <div class="dropdown-content">
                   <button class="dropdown-item" *ngFor="let item of items"
                     [value]="item.id"
-                    (click)="filters.genre = item.name; getbooksbygenre(item.name)">
+                    (click)="filters.genre = item.name; getbooksbygenre(item.name,0)">
                     {{ item.name }}
                   </button>
                 </div>
@@ -59,7 +47,20 @@
         <section class="main-content">
             <h1>Najlepsze Książki na Wyciągnięcie Ręki</h1>
             <p class="subtitle">Znajdź swoją następną książkę w naszym szerokim wyborze</p>
+            <div class="pagination">
+              <div class="dropdown">
+                <button class="dropbtn">Posortuj według</button>
+                <div class="dropdown-content">
+                  <button class="dropdown-item" (click)="sortbytitle('asc',0)">Po nazwie A-Z</button>
+                  <button class="dropdown-item" (click)="sortbytitle('desc',0)">Po nazwie Z-A</button>
+                  <button class="dropdown-item" (click)="sortbyprice('asc',0)">Po cenie A-Z</button>
+                  <button class="dropdown-item" (click)="sortbyprice('desc',0)">Po cenie Z-A</button>
+                  <button class="dropdown-item" (click)="sortbyyear('asc',0)">Po roku A-Z</button>
+                  <button class="dropdown-item" (click)="sortbyyear('desc',0)">Po roku Z-A</button>
 
+                </div>
+              </div>
+            </div>
             <!-- Książki -->
             <div class="books-container">
                 <div *ngFor="let book of books" class="book" [routerLink]="['/book', book.id]">
