@@ -11,9 +11,9 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Library API")
-                        .version("0.2")
-                        .description("API dla aplikacji biblioteki"))
+                        .title("BookShop API")
+                        .version("0.4")
+                        .description("API dla księgarni"))
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("Bearer Authentication",

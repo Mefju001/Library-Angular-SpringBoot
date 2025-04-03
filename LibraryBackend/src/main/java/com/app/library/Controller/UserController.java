@@ -6,7 +6,11 @@ import com.app.library.DTO.Response.FavoriteBooksResponse;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Entity.User;
 import com.app.library.Service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:4200")
+@Tag(name = "User Controller", description = "Zarządzanie danymi użytkownika w aplikacji")
 public class UserController {
     private final UserService userService;
     @Autowired
@@ -23,47 +28,62 @@ public class UserController {
         this.userService = userService;
     }
     @GetMapping("/")
-    public ResponseEntity<List<FavoriteBooksResponse>> listoffavoritebooksByUserId(@RequestParam Long userId) {
-        return ResponseEntity.ok(userService.findall(userId));
+    @Operation(summary = "Pobiera listę książek ulubionych użytkownika", description = "Zwraca listę ulubionych książek na podstawie ID użytkownika.")
+    public ResponseEntity<List<FavoriteBooksResponse>> listoffavoritebooksByUserId(@Parameter(description = "ID użytkownika, którego ulubione książki mają zostać pobrane") @RequestParam Long userId) {
+        List<FavoriteBooksResponse> favoriteBooks = userService.findall(userId);
+        if (favoriteBooks.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(favoriteBooks);
     }
     @GetMapping("/{id}")
+    @Operation(summary = "Zwraca użytkownika po ID", description = "Zwraca dane użytkownika na podstawie jego identyfikatora.")
     public ResponseEntity<User> userfindbyid(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.findbyid(id));
+        User user = userService.findbyid(id);
+        return ResponseEntity.ok(user);
     }
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
+    @Operation(summary = "Dodaje książkę do ulubionych użytkownika", description = "Dodaje książkę do ulubionych na podstawie ID książki i ID użytkownika.")
     public ResponseEntity<Favoritebooks> addfavoritebooks(@RequestParam Integer bookId,@RequestParam Long userId ) {
-        return ResponseEntity.ok(userService.addfavoritebooks(bookId,userId));
+        Favoritebooks favoritebook = userService.addfavoritebooks(bookId, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(favoritebook);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update")
+    @Operation(summary = "Aktualizuje książkę w ulubionych", description = "Aktualizuje dane książki w ulubionych użytkownika.")
     public ResponseEntity<Favoritebooks> updatefavoritebooks(@RequestBody Favoritebooks favoritebooks) {
-        return ResponseEntity.ok(userService.updatefavoritebooks(favoritebooks));
+        Favoritebooks updatedBook = userService.updatefavoritebooks(favoritebooks);
+        return ResponseEntity.ok(updatedBook);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/favoritebook")
+    @Operation(summary = "Usuwa książkę z ulubionych", description = "Usuwa książkę z ulubionych użytkownika.")
     public ResponseEntity<?> deletefavoritebooks(@RequestParam Integer id) {
         userService.deletefavoritebooks(id);
-        return ResponseEntity.ok("Usunieto");
+        return ResponseEntity.noContent().build();
     }
 
     //user
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{id}")
+    @Operation(summary = "Usuwa użytkownika", description = "Usuwa użytkownika z bazy danych.")
     public ResponseEntity<?> deleteuser(@PathVariable Long id) {
         userService.deleteuser(id);
-        return ResponseEntity.ok("Usunieto");
+        return ResponseEntity.noContent().build();
     }
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/change/details/{id}")
+    @Operation(summary = "Zmiana danych użytkownika", description = "Zmiana szczegółowych danych użytkownika.")
     public ResponseEntity<?> changedetails(@PathVariable Long id, @RequestBody UserDetailsRequest userDetailsRequest) {
         userService.changedetails(id, userDetailsRequest);
-        return ResponseEntity.ok("Zmieniono");
+        return ResponseEntity.ok("Szczegóły zostały zaktualizowane.");
     }
     @PutMapping("/change/password/{id}")
+    @Operation(summary = "Zmiana hasła użytkownika", description = "Zmienia hasło użytkownika na podstawie nowego hasła.")
     public ResponseEntity<?> changepassword(@PathVariable Long id, @RequestBody UserPasswordRequest userPasswordRequest) {
-        userService.changepassword(id,userPasswordRequest);
-        return ResponseEntity.ok("Zmieniono");
+        userService.changepassword(id, userPasswordRequest);
+        return ResponseEntity.ok("Hasło zostało zmienione.");
     }
 
 }
