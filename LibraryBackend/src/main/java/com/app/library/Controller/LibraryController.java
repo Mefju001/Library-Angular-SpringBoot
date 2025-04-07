@@ -1,5 +1,7 @@
 package com.app.library.Controller;
 
+import com.app.library.DTO.Request.LibraryBookRequest;
+import com.app.library.DTO.Request.LibraryRequest;
 import com.app.library.DTO.Response.LibraryBookResponse;
 import com.app.library.DTO.Response.LibraryResponse;
 import com.app.library.Entity.Library;
@@ -63,6 +65,18 @@ public class LibraryController {
         }
         return ResponseEntity.ok(libraryResponses);
     }
+    @GetMapping("/searchby/{title}")
+    @Operation(summary = "Zwraca dostepnosc ksiazki o podanej nazwie", description = "Zwraca informacje o bibliotekach gdzie ksiazka jest dostepna")
+    public ResponseEntity<List<LibraryBookResponse>> listofbookinlibraries(@Parameter(description = "Nazwa ksiazki")
+                                                                       @PathVariable String title)
+    {
+        List<LibraryBookResponse> libraryBookResponses = libraryService.findbookinlibraries(title);
+        if(libraryBookResponses.isEmpty())
+        {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(libraryBookResponses);
+    }
     @GetMapping("/booksinlibrary")
     @Operation(summary = "Zwraca ksiazki dostepne w bibliotekach", description = "Zwraca ksiazki dostepne w bibliotekach z bazy danych")
     public ResponseEntity<List<LibraryBookResponse>> listofbooksinlibraries()
@@ -77,8 +91,8 @@ public class LibraryController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addlibrary")
     @Operation(summary = "Dodaje biblioteke", description = "Dodaje do bazy danych obiekt z uzupełnionymi danymi przez uzytkownika")
-    public ResponseEntity<Library>addlibrary(@Parameter(description = "Obiekt zawierający dane biblioteki, które mają zostać dodane do bazy danych")
-                                                 @RequestBody Library library)
+    public ResponseEntity<LibraryResponse>addlibrary(@Parameter(description = "Obiekt zawierający dane biblioteki, które mają zostać dodane do bazy danych")
+                                                 @RequestBody LibraryRequest library)
     {
         return ResponseEntity.ok(libraryService.addlibrary(library));
     }
@@ -86,10 +100,10 @@ public class LibraryController {
     @PostMapping("/addbooktolibrary")
     @Operation(summary = "Dodaje dostepnosc ksiazki w bibliotece", description = "Dodaje do bazy danych obiekt zawierający informacje o książce i bibliotece, " +
             "co pozwala na śledzenie dostępności książek w systemie bibliotecznym.")
-    public ResponseEntity<LibraryBook>addbooktolibrary(@Parameter(description = "Obiekt zawierający dane bilioteki i ksiazki, które mają zostać dodane do bazy danych")
-                                                           @RequestBody LibraryBook libraryBook)
+    public ResponseEntity<LibraryBookResponse>addbooktolibrary(@Parameter(description = "Obiekt zawierający dane bilioteki i ksiazki, które mają zostać dodane do bazy danych")
+                                                           @RequestBody LibraryBookRequest libraryBookRequest)
     {
-        return ResponseEntity.ok(libraryService.addbooktolibrary(libraryBook));
+        return ResponseEntity.ok(libraryService.addbooktolibrary(libraryBookRequest));
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update/{id}")
@@ -97,13 +111,13 @@ public class LibraryController {
             summary = "Aktualizuje dane biblioteki",
             description = "Aktualizuje dane biblioteki w systemie na podstawie przekazanego obiektu 'Library'."
     )
-    public ResponseEntity<Library>updatelibrary(@Parameter(description = "Numer identyfikacyjny biblioteki, która ma zostać zaktualizowana")
+    public ResponseEntity<LibraryResponse>updatelibrary(@Parameter(description = "Numer identyfikacyjny biblioteki, która ma zostać zaktualizowana")
                                                     @PathVariable Integer id,
 
                                                 @Parameter(description = "Obiekt zawierający dane biblioteki do aktualizacji")
                                                     @RequestBody @Valid Library library)
     {
-        Library updatedLibrary = libraryService.updatelibrary(id, library);
+        LibraryResponse updatedLibrary = libraryService.updatelibrary(id, library);
         if (updatedLibrary == null) {
             return ResponseEntity.notFound().build();
         }
@@ -115,10 +129,10 @@ public class LibraryController {
             summary = "Aktualizuje książki w bibliotece",
             description = "Aktualizuje dane książki w bibliotece na podstawie przekazanego obiektu 'LibraryBook'."
     )
-    public ResponseEntity<LibraryBook>updatebooksinlibrary(@Parameter(description = "Obiekt zawierający dane książki w bibliotece do zaktualizowania")
-                                                               @RequestBody LibraryBook libraryBook)
+    public ResponseEntity<LibraryBookResponse>updatebooksinlibrary(@Parameter(description = "Obiekt zawierający dane książki w bibliotece do zaktualizowania")
+                                                               @RequestBody LibraryBookRequest libraryBook)
     {
-        LibraryBook updatedLibraryBook = libraryService.updatebookandlibrary(libraryBook);
+        LibraryBookResponse updatedLibraryBook = libraryService.updatebookandlibrary(libraryBook);
 
         // Sprawdzamy, czy książka została zaktualizowana
         if (updatedLibraryBook == null) {

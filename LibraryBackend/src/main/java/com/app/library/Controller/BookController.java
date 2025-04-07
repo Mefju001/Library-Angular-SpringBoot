@@ -123,8 +123,6 @@ public class BookController {
                                                                     @RequestParam String name,
                                                                   @Parameter(description = "Nazwisko autora")
                                                                     @RequestParam String surname,
-                                                                  @Parameter(description = "Nazwa wydawnictwa książki")
-                                                                    @RequestParam String publisher_name,
                                                                   @Parameter(description = "Numer strony paginacji")
                                                                     @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
                                                                   @Parameter(description = "Liczba elementów na stronie")

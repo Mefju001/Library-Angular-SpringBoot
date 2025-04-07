@@ -30,11 +30,7 @@ import java.util.Optional;
 
 @Service
 public class BookService {
-
-
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
-
-
     private final BookRepository bookRepository;
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;

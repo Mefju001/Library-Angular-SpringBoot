@@ -2,10 +2,14 @@ package com.app.library.Service;
 
 import com.app.library.DTO.Mapper.LibraryBookMapper;
 import com.app.library.DTO.Mapper.LibraryMapper;
+import com.app.library.DTO.Request.LibraryBookRequest;
+import com.app.library.DTO.Request.LibraryRequest;
 import com.app.library.DTO.Response.LibraryBookResponse;
 import com.app.library.DTO.Response.LibraryResponse;
+import com.app.library.Entity.Book;
 import com.app.library.Entity.Library;
 import com.app.library.Entity.LibraryBook;
+import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.LibraryBookRepository;
 import com.app.library.Repository.LibraryRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,12 +22,14 @@ import java.util.Optional;
 
 @Service
 public class LibraryService {
+    final BookRepository bookRepository;
     private final LibraryRepository libraryRepository;
     private final LibraryBookRepository libraryBookRepository;
     private final LibraryMapper libraryMapper;
     private final LibraryBookMapper libraryBookMapper;
     @Autowired
-    public LibraryService(LibraryRepository libraryRepository, LibraryBookRepository libraryBookRepository, LibraryMapper libraryMapper, LibraryBookMapper libraryBookMapper) {
+    public LibraryService(BookRepository bookRepository, LibraryRepository libraryRepository, LibraryBookRepository libraryBookRepository, LibraryMapper libraryMapper, LibraryBookMapper libraryBookMapper) {
+        this.bookRepository = bookRepository;
         this.libraryRepository = libraryRepository;
         this.libraryBookRepository = libraryBookRepository;
         this.libraryMapper = libraryMapper;
@@ -55,23 +61,33 @@ public class LibraryService {
         List<LibraryBook> libraries = libraryBookRepository.findAll();
         return libraries.stream().map(libraryBookMapper::toLibraryBookResponse).toList();
     }
+    public List<LibraryBookResponse>findbookinlibraries(String title)
+    {
+        List<LibraryBook> libraries = libraryBookRepository.findLibraryBookByBook_Title(title);
+        return libraries.stream().map(libraryBookMapper::toLibraryBookResponse).toList();
+    }
     @Transactional
-    public Library addlibrary(Library library)
+    public LibraryResponse addlibrary(LibraryRequest library)
     {
         Library savedLibrary = new Library();
         savedLibrary.setName(library.getName());
         savedLibrary.setAddress(library.getAddress());
         libraryRepository.save(savedLibrary);
-        return savedLibrary;
+        return new LibraryResponse(savedLibrary.getId(), savedLibrary.getName(), savedLibrary.getAddress());
     }
     @Transactional
-    public LibraryBook addbooktolibrary(LibraryBook LibraryBook)
+    public LibraryBookResponse addbooktolibrary(LibraryBookRequest libraryBookRequest)
     {
-        libraryBookRepository.save(LibraryBook);
-        return LibraryBook;
+        Book book = bookRepository.findBookByIsbnIs(libraryBookRequest.getIsbn());
+        Library library = libraryRepository.findById(libraryBookRequest.getIdLibrary()).orElseThrow();
+        LibraryBook libraryBook = new LibraryBook();
+        libraryBook.setBook(book);
+        libraryBook.setLibrary(library);
+        libraryBookRepository.save(libraryBook);
+        return new LibraryBookResponse(libraryBookRequest.getId(), libraryBookRequest.getTitle(),libraryBookRequest.getAuthorName(), libraryBookRequest.getAuthorSurname(), libraryBookRequest.getPublicationYear(), libraryBookRequest.getIsbn(), libraryBookRequest.getGenreName(), libraryBookRequest.getLanguage(), libraryBookRequest.getPublisherName(), libraryBookRequest.getPages(), libraryBookRequest.getPrice(), libraryBookRequest.getIdLibrary(), libraryBookRequest.getName(), libraryBookRequest.getAddress());
     }
     @Transactional
-    public Library updatelibrary(Integer id,Library library)
+    public LibraryResponse updatelibrary(Integer id,Library library)
     {
         Optional<Library> existinglibrary = libraryRepository.findById(id);
         if(existinglibrary.isPresent()) {
@@ -79,22 +95,22 @@ public class LibraryService {
             updatedlibrary.setName(library.getName());
             updatedlibrary.setAddress(library.getAddress());
             libraryRepository.save(updatedlibrary);
-            return library;
+            return new LibraryResponse(existinglibrary.get().getId(),existinglibrary.get().getName(),existinglibrary.get().getAddress());
         }
         else {
             throw new EntityNotFoundException("not found");
         }
     }
     @Transactional
-    public LibraryBook updatebookandlibrary(LibraryBook libraryBook)
+    public LibraryBookResponse updatebookandlibrary(LibraryBookRequest libraryBookRequest)
     {
-        Optional<LibraryBook> existingdata = libraryBookRepository.findById(libraryBook.getId());
+        Optional<LibraryBook> existingdata = libraryBookRepository.findById(libraryBookRequest.getId());
         if(existingdata.isPresent()) {
             LibraryBook updatedlibrary = existingdata.get();
             updatedlibrary.setBook(existingdata.get().getBook());
             updatedlibrary.setLibrary(existingdata.get().getLibrary());
             libraryBookRepository.save(updatedlibrary);
-            return updatedlibrary;
+            return new LibraryBookResponse(libraryBookRequest.getId(), libraryBookRequest.getTitle(),libraryBookRequest.getAuthorName(), libraryBookRequest.getAuthorSurname(), libraryBookRequest.getPublicationYear(), libraryBookRequest.getIsbn(), libraryBookRequest.getGenreName(), libraryBookRequest.getLanguage(), libraryBookRequest.getPublisherName(), libraryBookRequest.getPages(), libraryBookRequest.getPrice(), libraryBookRequest.getIdLibrary(), libraryBookRequest.getName(), libraryBookRequest.getAddress());
         }
         else {
             throw new EntityNotFoundException("not found");

@@ -36,4 +36,7 @@ export class UserService {
     // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.get(`${this.apiUrl}/?userId=${userId}`);
   }
+  deletelikedBook(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/delete/favoritebook/${id}`);
+  }
   }

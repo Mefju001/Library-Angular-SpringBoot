@@ -6,9 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 public class LibraryResponse {
-    private Integer id;
-    private String name;
-    private String address;
+    private final Integer id;
+    private final String name;
+    private final String address;
 
     public LibraryResponse(Integer id, String name, String address) {
         this.id = id;
@@ -20,23 +20,11 @@ public class LibraryResponse {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getAddress() {
         return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 }

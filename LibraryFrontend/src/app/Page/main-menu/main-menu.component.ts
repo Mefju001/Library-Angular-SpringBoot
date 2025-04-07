@@ -30,7 +30,6 @@ export class MainMenuComponent implements OnInit {
     price: 0
   };
   filters = {
-    
     name:'',
     surname: '',
     searchName: '',
@@ -48,14 +47,10 @@ export class MainMenuComponent implements OnInit {
   ngOnInit(): void {
     this.getAllBooks(0);
     this.myService.getData().subscribe(data => {
-      this.items = data; // Przypisujemy pobrane dane do zmiennej
-    });
-    this.myService.getData().subscribe(data => {
-      this.items = data; // Przypisujemy pobrane dane do zmiennej
+      this.items = data;
     });
   }
   getBooks(page: number = this.currentPage): void {
-    // Zależnie od filtra (np. gatunek, autor, cena, itd.), wywołaj odpowiednią metodę
     if (this.filters.genre) {
       this.getbooksbygenre(this.filters.genre, page);
     } else if (this.filters.name && this.filters.surname) {

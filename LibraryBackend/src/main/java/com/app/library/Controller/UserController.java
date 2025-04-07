@@ -56,10 +56,9 @@ public class UserController {
         Favoritebooks updatedBook = userService.updatefavoritebooks(favoritebooks);
         return ResponseEntity.ok(updatedBook);
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/delete/favoritebook")
+    @DeleteMapping("/delete/favoritebook/{id}")
     @Operation(summary = "Usuwa książkę z ulubionych", description = "Usuwa książkę z ulubionych użytkownika.")
-    public ResponseEntity<?> deletefavoritebooks(@RequestParam Integer id) {
+    public ResponseEntity<?> deletefavoritebooks(@PathVariable Integer id) {
         userService.deletefavoritebooks(id);
         return ResponseEntity.noContent().build();
     }
