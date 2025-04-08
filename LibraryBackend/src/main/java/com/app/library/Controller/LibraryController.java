@@ -96,7 +96,7 @@ public class LibraryController {
     {
         return ResponseEntity.ok(libraryService.addlibrary(library));
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/addbooktolibrary")
     @Operation(summary = "Dodaje dostepnosc ksiazki w bibliotece", description = "Dodaje do bazy danych obiekt zawierający informacje o książce i bibliotece, " +
             "co pozwala na śledzenie dostępności książek w systemie bibliotecznym.")
@@ -115,7 +115,7 @@ public class LibraryController {
                                                     @PathVariable Integer id,
 
                                                 @Parameter(description = "Obiekt zawierający dane biblioteki do aktualizacji")
-                                                    @RequestBody @Valid Library library)
+                                                    @RequestBody @Valid LibraryRequest library)
     {
         LibraryResponse updatedLibrary = libraryService.updatelibrary(id, library);
         if (updatedLibrary == null) {

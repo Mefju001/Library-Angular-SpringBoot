@@ -1,5 +1,10 @@
 package com.app.library.DTO.Response;
 
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@Builder
 public class FavoriteBooksResponse {
     private final Integer id;
     private final String title;
@@ -13,7 +18,6 @@ public class FavoriteBooksResponse {
     private final int pages;
     private final float price;
 
-
     public FavoriteBooksResponse(Integer id, String title, String authorName, String authorSurname, int publicationYear, long isbn, String genreName, String language, String publisherName, int pages, float price) {
         this.id = id;
         this.title = title;
@@ -26,50 +30,5 @@ public class FavoriteBooksResponse {
         this.publisherName = publisherName;
         this.pages = pages;
         this.price = price;
-    }
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAuthorName() {
-        return authorName;
-    }
-
-    public String getAuthorSurname() {
-        return authorSurname;
-    }
-
-    public int getPublicationYear() {
-        return publicationYear;
-    }
-
-    public long getIsbn() {
-        return isbn;
-    }
-
-    public String getGenreName() {
-        return genreName;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public String getPublisherName() {
-        return publisherName;
-    }
-
-    public int getPages() {
-        return pages;
-    }
-
-    public float getPrice() {
-        return price;
     }
 }

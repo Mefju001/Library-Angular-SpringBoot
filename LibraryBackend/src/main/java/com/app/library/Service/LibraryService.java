@@ -75,19 +75,41 @@ public class LibraryService {
         libraryRepository.save(savedLibrary);
         return new LibraryResponse(savedLibrary.getId(), savedLibrary.getName(), savedLibrary.getAddress());
     }
-    @Transactional
-    public LibraryBookResponse addbooktolibrary(LibraryBookRequest libraryBookRequest)
+    LibraryBook setLibraryBook(LibraryBookRequest request)
     {
-        Book book = bookRepository.findBookByIsbnIs(libraryBookRequest.getIsbn());
-        Library library = libraryRepository.findById(libraryBookRequest.getIdLibrary()).orElseThrow();
+        Book book = bookRepository.findBookByIsbnIs(request.getIsbn());
+        Library library = libraryRepository.findById(request.getIdLibrary()).orElseThrow();
+
         LibraryBook libraryBook = new LibraryBook();
         libraryBook.setBook(book);
         libraryBook.setLibrary(library);
-        libraryBookRepository.save(libraryBook);
-        return new LibraryBookResponse(libraryBookRequest.getId(), libraryBookRequest.getTitle(),libraryBookRequest.getAuthorName(), libraryBookRequest.getAuthorSurname(), libraryBookRequest.getPublicationYear(), libraryBookRequest.getIsbn(), libraryBookRequest.getGenreName(), libraryBookRequest.getLanguage(), libraryBookRequest.getPublisherName(), libraryBookRequest.getPages(), libraryBookRequest.getPrice(), libraryBookRequest.getIdLibrary(), libraryBookRequest.getName(), libraryBookRequest.getAddress());
+        return libraryBook;
     }
     @Transactional
-    public LibraryResponse updatelibrary(Integer id,Library library)
+    public LibraryBookResponse addbooktolibrary(LibraryBookRequest request)
+    {
+        libraryBookRepository.save(setLibraryBook(request));
+
+        return LibraryBookResponse.builder()
+                .id(request.getId())
+                .title(request.getTitle())
+                .authorName(request.getAuthorName())
+                .authorSurname(request.getAuthorSurname())
+                .publicationYear(request.getPublicationYear())
+                .isbn(request.getIsbn())
+                .genreName(request.getGenreName())
+                .language(request.getLanguage())
+                .publisherName(request.getPublisherName())
+                .pages(request.getPages())
+                .price(request.getPrice())
+                .idLibrary(request.getIdLibrary())
+                .name(request.getName())
+                .address(request.getAddress())
+                .build();
+    }
+
+    @Transactional
+    public LibraryResponse updatelibrary(Integer id,LibraryRequest library)
     {
         Optional<Library> existinglibrary = libraryRepository.findById(id);
         if(existinglibrary.isPresent()) {
@@ -106,11 +128,20 @@ public class LibraryService {
     {
         Optional<LibraryBook> existingdata = libraryBookRepository.findById(libraryBookRequest.getId());
         if(existingdata.isPresent()) {
-            LibraryBook updatedlibrary = existingdata.get();
-            updatedlibrary.setBook(existingdata.get().getBook());
-            updatedlibrary.setLibrary(existingdata.get().getLibrary());
-            libraryBookRepository.save(updatedlibrary);
-            return new LibraryBookResponse(libraryBookRequest.getId(), libraryBookRequest.getTitle(),libraryBookRequest.getAuthorName(), libraryBookRequest.getAuthorSurname(), libraryBookRequest.getPublicationYear(), libraryBookRequest.getIsbn(), libraryBookRequest.getGenreName(), libraryBookRequest.getLanguage(), libraryBookRequest.getPublisherName(), libraryBookRequest.getPages(), libraryBookRequest.getPrice(), libraryBookRequest.getIdLibrary(), libraryBookRequest.getName(), libraryBookRequest.getAddress());
+            libraryBookRepository.save(setLibraryBook(libraryBookRequest));
+            return LibraryBookResponse.builder()
+                    .id(libraryBookRequest.getId())
+                    .title(libraryBookRequest.getTitle())
+                    .authorName(libraryBookRequest.getAuthorName())
+                    .authorSurname(libraryBookRequest.getAuthorSurname())
+                    .publicationYear(libraryBookRequest.getPublicationYear())
+                    .isbn(libraryBookRequest.getIsbn())
+                    .genreName(libraryBookRequest.getGenreName())
+                    .language(libraryBookRequest.getLanguage())
+                    .publisherName(libraryBookRequest.getPublisherName())
+                    .pages(libraryBookRequest.getPages())
+                    .price(libraryBookRequest.getPrice())
+                    .build();
         }
         else {
             throw new EntityNotFoundException("not found");

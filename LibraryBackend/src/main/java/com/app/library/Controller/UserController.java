@@ -3,6 +3,7 @@ package com.app.library.Controller;
 import com.app.library.DTO.Request.UserDetailsRequest;
 import com.app.library.DTO.Request.UserPasswordRequest;
 import com.app.library.DTO.Response.FavoriteBooksResponse;
+import com.app.library.DTO.Response.UserResponse;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Entity.User;
 import com.app.library.Service.UserService;
@@ -38,15 +39,15 @@ public class UserController {
     }
     @GetMapping("/{id}")
     @Operation(summary = "Zwraca użytkownika po ID", description = "Zwraca dane użytkownika na podstawie jego identyfikatora.")
-    public ResponseEntity<User> userfindbyid(@PathVariable Long id) {
-        User user = userService.findbyid(id);
+    public ResponseEntity<UserResponse> userfindbyid(@PathVariable Long id) {
+        UserResponse user = userService.findbyid(id);
         return ResponseEntity.ok(user);
     }
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     @Operation(summary = "Dodaje książkę do ulubionych użytkownika", description = "Dodaje książkę do ulubionych na podstawie ID książki i ID użytkownika.")
-    public ResponseEntity<Favoritebooks> addfavoritebooks(@RequestParam Integer bookId,@RequestParam Long userId ) {
-        Favoritebooks favoritebook = userService.addfavoritebooks(bookId, userId);
+    public ResponseEntity<FavoriteBooksResponse> addfavoritebooks(@RequestParam Integer bookId,@RequestParam Long userId ) {
+        FavoriteBooksResponse favoritebook = userService.addfavoritebooks(bookId, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(favoritebook);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")

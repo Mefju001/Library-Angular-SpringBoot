@@ -1,5 +1,10 @@
 package com.app.library.DTO.Response;
 
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@Builder
 public class LibraryBookResponse {
     //Book
     private final Integer id;
@@ -33,61 +38,5 @@ public class LibraryBookResponse {
         this.idLibrary = idLibrary;
         this.name = name;
         this.address = address;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAuthorName() {
-        return authorName;
-    }
-
-    public String getAuthorSurname() {
-        return authorSurname;
-    }
-
-    public int getPublicationYear() {
-        return publicationYear;
-    }
-
-    public long getIsbn() {
-        return isbn;
-    }
-
-    public String getGenreName() {
-        return genreName;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public String getPublisherName() {
-        return publisherName;
-    }
-
-    public int getPages() {
-        return pages;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public Integer getIdLibrary() {
-        return idLibrary;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getAddress() {
-        return address;
     }
 }
