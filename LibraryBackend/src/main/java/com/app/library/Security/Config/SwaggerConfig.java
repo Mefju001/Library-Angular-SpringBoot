@@ -13,7 +13,7 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("BookShop API")
                         .version("0.4")
-                        .description("API dla księgarni"))
+                        .description("API dla księgarni i sklepu"))
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("Bearer Authentication",

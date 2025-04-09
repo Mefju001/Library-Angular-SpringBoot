@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -153,9 +154,9 @@ public class BookController {
     @GetMapping("/search/year")
     @Operation(summary = "Zwraca książki z bazy danych w podanym okresie", description = "Zwraca dane książek z bazy danych, które wpasowują sie w dany okres")
     public ResponseEntity<Page<BookResponse>> listofbooksbyyear(@Parameter(description = "Rok początkowy okresu")
-                                                                    @RequestParam Integer year1,
+                                                                    @RequestParam LocalDate year1,
                                                                 @Parameter(description = "Rok końcowy okresu")
-                                                                    @RequestParam Integer year2,
+                                                                    @RequestParam LocalDate year2,
                                                                 @Parameter(description = "Numer strony paginacji")
                                                                     @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
                                                                 @Parameter(description = "Liczba elementów na stronie")

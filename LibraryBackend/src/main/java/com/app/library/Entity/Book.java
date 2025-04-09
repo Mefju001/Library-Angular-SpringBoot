@@ -3,6 +3,9 @@ package com.app.library.Entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Data
 @Entity
 @Table(name = "Books")
@@ -16,8 +19,8 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
-    @Column(name = "publication_year")
-    private int publicationYear;
+    @Column(name = "publication")
+    private LocalDate publicationDate;
     @Column(name = "isbn")
     private long isbn;
     @ManyToOne
@@ -61,12 +64,12 @@ public class Book {
         this.author = author;
     }
 
-    public int getPublicationYear() {
-        return publicationYear;
+    public LocalDate getpublicationDate() {
+        return publicationDate;
     }
 
-    public void setPublicationYear(int publicationYear) {
-        this.publicationYear = publicationYear;
+    public void setpublicationDate(LocalDate publication) {
+        this.publicationDate = publication;
     }
 
     public long getIsbn() {

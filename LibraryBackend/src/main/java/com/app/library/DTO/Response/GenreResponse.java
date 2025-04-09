@@ -4,7 +4,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Data;
+import lombok.Getter;
 
+@Getter
 public class GenreResponse {
 
     private final Integer id;
@@ -13,13 +16,5 @@ public class GenreResponse {
     public GenreResponse(Integer id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 }

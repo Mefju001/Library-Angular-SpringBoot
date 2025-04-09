@@ -6,6 +6,7 @@ import com.app.library.DTO.Response.FavoriteBooksResponse;
 import com.app.library.DTO.Response.UserResponse;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Entity.User;
+import com.app.library.Service.RentalService;
 import com.app.library.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,9 +25,11 @@ import java.util.List;
 @Tag(name = "User Controller", description = "Zarządzanie danymi użytkownika w aplikacji")
 public class UserController {
     private final UserService userService;
+    private final RentalService rentalService;
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RentalService rentalService) {
         this.userService = userService;
+        this.rentalService = rentalService;
     }
     @GetMapping("/")
     @Operation(summary = "Pobiera listę książek ulubionych użytkownika", description = "Zwraca listę ulubionych książek na podstawie ID użytkownika.")

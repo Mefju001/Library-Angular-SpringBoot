@@ -14,6 +14,4 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleEntityNotFound(EntityNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
     }
-
-
 }

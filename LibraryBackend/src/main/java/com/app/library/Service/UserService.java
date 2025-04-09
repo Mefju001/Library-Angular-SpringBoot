@@ -179,7 +179,7 @@ public class UserService {
                 .title(favoritebooks.getBook().getTitle())
                 .authorName(favoritebooks.getBook().getAuthor().getName())
                 .authorSurname(favoritebooks.getBook().getAuthor().getSurname())
-                .publicationYear(favoritebooks.getBook().getPublicationYear())
+                .publicationDate(favoritebooks.getBook().getpublicationDate())
                 .isbn(favoritebooks.getBook().getIsbn())
                 .genreName(favoritebooks.getBook().getGenre().getName())
                 .language(favoritebooks.getBook().getLanguage())

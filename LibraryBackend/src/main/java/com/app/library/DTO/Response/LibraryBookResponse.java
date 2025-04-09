@@ -3,6 +3,9 @@ package com.app.library.DTO.Response;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 @Getter
 @Builder
 public class LibraryBookResponse {
@@ -11,7 +14,7 @@ public class LibraryBookResponse {
     private final String title;
     private final String authorName;
     private final String authorSurname;
-    private final int publicationYear;
+    private final LocalDate publicationDate;
     private final long isbn;
     private final String genreName;
     private final String language;
@@ -23,12 +26,12 @@ public class LibraryBookResponse {
     private final String name;
     private final String address;
 
-    public LibraryBookResponse(Integer id, String title, String authorName, String authorSurname, int publicationYear, long isbn, String genreName, String language, String publisherName, int pages, float price, Integer idLibrary, String name, String address) {
+    public LibraryBookResponse(Integer id, String title, String authorName, String authorSurname, LocalDate publicationDate, long isbn, String genreName, String language, String publisherName, int pages, float price, Integer idLibrary, String name, String address) {
         this.id = id;
         this.title = title;
         this.authorName = authorName;
         this.authorSurname = authorSurname;
-        this.publicationYear = publicationYear;
+        this.publicationDate = publicationDate;
         this.isbn = isbn;
         this.genreName = genreName;
         this.language = language;
