@@ -1,11 +1,13 @@
 package com.app.library.Entity;
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+import static com.app.library.Entity.RentalStatus.loaned;
 import static com.app.library.Entity.RentalStatus.pending;
 
 @Data
@@ -26,9 +28,13 @@ public class Rental {
     private  LocalDate rentalStartDate;
     @Column(name = "rental_end_date")
     private  LocalDate rentalEndDate;
+    @Column(name = "return_request_date")
+    private  LocalDate returnRequestDate;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private RentalStatus status;
+    @Column(name = "penalty")
+    private Double penalty;
     public Rental(Integer rentalId, User userId, Book bookId, LocalDate rentalStartDate, LocalDate rentalEndDate) {
         this.rentalId = rentalId;
         this.user = userId;
@@ -39,11 +45,24 @@ public class Rental {
     public Rental() {
 
     }
+    public void requestStartLoan()
+    {
+        this.status= pending;
+    }
     public void startLoan()
     {
-        this.status= RentalStatus.pending;
+        this.status= loaned;
         this.rentalStartDate = LocalDate.now();
         this.rentalEndDate =this.rentalStartDate.plusMonths(3);
+    }
+    public void requestEndLoan()
+    {
+        if (this.status != loaned) {
+            throw new IllegalStateException("Return can only be requested for loaned books");
+        }
+        this.status = RentalStatus.return_requested;
+        this.returnRequestDate = LocalDate.now();
+
     }
     public void endLoan()
     {
@@ -56,7 +75,7 @@ public class Rental {
     public boolean isOverdue()
     {
         LocalDate today = LocalDate.now();
-        if(this.status == pending && rentalEndDate.isBefore(today))
+        if(this.status == loaned && rentalEndDate.isBefore(today))
         {
             this.status = RentalStatus.overdue;
             return true;
@@ -67,6 +86,13 @@ public class Rental {
     {
 
         return ChronoUnit.DAYS.between(LocalDate.now(),this.rentalEndDate);
+    }
+    public Integer getDays() {
+        if (this.returnRequestDate != null && this.rentalEndDate != null) {
+            // Liczymy dni od daty zakończenia wypożyczenia do daty zwrotu
+            return Math.toIntExact(ChronoUnit.DAYS.between(this.rentalEndDate, this.returnRequestDate));
+        }
+        return 0; // Jeśli nie ma dat, zwracamy 0 dni (lub można rzucić wyjątek)
     }
     public void cancelLoan() {
         if (this.status != pending) {
