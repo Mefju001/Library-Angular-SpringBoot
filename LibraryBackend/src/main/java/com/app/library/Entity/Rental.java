@@ -1,7 +1,6 @@
 package com.app.library.Entity;
 
 import jakarta.persistence.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -70,6 +69,7 @@ public class Rental {
     }
     public void extendLoan()
     {
+        this.status = RentalStatus.extend;
         this.rentalEndDate =this.rentalEndDate.plusMonths(1);
     }
     public boolean isOverdue()
@@ -82,10 +82,11 @@ public class Rental {
         }
         return false;
     }
-    public Long getRemainingDays()
+    public LoanDeadlineInfo getRemainingDays()
     {
-
-        return ChronoUnit.DAYS.between(LocalDate.now(),this.rentalEndDate);
+        long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), this.rentalEndDate);
+        boolean isOverdue = daysBetween < 0;
+        return new LoanDeadlineInfo(Math.abs(daysBetween), isOverdue);
     }
     public Integer getDays() {
         if (this.returnRequestDate != null && this.rentalEndDate != null) {

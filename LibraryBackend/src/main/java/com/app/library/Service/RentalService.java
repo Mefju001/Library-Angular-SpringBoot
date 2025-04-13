@@ -4,7 +4,6 @@ import com.app.library.Entity.*;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.RentalRepository;
 import com.app.library.Repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,12 +83,65 @@ public class RentalService {
         if (rental.getStatus() != RentalStatus.return_requested) {
             throw new IllegalStateException("To wypożyczenie nie ma zgłoszonego zwrotu");
         }
-
         rental.endLoan();
         Penalty penalty =new Penalty();
-        int overdueDays = rental.getDays(); // Zakładamy, że getDays() zwraca liczbę dni opóźnienia
-        Double penaltyPrice = penalty.calculatePenaltyPrice(overdueDays); // Obliczamy karę
+        int overdueDays = rental.getDays();
+        Double penaltyPrice = penalty.calculatePenaltyPrice(overdueDays);
         rental.setPenalty(penaltyPrice);
+        rentalRepository.save(rental);
+    }
+
+    public LoanDeadlineInfo howManyDaysLeft(Integer rentalId) {
+        Rental rental = rentalRepository.findById(rentalId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wypożyczenia o podanym ID"));
+
+        if (rental.getStatus() != RentalStatus.loaned) {
+            throw new IllegalStateException("Ksiazka musi być wypożyczona");
+        }
+        return rental.getRemainingDays();
+    }
+    public Boolean isOverdue(Integer rentalId) {
+        Rental rental = rentalRepository.findById(rentalId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wypożyczenia o podanym ID"));
+
+        if (rental.getStatus() != RentalStatus.loaned) {
+            throw new IllegalStateException("Ksiazka musi być wypożyczona");
+        }
+        return rental.isOverdue();
+    }
+
+    @Transactional
+    public void requestExtendLoan(Integer rentalId) {
+        Rental rental = rentalRepository.findById(rentalId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wypożyczenia o podanym ID"));
+
+        if (rental.getStatus() != RentalStatus.loaned) {
+            throw new IllegalStateException("Ksiazka nie została wypożyczona");
+        }
+
+        rental.setStatus(RentalStatus.extend_requested);
+        rentalRepository.save(rental);
+    }
+    @Transactional
+    public void approveExtendLoan(Integer rentalId) {
+        Rental rental = rentalRepository.findById(rentalId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wypożyczenia o podanym ID"));
+
+        if (rental.getStatus() != RentalStatus.extend_requested) {
+            throw new IllegalStateException("Ksiazka nie została wypożyczona");
+        }
+        rental.extendLoan();
+        rentalRepository.save(rental);
+    }
+    @Transactional
+    public void cancelLoanBook(Integer rentalId) {
+        Rental rental = rentalRepository.findById(rentalId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wypożyczenia o podanym ID"));
+
+        if (rental.getStatus() != RentalStatus.pending) {
+            throw new IllegalStateException("Ksiazka musi być nie wypożyczona");
+        }
+        rental.cancelLoan();
         rentalRepository.save(rental);
     }
 }
