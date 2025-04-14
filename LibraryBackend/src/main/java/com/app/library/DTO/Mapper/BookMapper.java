@@ -14,7 +14,7 @@ public interface BookMapper {
 
     @Mapping(source = "author.name", target = "authorName")
     @Mapping(source = "author.surname", target = "authorSurname")
-    @Mapping(source = "genre.name", target = "genre")
-    @Mapping(source = "publisher.name", target = "publisher")
+    @Mapping(source = "genre.name", target = "genreName")
+    @Mapping(source = "publisher.name", target = "publisherName")
     BookResponse toDto(Book book);
 }

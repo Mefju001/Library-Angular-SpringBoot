@@ -2,6 +2,8 @@ import { Component,OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MyServiceService } from '../../Service/BookService';
 import { UserService } from 'src/app/Service/UserService';
+import { LibraryService } from 'src/app/Service/LibraryService';
+import { LibraryBook } from 'src/app/Models/Library_book.model';
 @Component({
   selector: 'app-book-details',
   templateUrl: './book-details.component.html',
@@ -10,11 +12,16 @@ import { UserService } from 'src/app/Service/UserService';
 export class BookDetailsComponent implements OnInit {
   book: any; // Zmienna na dane książki
   userId: number = 0;
+  items: any[] = [];
+  title: string = '';
+  libraries: LibraryBook[] = []; // Tablica bibliotek
+  selectedLibrary: LibraryBook | null = null; // Zmienna przechowująca wybraną bibliotekę
   constructor(
     private route: ActivatedRoute,
     private MyServiceService: MyServiceService,
     private myService: MyServiceService,
-    private userService: UserService
+    private userService: UserService,
+    private libraryService: LibraryService
   ) {}
 
   ngOnInit(): void {
@@ -22,9 +29,23 @@ export class BookDetailsComponent implements OnInit {
     if (bookId) {
       this.MyServiceService.getBookById(bookId).subscribe(data => {
         this.book = data;
+        this.getLibraries(this.book.title);
       });
     }
     this.userId=this.getId();
+  }
+  getLibraries(title:string): void {
+    if (title) {
+      this.libraryService.getLibrarieswhereisbook(title).subscribe(
+        (data: LibraryBook[]) => {
+          this.libraries = data;  // Zaktualizuj dane
+        },
+        (error) => {
+          console.error('Błąd podczas pobierania danych: ', error);
+
+        }
+      );
+    }
   }
   getId(): number{
     const user = localStorage.getItem('user');
@@ -46,7 +67,7 @@ export class BookDetailsComponent implements OnInit {
         ; // Opcjonalnie, jeśli chcesz odświeżyć listę książek
       },
       error => {
-        console.error('Błąd podczas usuwania książki:', error);
+        console.error('Błąd podczas dodawania książki:', error);
       }
     );
   }

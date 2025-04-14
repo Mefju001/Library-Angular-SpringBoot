@@ -7,7 +7,8 @@ import java.time.LocalDate;
 import java.util.Date;
 @Getter
 @Setter
-public class BookRequest {
+public class LibraryBookRequest {
+    private Integer id;
     private String title;
     private String authorName;
     private String authorSurname;
@@ -18,4 +19,8 @@ public class BookRequest {
     private String publisherName;
     private int pages;
     private float price;
+    //Library
+    private Integer idLibrary;
+    private String name;
+    private String address;
 }

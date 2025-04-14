@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Book,PaginatedResponse  } from '../Models/book.model'; // Upewnij się, że masz model Book
 interface Genre {
   genreName: string;
@@ -36,7 +36,7 @@ export class MyServiceService {
     params: new HttpParams()
     .set('page', page)
     .set('size', size)
-    .set('genre_name', genreName)});
+    .set('genre_name', genreName)}).pipe(map(response => response || []));
   }
 
   // Wyszukuje książki po nazwie

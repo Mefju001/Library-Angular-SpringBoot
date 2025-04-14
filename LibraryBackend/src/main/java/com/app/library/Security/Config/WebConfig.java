@@ -1,4 +1,5 @@
 package com.app.library.Security.Config;
+
 import com.app.library.Security.JWT.AuthEntryPointJwt;
 import com.app.library.Security.JWT.AuthTokenFilter;
 import com.app.library.Security.Service.UserDetailsServiceImpl;
@@ -17,9 +18,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
@@ -30,11 +28,14 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
 
-    @Autowired
     UserDetailsServiceImpl userDetailsService;
 
+     AuthEntryPointJwt unauthorizedHandler;
     @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    public WebConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
+        this.userDetailsService = userDetailsService;
+        this.unauthorizedHandler = unauthorizedHandler;
+    }
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -60,14 +61,17 @@ public class WebConfig implements WebMvcConfigurer {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        auth
+                                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")
+                                .permitAll()
+                                .requestMatchers("/api/rentals/**").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/books/**").permitAll()    //hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/library/**").permitAll()       //hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/user/**").permitAll()  //hasAnyRole("ADMIN", "USER")
@@ -78,7 +82,7 @@ public class WebConfig implements WebMvcConfigurer {
             config.setAllowedOrigins(List.of("http://localhost:4200")); // Pozwól na frontend
             config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS")); // Obsługiwane metody
             config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-            config.setAllowCredentials(true); // Zezwól na ciasteczka/sesje
+            config.setAllowCredentials(true);
             return config;
         }));
 

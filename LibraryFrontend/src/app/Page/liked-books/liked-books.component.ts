@@ -39,4 +39,14 @@ export class LikedBooksComponent implements OnInit {
      console.error(Error);
      return 0;
   }
+  deletelikedBook(id: number) {
+    this.userService.deletelikedBook(id).subscribe(
+      data => {
+        console.log('Książka została usunięta:', data);
+      },
+      error => {
+        console.error('Błąd podczas usuwania książki:', error);
+      }
+    );
+  }
 }

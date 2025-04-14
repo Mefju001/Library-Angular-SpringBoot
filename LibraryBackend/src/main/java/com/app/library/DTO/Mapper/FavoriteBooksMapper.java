@@ -16,7 +16,7 @@ public interface FavoriteBooksMapper {
     @Mapping(source = "book.author.surname", target = "authorSurname")
     @Mapping(source = "book.genre.name", target = "genreName")
     @Mapping(source = "book.publisher.name", target = "publisherName")
-    @Mapping(source = "book.publicationYear", target = "publicationYear")
+    @Mapping(source = "book.publicationDate", target = "publicationDate")
     @Mapping(source = "book.isbn", target = "isbn")
     @Mapping(source = "book.language", target = "language")
     @Mapping(source = "book.pages", target = "pages")

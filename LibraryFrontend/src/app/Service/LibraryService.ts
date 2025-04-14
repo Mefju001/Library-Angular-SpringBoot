@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Library } from '../Models/Library.model';
+import { LibraryBook } from '../Models/Library_book.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,9 @@ export class LibraryService {
   getLibraries(): Observable<Library[]> {
     // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.get<Library[]>(`${this.apiUrl}/`);
+  }
+  getLibrarieswhereisbook(title: string): Observable<LibraryBook[]> {
+    return this.http.get<LibraryBook[]>(`${this.apiUrl}/searchby/${title}`);
   }
   getLibraryById(id: number): Observable<Library> {
       return this.http.get<Library>(`${this.apiUrl}/${id}`, {

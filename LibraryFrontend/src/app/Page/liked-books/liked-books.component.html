@@ -9,6 +9,9 @@
         <p><strong>Język:</strong> {{ book.language }}</p>
         <p><strong>Cena:</strong> {{ book.price }} zł</p>
         <p><strong>Liczba stron:</strong> {{ book.pages }}</p>
+        <form (submit)="deletelikedBook(book.id)">
+            <button type="submit">Usuń książkę z polubionych</button>
+        </form>
     <div *ngIf="likedBooks.length === 0">
         <p>Brak książek w bazie danych.</p>
     </div>

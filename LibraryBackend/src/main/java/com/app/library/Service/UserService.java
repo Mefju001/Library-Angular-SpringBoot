@@ -4,6 +4,7 @@ import com.app.library.DTO.Mapper.FavoriteBooksMapper;
 import com.app.library.DTO.Request.UserDetailsRequest;
 import com.app.library.DTO.Request.UserPasswordRequest;
 import com.app.library.DTO.Response.FavoriteBooksResponse;
+import com.app.library.DTO.Response.UserResponse;
 import com.app.library.Entity.Book;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Entity.Role;
@@ -64,8 +65,14 @@ public class UserService {
                     .map(favoriteBooksMapper::toDto)
                     .toList();
     }
-    public User findbyid(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    public UserResponse findbyid(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return UserResponse.builder()
+                .id(user.getId())
+                .username(user.getName())
+                .password(user.getPassword())
+                .role(String.valueOf(user.getRoles()))
+                .build();
     }
     public JwtResponse login(UserRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -150,7 +157,7 @@ public class UserService {
     }
 
     @Transactional
-    public Favoritebooks addfavoritebooks(Integer bookId, Long userId)
+    public FavoriteBooksResponse addfavoritebooks(Integer bookId, Long userId)
     {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
@@ -167,7 +174,19 @@ public class UserService {
         Favoritebooks favoritebooks = new Favoritebooks(book,user);
         favoritebooksRepository.save(favoritebooks);
 
-        return favoritebooks;
+        return  FavoriteBooksResponse.builder()
+                .id(favoritebooks.getId())
+                .title(favoritebooks.getBook().getTitle())
+                .authorName(favoritebooks.getBook().getAuthor().getName())
+                .authorSurname(favoritebooks.getBook().getAuthor().getSurname())
+                .publicationDate(favoritebooks.getBook().getpublicationDate())
+                .isbn(favoritebooks.getBook().getIsbn())
+                .genreName(favoritebooks.getBook().getGenre().getName())
+                .language(favoritebooks.getBook().getLanguage())
+                .publisherName(favoritebooks.getBook().getPublisher().getName())
+                .pages(favoritebooks.getBook().getPages())
+                .price(favoritebooks.getBook().getPrice())
+                .build();
     }
     @Transactional
     public Favoritebooks updatefavoritebooks(Favoritebooks favoritebooks)

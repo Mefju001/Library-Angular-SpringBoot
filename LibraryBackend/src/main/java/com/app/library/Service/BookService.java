@@ -25,16 +25,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class BookService {
-
-
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
-
-
     private final BookRepository bookRepository;
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;
@@ -97,21 +94,21 @@ public class BookService {
         Page<Book> books = bookRepository.findBooksByPriceIsBetween(min, max,pageable);
         return books.map(bookMapper::toDto);
     }
-    public Page<BookResponse> findbooksbyyear(Integer year1, Integer year2,int page, int size) {
+    public Page<BookResponse> findbooksbyyear(LocalDate year1, LocalDate year2,int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Book> books = bookRepository.findBooksByPublicationYearBetween(year1, year2,pageable);
+        Page<Book> books = bookRepository.findBooksByPublicationDateBetween(year1, year2,pageable);
         return books.map(bookMapper::toDto);
     }
     public Page<BookResponse> findnewbooks(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         LocalDate date = LocalDate.now();
-        Page<Book> books = bookRepository.findBooksByPublicationYearIs(date.getYear(),pageable);
+        Page<Book> books = bookRepository.findBooksByPublicationDateYear(date.getYear(),pageable);
         return books.map(bookMapper::toDto);
     }
     public Page<BookResponse> findforeshadowedbooks(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         LocalDate date = LocalDate.now();
-        Page<Book> books = bookRepository.findBooksByPublicationYearIsGreaterThan(date.getYear(),pageable);
+        Page<Book> books = bookRepository.findBooksByPublicationDateIsGreaterThan(date,pageable);
         return books.map(bookMapper::toDto);
     }
     public Page<BookResponse> sortbooktitle(int page, int size,String type) {
@@ -142,7 +139,7 @@ public class BookService {
         }
 
         Sort.Direction direction = type.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "publicationYear"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "publicationDate"));
 
         Page<Book> books = bookRepository.findAll(pageable);
         return books.map(bookMapper::toDto);
@@ -150,7 +147,7 @@ public class BookService {
 
     private void setbook(Book book, BookRequest bookRequest){
         book.setTitle(bookRequest.getTitle());
-        book.setPublicationYear(bookRequest.getPublicationYear());
+        book.setpublicationDate(bookRequest.getPublicationDate());
         book.setIsbn(bookRequest.getIsbn());
         book.setLanguage(bookRequest.getLanguage());
         book.setPages(bookRequest.getPages());

@@ -5,7 +5,7 @@ The Online Bookstore Management System is a web-based application that allows us
 It includes features such as book catalog management, sorting, filtering, user authentication.
 # Technologies used:
 - Backend:
-Java,Spring Boot,Spring Security(JWT),Hibernate,Spring Data JPA(MySQL) 
+Java,Spring Boot,Spring Security(JWT),Hibernate,Spring Data JPA
 - Frontend:
 Angular,TypeScript
 - Database:
@@ -14,4 +14,4 @@ MySQL
 Swagger UI → http://localhost:8080/swagger-ui.html
 
 # TO-DO list:
-Audit,Favorites,Shop & Purchase, Newsletter, Help Chat, and Loyalty Program.
+Audit,Shop & Purchase,Rental,Recommendations, Newsletter, Help Chat,Forum, and Loyalty Program.

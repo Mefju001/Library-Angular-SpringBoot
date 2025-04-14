@@ -1,103 +1,37 @@
 package com.app.library.DTO.Response;
 
+import lombok.Builder;
+import lombok.Getter;
+
+import java.time.LocalDate;
+import java.util.Date;
+
+@Getter
+@Builder
 public class FavoriteBooksResponse {
-    private Integer id;
-    private String title;
-    private String authorName;
-    private String authorSurname;
-    private int publicationYear;
-    private long isbn;
-    private String genreName;
-    private String language;
-    private String publisherName;
-    private int pages;
-    private float price;
+    private final Integer id;
+    private final String title;
+    private final String authorName;
+    private final String authorSurname;
+    private final LocalDate publicationDate;
+    private final long isbn;
+    private final String genreName;
+    private final String language;
+    private final String publisherName;
+    private final int pages;
+    private final float price;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
+    public FavoriteBooksResponse(Integer id, String title, String authorName, String authorSurname, LocalDate publicationDate, long isbn, String genreName, String language, String publisherName, int pages, float price) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getAuthorName() {
-        return authorName;
-    }
-
-    public void setAuthorName(String authorName) {
         this.authorName = authorName;
-    }
-
-    public String getAuthorSurname() {
-        return authorSurname;
-    }
-
-    public void setAuthorSurname(String authorSurname) {
         this.authorSurname = authorSurname;
-    }
-
-    public int getPublicationYear() {
-        return publicationYear;
-    }
-
-    public void setPublicationYear(int publicationYear) {
-        this.publicationYear = publicationYear;
-    }
-
-    public long getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(long isbn) {
+        this.publicationDate = publicationDate;
         this.isbn = isbn;
-    }
-
-    public String getGenreName() {
-        return genreName;
-    }
-
-    public void setGenreName(String genreName) {
         this.genreName = genreName;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
         this.language = language;
-    }
-
-    public String getPublisherName() {
-        return publisherName;
-    }
-
-    public void setPublisherName(String publisherName) {
         this.publisherName = publisherName;
-    }
-
-    public int getPages() {
-        return pages;
-    }
-
-    public void setPages(int pages) {
         this.pages = pages;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
         this.price = price;
     }
 }
