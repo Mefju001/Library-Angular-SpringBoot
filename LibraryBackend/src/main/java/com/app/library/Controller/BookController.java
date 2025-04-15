@@ -4,7 +4,8 @@ import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
 import com.app.library.Service.BookService;
-import com.app.library.Service.PromotionService;
+import com.app.library.Service.BookServiceImpl;
+import com.app.library.Service.PromotionServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +27,7 @@ import java.util.List;
 public class BookController {
     private final BookService bookService;
     @Autowired
-    public BookController(BookService bookService, PromotionService promotionService) {
+    public BookController(BookService bookService) {
         this.bookService = bookService;
     }
     @GetMapping("/")
@@ -39,7 +40,7 @@ public class BookController {
             @RequestParam(defaultValue = "10") int size)
     {
 
-        Page<BookResponse>books=bookService.findall(page,size);
+        Page<BookResponse>books= bookService.findall(page,size);
         if(books.isEmpty())
         {
             return ResponseEntity.noContent().build();

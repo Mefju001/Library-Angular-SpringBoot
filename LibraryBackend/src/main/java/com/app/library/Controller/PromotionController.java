@@ -1,6 +1,7 @@
 package com.app.library.Controller;
 
 import com.app.library.Service.PromotionService;
+import com.app.library.Service.PromotionServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.*;
 public class PromotionController {
     private final PromotionService promotionService;
     @Autowired
-    public PromotionController(PromotionService promotionService) {
-        this.promotionService = promotionService;
+    public PromotionController(PromotionService promotionServiceImpl) {
+        this.promotionService = promotionServiceImpl;
     }
     @GetMapping("/promotion")
     @Operation(summary = "Ustawia promocję na książce", description = "Związuje promocję z książką na podstawie identyfikatorów książki i promocji.")
