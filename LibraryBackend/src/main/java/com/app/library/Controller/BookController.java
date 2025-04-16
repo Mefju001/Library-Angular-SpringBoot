@@ -252,7 +252,7 @@ public class BookController {
         return ResponseEntity.ok(bookResponse);
     }
     //////
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+   // @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     @Operation(summary = "Dodaje ksiazke do bazy danych", description = "Dodaje ksiazke uzupelnioną przez użytkownika do bazy danych")
     public ResponseEntity<BookRequest> addbook(@Parameter(description = "Obiekt zawierający dane książki, które mają zostać dodane do bazy danych")

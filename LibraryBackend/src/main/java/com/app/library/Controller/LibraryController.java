@@ -92,7 +92,7 @@ public class LibraryController {
     @PostMapping("/addlibrary")
     @Operation(summary = "Dodaje biblioteke", description = "Dodaje do bazy danych obiekt z uzupełnionymi danymi przez uzytkownika")
     public ResponseEntity<LibraryResponse>addlibrary(@Parameter(description = "Obiekt zawierający dane biblioteki, które mają zostać dodane do bazy danych")
-                                                 @RequestBody LibraryRequest library)
+                                                 @RequestBody @Valid LibraryRequest library)
     {
         return ResponseEntity.ok(libraryService.addlibrary(library));
     }
@@ -101,7 +101,7 @@ public class LibraryController {
     @Operation(summary = "Dodaje dostepnosc ksiazki w bibliotece", description = "Dodaje do bazy danych obiekt zawierający informacje o książce i bibliotece, " +
             "co pozwala na śledzenie dostępności książek w systemie bibliotecznym.")
     public ResponseEntity<LibraryBookResponse>addbooktolibrary(@Parameter(description = "Obiekt zawierający dane bilioteki i ksiazki, które mają zostać dodane do bazy danych")
-                                                           @RequestBody LibraryBookRequest libraryBookRequest)
+                                                           @RequestBody @Valid LibraryBookRequest libraryBookRequest)
     {
         return ResponseEntity.ok(libraryService.addbooktolibrary(libraryBookRequest));
     }
@@ -130,7 +130,7 @@ public class LibraryController {
             description = "Aktualizuje dane książki w bibliotece na podstawie przekazanego obiektu 'LibraryBook'."
     )
     public ResponseEntity<LibraryBookResponse>updatebooksinlibrary(@Parameter(description = "Obiekt zawierający dane książki w bibliotece do zaktualizowania")
-                                                               @RequestBody LibraryBookRequest libraryBook)
+                                                               @RequestBody @Valid LibraryBookRequest libraryBook)
     {
         LibraryBookResponse updatedLibraryBook = libraryService.updatebookandlibrary(libraryBook);
 

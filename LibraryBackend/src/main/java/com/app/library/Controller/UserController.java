@@ -10,6 +10,7 @@ import com.app.library.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update")
     @Operation(summary = "Aktualizuje książkę w ulubionych", description = "Aktualizuje dane książki w ulubionych użytkownika.")
-    public ResponseEntity<Favoritebooks> updatefavoritebooks(@RequestBody Favoritebooks favoritebooks) {
+    public ResponseEntity<Favoritebooks> updatefavoritebooks(@RequestBody @Valid Favoritebooks favoritebooks) {
         Favoritebooks updatedBook = userService.updatefavoritebooks(favoritebooks);
         return ResponseEntity.ok(updatedBook);
     }
@@ -76,13 +77,13 @@ public class UserController {
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/change/details/{id}")
     @Operation(summary = "Zmiana danych użytkownika", description = "Zmiana szczegółowych danych użytkownika.")
-    public ResponseEntity<?> changedetails(@PathVariable Long id, @RequestBody UserDetailsRequest userDetailsRequest) {
+    public ResponseEntity<?> changedetails(@PathVariable Long id, @RequestBody @Valid UserDetailsRequest userDetailsRequest) {
         userService.changedetails(id, userDetailsRequest);
         return ResponseEntity.ok("Szczegóły zostały zaktualizowane.");
     }
     @PutMapping("/change/password/{id}")
     @Operation(summary = "Zmiana hasła użytkownika", description = "Zmienia hasło użytkownika na podstawie nowego hasła.")
-    public ResponseEntity<?> changepassword(@PathVariable Long id, @RequestBody UserPasswordRequest userPasswordRequest) {
+    public ResponseEntity<?> changepassword(@PathVariable Long id, @RequestBody @Valid UserPasswordRequest userPasswordRequest) {
         userService.changepassword(id, userPasswordRequest);
         return ResponseEntity.ok("Hasło zostało zmienione.");
     }
