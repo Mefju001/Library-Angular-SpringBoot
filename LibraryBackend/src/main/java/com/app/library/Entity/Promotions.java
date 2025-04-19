@@ -11,16 +11,11 @@ public class Promotions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     @Enumerated(EnumType.STRING)
     private DiscountType discountType;
-
     private BigDecimal discountValue;
     private Boolean isActive = true;
-
-
     @OneToMany(mappedBy = "promotions", cascade = CascadeType.ALL)
     private List<BookPromotion> bookPromotions;
 

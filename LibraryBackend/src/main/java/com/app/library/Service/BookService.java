@@ -3,6 +3,7 @@ package com.app.library.Service;
 import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
+import com.app.library.Entity.BookImg;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.List;
 public interface BookService {
     Page<BookResponse> findall(int page, int size);
     BookResponse findbyid(Integer id);
+    BookImg findByBookId(Integer id);
     List<GenreResponse> findallgenres();
     Page<BookResponse> findbooksbygenre(String name, int page, int size);
     Page<BookResponse> findbooksbypublisher(String name, int page, int size);

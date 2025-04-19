@@ -36,7 +36,16 @@
                   </button>
                 </div>
               </div>
-              
+              <div style="display: flex; justify-content: center; gap: 2rem; align-items: center; margin-top: 2rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="checkbox" (change)="onCheckboxChange($event,'Nowości')" />
+                  Nowości
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="checkbox" (change)="onCheckboxChange($event,'Zapowiedzi')" />
+                  Zapowiedzi
+                </label>
+              </div>
               <br>
               <button type="submit">Zastosuj filtry</button>
               <button type="button" (click)="resetFilters()">Resetuj</button>

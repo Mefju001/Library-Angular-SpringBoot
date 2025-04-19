@@ -14,7 +14,7 @@ export class AddBookComponent implements OnInit {
     title: '',
     authorName: '',
     authorSurname: '',
-    publicationYear: 0,
+    publicationDate: '',
     isbn: '',
     genreName: '',
     language: '',

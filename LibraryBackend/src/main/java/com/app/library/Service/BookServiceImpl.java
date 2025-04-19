@@ -5,14 +5,8 @@ import com.app.library.DTO.Mapper.GenreMapper;
 import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
-import com.app.library.Entity.Author;
-import com.app.library.Entity.Book;
-import com.app.library.Entity.Genre;
-import com.app.library.Entity.Publisher;
-import com.app.library.Repository.AuthorRepository;
-import com.app.library.Repository.BookRepository;
-import com.app.library.Repository.GenreRepository;
-import com.app.library.Repository.PublisherRepository;
+import com.app.library.Entity.*;
+import com.app.library.Repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -32,6 +26,7 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
     private static final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
     private final BookRepository bookRepository;
+    private final BookImgRepository bookImgRepository;
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;
     private final AuthorRepository authorRepository;
@@ -39,8 +34,9 @@ public class BookServiceImpl implements BookService {
     private final GenreMapper genreMapper;
 
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository, GenreRepository genreRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository, BookMapper bookMapper, GenreMapper genreMapper) {
+    public BookServiceImpl(BookRepository bookRepository, BookImgRepository bookImgRepository, GenreRepository genreRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository, BookMapper bookMapper, GenreMapper genreMapper) {
         this.bookRepository = bookRepository;
+        this.bookImgRepository = bookImgRepository;
         this.genreRepository = genreRepository;
         this.publisherRepository = publisherRepository;
         this.authorRepository = authorRepository;
@@ -56,7 +52,11 @@ public class BookServiceImpl implements BookService {
         Optional<Book> books = bookRepository.findById(id);
         return books.map(bookMapper::toDto).orElseThrow();
     }
-
+    public BookImg findByBookId(Integer id)
+    {
+        BookImg bookImg = bookImgRepository.findBookImgByBook_Id(id);
+        return bookImg;
+    }
     public List<GenreResponse> findallgenres() {
             List<Genre> genres = genreRepository.findAll();
             return genres.stream()

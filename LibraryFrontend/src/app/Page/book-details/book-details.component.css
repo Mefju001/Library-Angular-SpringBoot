@@ -1,90 +1,185 @@
-.books-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    width: 100%;
+/* Kontener książki - wyśrodkowanie */
+.book-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
 }
 
-.book {
-    background-color: white;
-    width: calc(33.333% - 20px); /* Trzy książki w jednym wierszu */
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-align: left;
-    box-sizing: border-box;
+.book-container h2 {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
     margin-bottom: 20px;
 }
 
-.book img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 15px;
-}
-
-.book h3 {
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-.book p {
+.book-container p {
     font-size: 16px;
-    color: #666;
-    margin-bottom: 10px;
+    line-height: 1.6;
+    margin: 10px 0;
 }
 
-.book button {
-    background-color: #007BFF;
+.book-container strong {
+    font-weight: bold;
+}
+
+/* Przyciski w sekcji akcji */
+.action-buttons form {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 10px;
-    cursor: pointer;
     border-radius: 5px;
-    font-size: 16px;
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-around;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background-color 0.3s;
 }
 
-.book button:hover {
-    background-color: #0056b3;
+.button:hover {
+    background-color: #45a049;
 }
+
+button:focus {
+    outline: none;
+}
+
+/* Dropdown */
 .dropdown {
     position: relative;
     display: inline-block;
 }
 
-.dropbtn {
-    background-color: #007bff;
+.dropdown button {
+    padding: 10px 15px;
+    background-color: #008CBA;
     color: white;
-    padding: 10px;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
+}
+
+.dropdown button:hover {
+    background-color: #007b8c;
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: white;
+    background-color: #f1f1f1;
     min-width: 160px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 1;
+    border-radius: 5px;
+    margin-top: 10px;
 }
 
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
-.dropdown-item {
-    background: none;
-    border: none;
-    padding: 10px;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
+.dropdown-content option {
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    color: #333;
 }
 
-.dropdown-item:hover {
-    background-color: #f1f1f1;
+.dropdown-content option:hover {
+    background-color: #ddd;
 }
+
+/* Powrót */
+.back-button {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+.delete-button {
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 10px 15px;
+    text-transform: uppercase;
+    transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+    background-color: darkred;
+}
+.book-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .book-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .book-details {
+    flex: 1;
+  }
+  
+  .book-image img {
+    width: 250px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  .file-input {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .submit-button {
+    display: block;
+    width: 80%;
+    margin: 20px auto;
+    padding: 12px 20px;
+    background-color: #28a745;
+    color: white;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-button:hover {
+    background-color: #218838;
+  }
+  
+  

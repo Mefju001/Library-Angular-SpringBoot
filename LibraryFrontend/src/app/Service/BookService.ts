@@ -96,13 +96,29 @@ export class MyServiceService {
         .set('name', value)
     });
   }
-
   getBookById(id: number): Observable<Book> {
     return this.http.get<Book>(`${this.apiUrl}/${id}`, {
+    params: new HttpParams().set('id', id)
+    });
+  }
+  getBookImgById(id: number): Observable<Book> {
+    return this.http.get<Book>(`${this.apiUrl}/bookImg/${id}`, {
       params: new HttpParams().set('id', id)
     });
   }
-    getBookByIsbn(isbn: string): Observable<Book> {//Nie ma
+  getForeshadowedBook(page: number, size: number): Observable<PaginatedResponse<Book>> {
+    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/foreshadowed`,{
+    params: new HttpParams()
+    .set('page', page)
+    .set('size', size)});
+  }
+  getNewBooks(page: number, size: number): Observable<PaginatedResponse<Book>> {
+    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/news`,{
+    params: new HttpParams()
+    .set('page', page)
+    .set('size', size)});
+  }
+  getBookByIsbn(isbn: string): Observable<Book> {
     return this.http.get<Book>(`${this.apiUrl}/${isbn}`, {
       params: new HttpParams().set('isbn', isbn)
     });

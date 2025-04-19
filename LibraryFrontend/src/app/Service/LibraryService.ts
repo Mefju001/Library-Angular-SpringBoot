@@ -28,7 +28,6 @@ export class LibraryService {
   }
   updateLibrary(id: number, library: Library): Observable<any> {
       return this.http.put(`${this.apiUrl}/update/${id}`, library);
-      params: new HttpParams().set('id', id)
   }
   
   deleteLibrary(id: number): Observable<any> {

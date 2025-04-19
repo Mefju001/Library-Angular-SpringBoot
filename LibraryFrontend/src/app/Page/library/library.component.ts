@@ -19,6 +19,13 @@ export class LibraryComponent {
     // Początkowe wywołanie, żeby pobrać książki (jeśli jakieś filtry byłyby ustawione)
     this.getLibraries();
   }
+  isAdmin(): boolean {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if(user.role[0].authority ==='ROLE_ADMIN')
+      return true;
+
+    return false;
+  }
   getLibraries(): void {
     // Wywołaj metodę serwisu, aby pobrać książki
     this.Libraryservice.getLibraries().subscribe(

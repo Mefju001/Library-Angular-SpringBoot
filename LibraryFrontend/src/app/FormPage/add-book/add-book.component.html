@@ -9,7 +9,7 @@
   <input type="text" [(ngModel)]="book.authorSurname" name="authorSurname" required>
 
   <label>Rok wydania:</label>
-  <input type="number" [(ngModel)]="book.publicationYear" name="publicationYear" required>
+  <input type="date" [(ngModel)]="book.publicationDate" name="publicationDate" required>
 
   <label>ISBN:</label>
   <input type="text" [(ngModel)]="book.isbn" name="isbn" required>
@@ -28,6 +28,7 @@
 
   <label>Cena:</label>
   <input type="number" [(ngModel)]="book.price" name="price" step="0.01" required>
+
 
   <button type="submit">Dodaj książkę</button>
 

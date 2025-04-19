@@ -4,6 +4,7 @@ import { MyServiceService } from '../../Service/BookService';
 import { UserService } from 'src/app/Service/UserService';
 import { LibraryService } from 'src/app/Service/LibraryService';
 import { LibraryBook } from 'src/app/Models/Library_book.model';
+import { BookImg } from 'src/app/Models/BookImg.model';
 @Component({
   selector: 'app-book-details',
   templateUrl: './book-details.component.html',
@@ -12,13 +13,13 @@ import { LibraryBook } from 'src/app/Models/Library_book.model';
 export class BookDetailsComponent implements OnInit {
   book: any; // Zmienna na dane książki
   userId: number = 0;
+  bookImg:any;
   items: any[] = [];
   title: string = '';
   libraries: LibraryBook[] = []; // Tablica bibliotek
   selectedLibrary: LibraryBook | null = null; // Zmienna przechowująca wybraną bibliotekę
   constructor(
     private route: ActivatedRoute,
-    private MyServiceService: MyServiceService,
     private myService: MyServiceService,
     private userService: UserService,
     private libraryService: LibraryService
@@ -27,12 +28,24 @@ export class BookDetailsComponent implements OnInit {
   ngOnInit(): void {
     const bookId = Number(this.route.snapshot.paramMap.get('id')); // Pobranie ID z URL
     if (bookId) {
-      this.MyServiceService.getBookById(bookId).subscribe(data => {
+      this.myService.getBookById(bookId).subscribe(data => {
         this.book = data;
         this.getLibraries(this.book.title);
       });
+      this.myService.getBookImgById(bookId).subscribe(data=>
+      {
+        this.bookImg = data;
+      }
+      )
     }
     this.userId=this.getId();
+  }
+  isAdmin(): boolean {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if(user.role[0].authority ==='ROLE_ADMIN')
+      return true;
+
+    return false;
   }
   getLibraries(title:string): void {
     if (title) {

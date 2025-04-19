@@ -1,40 +1,58 @@
-<div *ngIf="book">
-    <h2>{{ book.title }}</h2>
-    <p><strong>Autor:</strong> {{ book.authorName }} {{ book.authorSurname }}</p>
-    <p><strong>Gatunek:</strong> {{ book.genreName }}</p>
-    <p><strong>Wydawca:</strong> {{ book.publisherName }}</p>
-    <p><strong>Rok wydania:</strong> {{ book.publicationYear }}</p>
-    <p><strong>ISBN:</strong> {{ book.isbn }}</p>
-    <p><strong>Język:</strong> {{ book.language }}</p>
-    <p><strong>Cena:</strong> {{ book.price }} zł</p>
-    <p><strong>Liczba stron:</strong> {{ book.pages }}</p>
-    <div class="action-buttons">
-        <form >
-            <button type="submit"[routerLink]="['/addbook', book.id]" class="button">Edytuj</button>
-        </form>               
-        <form (submit)="likedBook(book.id,userId)" >
-            <button type="submit" class="button">Polub</button>
-        </form>          
-        <!-- Jeśli masz formularz do usuwania książki -->
-        <form (submit)="deleteBook(book.id)">
-            <button type="submit">Usuń książkę</button>
-        </form>
-        <form >
-            <div class="dropdown">
-                <button type="button" (click)="getLibraries(book.title)">Dostępność</button>
-                <div class="dropdown-content">
-                  <div *ngIf="libraries.length > 0">
-                      <option *ngFor="let library of libraries" [ngValue]="library">
-                        {{ library.name }} - {{ library.address }}
-                      </option>
-                  </div>
-                  <div *ngIf="libraries.length === 0">
-                    <p>Ksiazka jest niedostepna</p>
-                  </div>
-                </div>
-              </div>
-              
-        </form>
+<div *ngIf="book" class="book-container">
+    <div class="book-content">
+      <!-- Lewa kolumna: informacje -->
+      <div class="book-details">
+        <h2>{{ book.title }}</h2>
+        <p><strong>Autor:</strong> {{ book.authorName }} {{ book.authorSurname }}</p>
+        <p><strong>Gatunek:</strong> {{ book.genreName }}</p>
+        <p><strong>Wydawca:</strong> {{ book.publisherName }}</p>
+        <p><strong>Rok wydania:</strong> {{ book.publicationDate}}</p>
+        <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+        <p><strong>Język:</strong> {{ book.language }}</p>
+        <p><strong>Cena:</strong> {{ book.price }} zł</p>
+        <p><strong>Liczba stron:</strong> {{ book.pages }}</p>
       </div>
-    <button [routerLink]="['/MainMenu']">Powrót</button>
-</div>
+  
+      <!-- Prawa kolumna: obraz -->
+      <div *ngIf="bookImg"class="book-image">
+        <img [src]="bookImg.bookImg" alt="Okładka książki" />
+      </div>
+    </div>
+  
+    <!-- Przyciski na dole -->
+    <div class="action-buttons">
+      <form>
+        <button *ngIf="isAdmin()" type="submit" [routerLink]="['/addbook', book.id]" class="button">Edytuj</button>
+      </form>
+  
+      <form (submit)="likedBook(book.id, userId)">
+        <button type="submit" class="button">Polub</button>
+      </form>
+  
+      <form *ngIf="isAdmin()" (submit)="deleteBook(book.id)">
+        <button type="submit" class="delete-button">Usuń książkę</button>
+      </form>
+      <form >
+        <button *ngIf="isAdmin()" type="button" class="custom-button"(click)="fileInput.click()" >Dodaj okładkę</button>
+        <input #fileInput type="file" style="display: none;" >        
+      </form>
+      <form>
+        <div class="dropdown">
+          <button type="button" (click)="getLibraries(book.title)">Dostępność</button>
+          <div class="dropdown-content">
+            <div *ngIf="libraries.length > 0">
+              <option *ngFor="let library of libraries" [ngValue]="library">
+                {{ library.name }} - {{ library.address }}
+              </option>
+            </div>
+            <div *ngIf="libraries.length === 0">
+              <p>Ksiazka jest niedostepna</p>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  
+    <button [routerLink]="['/MainMenu']" class="back-button">Powrót</button>
+  </div>
+  

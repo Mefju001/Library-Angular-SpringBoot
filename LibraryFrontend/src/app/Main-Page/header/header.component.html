@@ -3,14 +3,12 @@
         <a href="#">Książkowy świat</a>
     </div>
     <nav class="navbar">
-        <a routerLink="/MainMenu">Strona Główna</a>
-        <a routerLink="/addbook">Dodaj ksiazke</a>
-        
+        <a  routerLink="/MainMenu">Strona Główna</a>
+        <a *ngIf="isAdmin()" routerLink="/addbook">Dodaj ksiazke</a>
         <a href="#">Nowości</a>
         <a routerLink="/library">Biblioteki</a>
         <a href="#">Promocje</a>
         <a href="#">Rekomendacja</a>
-        <a href="#">Zapowiedzi</a>
         <a href="#">Kontakt</a>
         <a routerLink="/likedBooks">Polubione</a>
         <div class="dropdown">

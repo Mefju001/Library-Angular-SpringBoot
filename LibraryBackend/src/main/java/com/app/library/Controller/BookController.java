@@ -3,6 +3,7 @@ package com.app.library.Controller;
 import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
+import com.app.library.Entity.BookImg;
 import com.app.library.Service.BookService;
 import com.app.library.Service.BookServiceImpl;
 import com.app.library.Service.PromotionServiceImpl;
@@ -13,12 +14,14 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
@@ -57,6 +60,14 @@ public class BookController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(bookResponse);
+    }
+    @GetMapping("/bookImg/{id}")
+    @Operation(summary = "Zwraca książkę po ID", description = "Zwraca szczegóły książki na podstawie identyfikatora.")
+    public ResponseEntity<BookImg>getBookImgById(@Parameter(description = "Numer identyfikacyjny ksiazki")
+                                                   @PathVariable Integer id)
+    {
+        BookImg bookImg = bookService.findByBookId(id);
+        return ResponseEntity.ok(bookImg);
     }
     @GetMapping("/genres")
     @Operation(summary = "Zwraca gatunki ksiazek z bazy danych", description = "Zwraca gatunki ksiazek z bazy danych")
@@ -252,7 +263,7 @@ public class BookController {
         return ResponseEntity.ok(bookResponse);
     }
     //////
-   // @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     @Operation(summary = "Dodaje ksiazke do bazy danych", description = "Dodaje ksiazke uzupelnioną przez użytkownika do bazy danych")
     public ResponseEntity<BookRequest> addbook(@Parameter(description = "Obiekt zawierający dane książki, które mają zostać dodane do bazy danych")

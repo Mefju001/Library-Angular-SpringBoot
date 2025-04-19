@@ -1,5 +1,5 @@
 <div class="books-container">
-    <div *ngFor="let book of likedBooks" class="book">
+    <div *ngFor="let book of likedBooks" class="book"[routerLink]="['/book', book.id]">
         <h2>{{ book.title }}</h2>
         <p><strong>Autor:</strong> {{ book.authorName }} {{ book.authorSurname }}</p>
         <p><strong>Gatunek:</strong> {{ book.genreName }}</p>

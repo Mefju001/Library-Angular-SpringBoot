@@ -50,6 +50,20 @@ export class MainMenuComponent implements OnInit {
       this.items = data;
     });
   }
+  onCheckboxChange(event: Event,text:string,page: number = this.currentPage) {
+    const checkbox = event.target as HTMLInputElement;
+    if (checkbox.checked) {
+      if(text ==="Nowości"){
+      // Wykonaj coś, gdy checkbox jest zaznaczony
+      this.getNews(page);
+      }
+      if(text ==="Zapowiedzi"){
+        this.getForeshadowed(page);
+      }
+    } else {
+      this.getAllBooks(page)
+    }
+  }
   getBooks(page: number = this.currentPage): void {
     if (this.filters.genre) {
       this.getbooksbygenre(this.filters.genre, page);
@@ -84,6 +98,20 @@ export class MainMenuComponent implements OnInit {
       this.currentPage--;
       this.getBooks();
     }
+  }
+  getForeshadowed(page: number):void
+  {
+    this.myService.getForeshadowedBook(this.currentPage, this.pageSize).subscribe((response) => {
+      this.books = response.content;
+      this.totalPages = response.totalPages;
+    },error => console.error('Błąd podczas pobierania książek:', error));
+  }
+  getNews(page: number):void
+  {
+    this.myService.getNewBooks(this.currentPage, this.pageSize).subscribe((response) => {
+      this.books = response.content;
+      this.totalPages = response.totalPages;
+    },error => console.error('Błąd podczas pobierania książek:', error));
   }
   getAllBooks(page: number): void {
     this.myService.getAllBooks(this.currentPage, this.pageSize).subscribe((response) => {

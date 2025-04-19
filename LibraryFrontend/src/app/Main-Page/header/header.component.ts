@@ -5,6 +5,7 @@ import { UserService } from 'src/app/Service/UserService';
 import { Router } from '@angular/router';
 import { MainMenuComponent } from 'src/app/Page/main-menu/main-menu.component';
 import { Book } from 'src/app/Models/book.model';
+import { ThisReceiver } from '@angular/compiler';
 
 @Component({
   selector: 'app-header',
@@ -21,8 +22,19 @@ export class HeaderComponent implements OnInit{
   ngOnInit(): void {
     this.id=this.getId();
     this.username = this.getUsername();
-  }
 
+  }
+  isAdmin(): boolean {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    console.log(user.role[0].authority)
+    if(user.role[0].authority ==='ROLE_ADMIN')
+      return true;
+
+    return false;
+  }
+  gotofavorites(){
+    this.router.navigate(['/likedBooks'])
+  }
   getId(): number{
     const user = localStorage.getItem('user');
     if (user) {
@@ -36,6 +48,7 @@ export class HeaderComponent implements OnInit{
      console.error(Error);
      return 0;
   }
+
   getUsername(): string | null {
     const user = localStorage.getItem('user');
     if (user) {

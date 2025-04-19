@@ -37,7 +37,12 @@ body {
 
 .navbar {
     display: flex;
-    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 30px;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    flex-wrap: wrap;
 }
 
 .navbar a {
@@ -88,3 +93,15 @@ body {
 .dropdown-item:hover {
     background-color: #f1f1f1;
 }
+.wishlist-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .icon-label {
+    font-size: 0.9rem;
+    color: #444;
+    margin-top: 4px;
+  }
+  
