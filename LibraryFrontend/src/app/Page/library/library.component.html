@@ -2,7 +2,7 @@
     <h1>Lista bibliotek</h1>
     <!-- Przyciski u góry tabeli -->
     <div class="button-container">
-        <button [routerLink]="'/addlibrary'" class="button add-button">Dodaj bibliotekę</button>
+        <button [routerLink]="'/addlibrary'" class="button add-button" *ngIf="isAdmin()">Dodaj bibliotekę</button>
         <button onclick="window.location.href='/MainMenu'" class="button back-button">Powrót do menu</button>
     </div>
 
@@ -12,12 +12,15 @@
                 <tr>
                     <th>Nazwa</th>
                     <th>Adres</th>
+                    <th>Mapa</th>
+                    <th *ngIf="isAdmin()">Opcje</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let library of Libraries">
-                    <td>{{ library.name }}</td>
+                    <td><p class="library-name">Nocna zmiana</p></td>
                     <td>{{ library.address }}</td>
+                    <iframe [src]="safeMaps[library.id]"></iframe>
                     <td class="action-buttons"*ngIf="isAdmin()">
                         <form [routerLink]="['/addlibrary', library.id]" class="button">
                             <button  type="submit" class="edit-button">Edytuj</button>

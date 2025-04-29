@@ -2,7 +2,7 @@ package com.app.library.Entity;
 
 import jakarta.persistence.*;
 @Entity
-@Table(name = "favoritebooks_user")
+@Table(name = "favoritebooksuser")
 public class Favoritebooks
 {
         @Id

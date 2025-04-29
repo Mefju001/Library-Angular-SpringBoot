@@ -4,18 +4,22 @@ import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
 public class LibraryResponse {
     private final Integer id;
-    private final String name;
+    private final String location;
     private final String address;
+    private final String map;
 
-    public LibraryResponse(Integer id, String name, String address) {
+
+    public LibraryResponse(Integer id, String location, String address, String map) {
         this.id = id;
-        this.name = name;
+        this.location = location;
         this.address = address;
+        this.map = map;
     }
 
 }

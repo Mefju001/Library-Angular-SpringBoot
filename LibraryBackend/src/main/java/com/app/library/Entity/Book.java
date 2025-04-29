@@ -12,7 +12,7 @@ import java.util.Date;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Book_id")
+    @Column(name = "id")
     private Integer id;
     @Column(name = "title")
     private String title;

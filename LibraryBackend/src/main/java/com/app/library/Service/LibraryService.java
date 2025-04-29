@@ -12,7 +12,7 @@ public interface LibraryService {
 
     LibraryResponse findbyid(Integer id);
 
-    List<LibraryResponse> findlibrarybyname(String name);
+    List<LibraryResponse> findlibrarybylocation(String location);
 
     List<LibraryBookResponse> findallbookandlibrary();
 

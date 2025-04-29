@@ -12,8 +12,9 @@ export class AddLibraryComponent implements OnInit{
   isEditing: boolean = false;
   library = {
     id: 0,
-    name: '',
-    address: ''
+    location: '',
+    address: '',
+    map:""
   };
   constructor(private route: ActivatedRoute,private router: Router,private libraryService: LibraryService){}
   ngOnInit(): void {
@@ -38,8 +39,9 @@ export class AddLibraryComponent implements OnInit{
   updateLibraryDetails(id: number): void {
       const updatedLibrary: Library = {
         id: this.library.id,
-        name: this.library.name,
-        address: this.library.address,  // Dostosowane do właściwego klucza
+        location: this.library.location,
+        address: this.library.address,
+        map:this.library.map
       };
       this.libraryService.updateLibrary(id, updatedLibrary).subscribe(
         data => {

@@ -54,7 +54,11 @@ h1 {
     background-color: #333;
     transform: scale(1.05);
 }
+.lokalizacja iframe {
+    width: 600px;
+    height: 350px;
 
+}
 .add-button:hover {
     background-color: #45a049;
 }
@@ -80,7 +84,6 @@ h1 {
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-
 table {
     width: 100%;
     border-collapse: collapse;

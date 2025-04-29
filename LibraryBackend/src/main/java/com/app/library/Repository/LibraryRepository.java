@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface LibraryRepository extends JpaRepository<Library,Integer> {
-    List<Library>findLibraryByName(String Name);
+    List<Library>findLibraryByLocation(String location);
 }

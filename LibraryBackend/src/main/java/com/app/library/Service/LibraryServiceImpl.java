@@ -51,9 +51,9 @@ public class LibraryServiceImpl implements LibraryService{
             throw new EntityNotFoundException("not found");
         }
     }
-    public List<LibraryResponse>findlibrarybyname(String name)
+    public List<LibraryResponse>findlibrarybylocation(String location)
     {
-        List<Library> libraries = libraryRepository.findLibraryByName(name);
+        List<Library> libraries = libraryRepository.findLibraryByLocation(location);
         return libraries.stream().map(libraryMapper::toDto).toList();
     }
     public List<LibraryBookResponse>findallbookandlibrary()
@@ -70,10 +70,11 @@ public class LibraryServiceImpl implements LibraryService{
     public LibraryResponse addlibrary(LibraryRequest library)
     {
         Library savedLibrary = new Library();
-        savedLibrary.setName(library.getName());
+        savedLibrary.setLocation(library.getLocation());
         savedLibrary.setAddress(library.getAddress());
+        savedLibrary.setMap(library.getMap());
         libraryRepository.save(savedLibrary);
-        return new LibraryResponse(savedLibrary.getId(), savedLibrary.getName(), savedLibrary.getAddress());
+        return new LibraryResponse(savedLibrary.getId(), savedLibrary.getLocation(), savedLibrary.getAddress(),savedLibrary.getMap());
     }
     LibraryBook setLibraryBook(LibraryBookRequest request)
     {
@@ -114,10 +115,11 @@ public class LibraryServiceImpl implements LibraryService{
         Optional<Library> existinglibrary = libraryRepository.findById(id);
         if(existinglibrary.isPresent()) {
             Library updatedlibrary = existinglibrary.get();
-            updatedlibrary.setName(library.getName());
+            updatedlibrary.setLocation(library.getLocation());
             updatedlibrary.setAddress(library.getAddress());
+            updatedlibrary.setMap(library.getMap());
             libraryRepository.save(updatedlibrary);
-            return new LibraryResponse(existinglibrary.get().getId(),existinglibrary.get().getName(),existinglibrary.get().getAddress());
+            return new LibraryResponse(existinglibrary.get().getId(),existinglibrary.get().getLocation(),existinglibrary.get().getAddress(),existinglibrary.get().getMap());
         }
         else {
             throw new EntityNotFoundException("not found");

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Library } from 'src/app/Models/Library.model';
 import { LibraryService } from 'src/app/Service/LibraryService';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-library',
@@ -9,12 +10,14 @@ import { LibraryService } from 'src/app/Service/LibraryService';
 })
 export class LibraryComponent {
   Libraries: Library[] = [];
+  safeMaps: { [id: number]: SafeResourceUrl } = {}; // mapa id -> bezpieczny URL
   library={
     id: 0,
-    name: "",
-    address: ""
+    location: "",
+    address: "",
+    map:""
   };
-  constructor(private Libraryservice: LibraryService) { }
+  constructor(private Libraryservice: LibraryService,private sanitizer:DomSanitizer) { }
   ngOnInit(): void {
     // Początkowe wywołanie, żeby pobrać książki (jeśli jakieś filtry byłyby ustawione)
     this.getLibraries();
@@ -32,6 +35,10 @@ export class LibraryComponent {
       data => {
         console.log('Dane książek:', data);  // Zaloguj dane książek
         this.Libraries = data; // Przypisz dane książek do zmiennej books
+        this.safeMaps={};
+        this.Libraries.forEach(lib => {
+          this.safeMaps[lib.id] = this.sanitizer.bypassSecurityTrustResourceUrl(lib.map);
+        });
       },
       error => {
         console.error('Błąd podczas pobierania książek:', error); // Obsłuż błąd
@@ -41,8 +48,9 @@ export class LibraryComponent {
   updateLibraryDetails(id: number): void {
     const updatedLibrary: Library = {
       id: this.library.id,
-      name: this.library.name,
-      address:this.library.address
+      location: this.library.location,
+      address:this.library.address,
+      map:this.library.map
     };
     this.Libraryservice.updateLibrary(id, updatedLibrary).subscribe(
       data => {

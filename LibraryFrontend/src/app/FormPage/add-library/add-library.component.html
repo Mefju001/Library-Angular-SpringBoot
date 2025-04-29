@@ -2,13 +2,18 @@
     <h2>Dodaj bibliotekę</h2>
     <form (ngSubmit)="onSubmit()" #libraryForm="ngForm">
       <div class="form-group">
-        <label for="name">Nazwa biblioteki:</label>
-        <input type="text" id="name" name="name" [(ngModel)]="library.name" required />
+        <label for="location">Nazwa biblioteki:</label>
+        <input type="text" id="location" name="location" [(ngModel)]="library.location" required />
       </div>
       
       <div class="form-group">
         <label for="address">Adres:</label>
         <input type="text" id="address" name="address" [(ngModel)]="library.address" required />
+      </div>
+
+      <div class="form-group">
+        <label for="map">Map:</label>
+        <input type="text" id="map" name="map" [(ngModel)]="library.map" required />
       </div>
       
       <button type="submit" [disabled]="!libraryForm.form.valid">Zapisz</button>

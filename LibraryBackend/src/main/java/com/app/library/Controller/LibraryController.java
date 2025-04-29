@@ -6,7 +6,6 @@ import com.app.library.DTO.Response.LibraryBookResponse;
 import com.app.library.DTO.Response.LibraryResponse;
 import com.app.library.Entity.LibraryBook;
 import com.app.library.Service.LibraryService;
-import com.app.library.Service.LibraryServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -58,7 +57,7 @@ public class LibraryController {
     public ResponseEntity<List<LibraryResponse>> listoflibrariesbyname(@Parameter(description = "Nazwa biblioteki")
                                                                            @PathVariable String name)
     {
-        List<LibraryResponse> libraryResponses = libraryService.findlibrarybyname(name);
+        List<LibraryResponse> libraryResponses = libraryService.findlibrarybylocation(name);
         if(libraryResponses.isEmpty())
         {
             return ResponseEntity.notFound().build();

@@ -1,7 +1,8 @@
   // Library.model.ts
 export interface Library {
     id: number;
-    name: string;
+    location: string;
     address: string;
+    map: string;
   }
   
