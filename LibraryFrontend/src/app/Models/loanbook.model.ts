@@ -4,7 +4,6 @@ export interface BorrowedBook {
     username: string;
     userFullName: string;
     userEmail: string;
-    userRoles: string[];  // Lista ról użytkownika, np. ['USER', 'ADMIN']
     
     bookId: number;
     bookTitle: string;
