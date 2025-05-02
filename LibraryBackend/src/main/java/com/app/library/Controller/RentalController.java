@@ -1,5 +1,6 @@
 package com.app.library.Controller;
 
+import com.app.library.DTO.Response.LoanBookResponse;
 import com.app.library.Entity.LoanDeadlineInfo;
 import com.app.library.Entity.Rental;
 import com.app.library.Service.RentalService;
@@ -22,10 +23,10 @@ public class RentalController {
     }
     @GetMapping("/loan/{userId}")
     @Operation(summary = "Wypożycza ksiazke dla użytkownika")
-    public ResponseEntity<List<Rental>> showloanbooks(@Parameter(description = "ID użytkownika")
+    public ResponseEntity<List<LoanBookResponse>> showloanbooks(@Parameter(description = "ID użytkownika")
                                                         @PathVariable Long userId) {
         try {
-            List<Rental> rentalList = rentalService.rentalList(userId);
+            List<LoanBookResponse> rentalList = rentalService.rentalList(userId);
             return ResponseEntity.ok(rentalList);
         } catch (ResponseStatusException e) {
             return ResponseEntity.internalServerError().build();

@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { likedBook } from 'src/app/Models/likedBook.model';
+import { BorrowedBook } from 'src/app/Models/loanbook.model';
 import { UserService } from 'src/app/Service/UserService';
+import { LoanService } from 'src/app/Service/LoanService';
+
 
 @Component({
   selector: 'app-liked-books',
@@ -9,20 +12,48 @@ import { UserService } from 'src/app/Service/UserService';
   styleUrls: ['./liked-books.component.css']
 })
 export class LikedBooksComponent implements OnInit {
+  selectedTab:'liked'|'loaned'='liked';
   likedBooks: likedBook[] =[]; // Zmienna na dane książki
+  Loanbooks: BorrowedBook[]=[];
   userId: number = 0;
+  type: string = '';
   constructor(
     private route: ActivatedRoute,
-    private userService: UserService
+    private userService: UserService,
+    private loanService: LoanService
+
   ) {}
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      this.type = params.get('type') ?? '';
+      if (this.type === 'liked') {
+        this.LikedBooks();
+      } else if (this.type === 'loaned') {
+        this.LoanedBook();
+      }
+    });
+  }
+
+  LikedBooks():void{
     const bookId = Number(this.route.snapshot.paramMap.get('id')); // Pobranie ID z URL
     this.userId=this.getId();
     console.log(this.userId);
     if (this.userId) {
       this.userService.getLikedBook(this.userId).subscribe(data => {
+        console.log(data)
         this.likedBooks = data;
+      });
+    }
+  }
+  LoanedBook():void{
+    const bookId = Number(this.route.snapshot.paramMap.get('id')); // Pobranie ID z URL
+    this.userId=this.getId();
+    console.log(this.userId);
+    if (this.userId) {
+      this.loanService.getLoanBooksByUserId(this.userId).subscribe(data => {
+        this.Loanbooks = data;
+        console.log(data);
       });
     }
   }

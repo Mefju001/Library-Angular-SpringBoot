@@ -1,5 +1,8 @@
 package com.app.library.Service;
 
+import com.app.library.DTO.Mapper.BookMapper;
+import com.app.library.DTO.Mapper.LoanBookMapper;
+import com.app.library.DTO.Response.LoanBookResponse;
 import com.app.library.Entity.*;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.RentalRepository;
@@ -8,12 +11,16 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RentalServiceImpl implements RentalService{
@@ -21,17 +28,21 @@ public class RentalServiceImpl implements RentalService{
     RentalRepository rentalRepository;
     BookRepository bookRepository;
     UserRepository userRepository;
+    private final LoanBookMapper loanBookMapper;
 
     @Autowired
-    RentalServiceImpl(RentalRepository rentalRepository, BookRepository bookRepository, UserRepository userRepository)
+    RentalServiceImpl(RentalRepository rentalRepository, BookRepository bookRepository, UserRepository userRepository, LoanBookMapper loanBookMapper)
     {
         this.rentalRepository = rentalRepository;
         this.bookRepository =bookRepository;
         this.userRepository = userRepository;
+        this.loanBookMapper = loanBookMapper;
     }
-    public List<Rental>rentalList(Long UserId)
+    public List<LoanBookResponse>rentalList(Long UserId)
     {
-        return rentalRepository.findRentalsByUser_Id(UserId);
+        List<Rental>loanbooks = rentalRepository.findRentalsByUser_IdAndStatusNot(UserId,RentalStatus.pending);
+        List<LoanBookResponse>rentalList = loanbooks.stream().map(loanBookMapper::toloanBookResponse).collect(Collectors.toList());
+        return rentalList;
     }
     @Transactional
     public void requestloanBook(Integer BookId,Long UserId) {

@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'addbook', component: AddBookComponent },
   { path: 'addbook/:id', component: AddBookComponent },
 
-  { path: 'likedBooks', component: LikedBooksComponent },
+  { path: 'likedBooks/:type', component: LikedBooksComponent },
 
   { path: 'addlibrary', component: AddLibraryComponent },
   { path: 'addlibrary/:id', component: AddLibraryComponent },

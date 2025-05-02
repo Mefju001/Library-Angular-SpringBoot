@@ -1,19 +1,45 @@
 <div class="books-container">
-    <div *ngFor="let book of likedBooks" class="book"[routerLink]="['/book', book.id]">
-        <h2>{{ book.title }}</h2>
-        <p><strong>Autor:</strong> {{ book.authorName }} {{ book.authorSurname }}</p>
-        <p><strong>Gatunek:</strong> {{ book.genreName }}</p>
-        <p><strong>Wydawca:</strong> {{ book.publisherName }}</p>
-        <p><strong>Rok wydania:</strong> {{ book.publicationYear }}</p>
-        <p><strong>ISBN:</strong> {{ book.isbn }}</p>
-        <p><strong>Język:</strong> {{ book.language }}</p>
-        <p><strong>Cena:</strong> {{ book.price }} zł</p>
-        <p><strong>Liczba stron:</strong> {{ book.pages }}</p>
-        <form (submit)="deletelikedBook(book.id)">
-            <button type="submit">Usuń książkę z polubionych</button>
-        </form>
-    <div *ngIf="likedBooks.length === 0">
-        <p>Brak książek w bazie danych.</p>
+        <ng-container *ngIf="type === 'liked'">
+          <div *ngFor="let book of likedBooks" class="book" [routerLink]="['/book', book.id]" >
+            <h2>{{ book.title }}</h2>
+            <p><strong>Autor:</strong> {{ book.authorName }} {{ book.authorSurname }}</p>
+            <p><strong>Gatunek:</strong> {{ book.genreName }}</p>
+            <p><strong>Wydawca:</strong> {{ book.publisherName }}</p>
+            <p><strong>Rok wydania:</strong> {{ book.publicationYear }}</p>
+            <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+            <p><strong>Język:</strong> {{ book.language }}</p>
+            <p><strong>Cena:</strong> {{ book.price }} zł</p>
+            <p><strong>Liczba stron:</strong> {{ book.pages }}</p>
+            <form (submit)="deletelikedBook(book.id)">
+                <button type="submit">Usuń książkę z polubionych</button>
+            </form>
+            <div *ngIf="likedBooks.length === 0">
+                <p>Brak książek w bazie danych.</p>
+            </div>
+          </div>
+        </ng-container>
+
+
+      
+        <ng-container *ngIf="type === 'loaned'">
+          <div *ngFor="let rental of Loanbooks" class="book">
+            <h2>{{ rental.bookTitle }}</h2>
+            <p><strong>Autor:</strong> {{ rental.bookAuthorName }} {{ rental.bookAuthorSurname }}</p>
+            <p><strong>Gatunek:</strong> {{ rental.bookGenre }}</p>
+            <p><strong>Wydawca:</strong> {{ rental.bookPublisher }}</p>
+            <p><strong>Rok wydania:</strong> {{ rental.bookPublicationDate }}</p>
+            <p><strong>ISBN:</strong> {{ rental.bookIsbn }}</p>
+            <p><strong>Język:</strong> {{ rental.bookLanguage }}</p>
+            <p><strong>Cena:</strong> {{ rental.bookPrice }} zł</p>
+            <p><strong>Liczba stron:</strong> {{ rental.bookPages }}</p>
+            <p><strong>Status:</strong> {{ rental.status }}</p>
+            <p><strong>Data wypożyczenia:</strong> {{ rental.rentalStartDate | date:'dd/MM/yyyy' }}</p>
+            <p><strong>Data zwrotu:</strong> {{ rental.rentalEndDate | date:'dd/MM/yyyy' }}</p>
+            <p *ngIf="rental.overdue"><strong>Opóźnione!</strong></p>
+            <div *ngIf="Loanbooks.length === 0">
+                <p>Brak książek w bazie danych.</p>
+            </div>
+        </div>
+        </ng-container>
     </div>
-</div>
-</div>
+      

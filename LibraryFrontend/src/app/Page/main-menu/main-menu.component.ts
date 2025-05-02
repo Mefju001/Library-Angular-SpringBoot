@@ -3,6 +3,8 @@ import { MyServiceService } from '../../Service/BookService';
 import { Book } from '../../Models/book.model';
 import { User } from '../../Models/User.model';
 import { UserService } from 'src/app/Service/UserService';
+import { LoanService } from 'src/app/Service/LoanService';
+
 
 @Component({
   selector: 'app-main-menu',
@@ -42,7 +44,7 @@ export class MainMenuComponent implements OnInit {
     genre: ''
   };
 
-  constructor(private myService: MyServiceService,private userService: UserService) {}
+  constructor(private myService: MyServiceService,private userService: UserService,private loanService: LoanService) {}
 
   ngOnInit(): void {
     this.getAllBooks(0);
@@ -63,6 +65,31 @@ export class MainMenuComponent implements OnInit {
     } else {
       this.getAllBooks(page)
     }
+  }
+  loanbook(BookId:number):void{
+    const userId:number = this.getId()
+    this.loanService.loanBookByUser(userId,BookId).subscribe({
+      next: () => {
+        alert('Książka została wypożyczona!');
+      },
+      error: (err) => {
+        console.error('Błąd wypożyczania książki:', err);
+        alert('Nie udało się wypożyczyć książki.');
+      }
+    });
+  }
+  getId(): number{
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const parsedUser = JSON.parse(user);
+        return parsedUser.id || null;
+      } catch (error) {
+        console.error('Błąd parsowania JSON:', error);
+      }
+    }
+     console.error(Error);
+     return 0;
   }
   getBooks(page: number = this.currentPage): void {
     if (this.filters.genre) {

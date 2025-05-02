@@ -72,12 +72,17 @@
             </div>
             <!-- Książki -->
             <div class="books-container">
-                <div *ngFor="let book of books" class="book" [routerLink]="['/book', book.id]">
+                <div *ngFor="let book of books" class="book">
+                  <div [routerLink]="['/book', book.id]">
                     <h3>{{ book.title }}</h3>
                     <p>Autor: {{ book.authorName }} {{ book.authorSurname }}</p>
                     <p>Gatunek: {{ book.genreName }}</p>
                     <p>Cena: {{ book.price }} zł</p>
+                  </div>
+                  <button>Kup</button>
+                  <button (click)="loanbook(book.id)">Wypozycz</button>
                 </div>
+                
                 <div *ngIf="books.length === 0">
                     <p>Brak książek w bazie danych.</p>
                 </div>

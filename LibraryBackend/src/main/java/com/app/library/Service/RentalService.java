@@ -1,10 +1,11 @@
 package com.app.library.Service;
+import com.app.library.DTO.Response.LoanBookResponse;
 import com.app.library.Entity.LoanDeadlineInfo;
 import com.app.library.Entity.Rental;
 
 import java.util.List;
 public interface RentalService {
-    List<Rental> rentalList(Long userId);
+    List<LoanBookResponse> rentalList(Long userId);
 
     void requestloanBook(Integer bookId, Long userId);
 
