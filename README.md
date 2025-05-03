@@ -23,4 +23,4 @@ The **Online Bookstore Management System** is a web-based app that allows users 
 Swagger UI → http://localhost:8080/swagger-ui.html
 
 # TO-DO list:
-Audit,Shop & Purchase,Rental,Recommendations, Newsletter, Help Chat,Forum, and Loyalty Program,Docker,Write unit & integration tests,Add book categories & reviews.
+Audit,Shop & Purchase,Recommendations, Newsletter, Help Chat,Forum, and Loyalty Program,Docker,Write unit & integration tests,Add reviews.

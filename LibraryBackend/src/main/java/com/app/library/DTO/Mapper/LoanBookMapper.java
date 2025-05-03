@@ -7,9 +7,12 @@ import com.app.library.Entity.Rental;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+
 @Component
 @Mapper(componentModel = "Spring")
-public interface LoanBookMapper {
+public interface  LoanBookMapper {
 
     @Mapping(source = "rentalId", target = "rentalId")
     @Mapping(source = "user.id", target = "userId")
@@ -30,13 +33,16 @@ public interface LoanBookMapper {
     @Mapping(source = "book.price", target = "bookPrice")
     @Mapping(source = "book.oldprice", target = "bookOldPrice")
 
-    @Mapping(source = "rentalStartDate", target = "rentalStartDate")
-    @Mapping(source = "rentalEndDate", target = "rentalEndDate")
-    @Mapping(source = "returnRequestDate", target = "returnRequestDate")
+    @Mapping(target = "rentalStartDate", expression = "java(mapDate(rental.getRentalStartDate()))")
+    @Mapping(target = "rentalEndDate", expression = "java(mapDate(rental.getRentalEndDate()))")
+    @Mapping(target = "returnRequestDate", expression = "java(mapDate(rental.getReturnRequestDate()))")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "penalty", target = "penalty")
     @Mapping(source = "days", target = "days")
     @Mapping(source = "remainingDays.days", target = "remainingDays")
     @Mapping(source = "overdue", target = "overdue")
-        LoanBookResponse toloanBookResponse(Rental rental);
+    LoanBookResponse toloanBookResponse(Rental rental);
+    default  String mapDate(LocalDate date) {
+        return date != null ? date.toString() : null;
+    }
 }

@@ -18,13 +18,13 @@ export interface BorrowedBook {
     bookPrice: number;
     bookOldPrice: number;
     
-    rentalStartDate: string;  // Data wypożyczenia
-    rentalEndDate: string;    // Data zwrotu
-    returnRequestDate: string; // Data zgłoszenia zwrotu
-    status: string;           // Status wypożyczenia ("pending", "returned", etc.)
-    penalty: number;          // Kara za opóźniony zwrot
-    days: number;             // Liczba dni wypożyczenia
-    remainingDays: number;    // Liczba dni pozostałych do zwrotu
-    overdue: boolean;         // Czy książka jest opóźniona
+    rentalStartDate: string;
+    rentalEndDate: string;
+    returnRequestDate: string;
+    status: string;
+    penalty: number;
+    days: number; 
+    remainingDays: number;
+    overdue: boolean;
   }
   

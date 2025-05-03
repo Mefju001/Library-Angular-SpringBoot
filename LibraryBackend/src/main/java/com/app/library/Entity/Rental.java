@@ -47,6 +47,7 @@ public class Rental {
     public void requestStartLoan()
     {
         this.status= pending;
+
     }
     public void startLoan()
     {

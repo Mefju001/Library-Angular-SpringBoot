@@ -4,6 +4,7 @@ import com.app.library.DTO.Mapper.BookMapper;
 import com.app.library.DTO.Mapper.LoanBookMapper;
 import com.app.library.DTO.Response.LoanBookResponse;
 import com.app.library.Entity.*;
+import com.app.library.EventListener.RentalCreatedEvent;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.RentalRepository;
 import com.app.library.Repository.UserRepository;
@@ -11,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,14 +27,16 @@ import java.util.stream.Collectors;
 @Service
 public class RentalServiceImpl implements RentalService{
     private static final Logger logger = LoggerFactory.getLogger(RentalServiceImpl.class);
-    RentalRepository rentalRepository;
-    BookRepository bookRepository;
-    UserRepository userRepository;
+    private final RentalRepository rentalRepository;
+    private final ApplicationEventPublisher publisher;
+    private final BookRepository bookRepository;
+    private final UserRepository userRepository;
     private final LoanBookMapper loanBookMapper;
 
     @Autowired
-    RentalServiceImpl(RentalRepository rentalRepository, BookRepository bookRepository, UserRepository userRepository, LoanBookMapper loanBookMapper)
+    RentalServiceImpl(ApplicationEventPublisher publisher,RentalRepository rentalRepository, BookRepository bookRepository, UserRepository userRepository, LoanBookMapper loanBookMapper)
     {
+        this.publisher = publisher;
         this.rentalRepository = rentalRepository;
         this.bookRepository =bookRepository;
         this.userRepository = userRepository;
@@ -40,7 +44,7 @@ public class RentalServiceImpl implements RentalService{
     }
     public List<LoanBookResponse>rentalList(Long UserId)
     {
-        List<Rental>loanbooks = rentalRepository.findRentalsByUser_IdAndStatusNot(UserId,RentalStatus.pending);
+        List<Rental>loanbooks = rentalRepository.findRentalsByUser_Id(UserId);
         List<LoanBookResponse>rentalList = loanbooks.stream().map(loanBookMapper::toloanBookResponse).collect(Collectors.toList());
         return rentalList;
     }
@@ -58,6 +62,7 @@ public class RentalServiceImpl implements RentalService{
         rental.setUser(user);
         rental.requestStartLoan();
         rentalRepository.save(rental);
+        publisher.publishEvent(new RentalCreatedEvent(rental));
     }
     @Transactional
     public void approveLoanBook(Integer BookId,Long UserId)
@@ -81,6 +86,7 @@ public class RentalServiceImpl implements RentalService{
             Rental rental = loanbook.get();
             rental.requestEndLoan();
             rentalRepository.save(rental);
+            publisher.publishEvent(new RentalCreatedEvent(rental));
         }else {
             throw new IllegalStateException("This book is not loaned by you");
 

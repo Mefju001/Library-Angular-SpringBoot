@@ -33,8 +33,8 @@
             <p><strong>Cena:</strong> {{ rental.bookPrice }} zł</p>
             <p><strong>Liczba stron:</strong> {{ rental.bookPages }}</p>
             <p><strong>Status:</strong> {{ rental.status }}</p>
-            <p><strong>Data wypożyczenia:</strong> {{ rental.rentalStartDate | date:'dd/MM/yyyy' }}</p>
-            <p><strong>Data zwrotu:</strong> {{ rental.rentalEndDate | date:'dd/MM/yyyy' }}</p>
+            <p><strong>Data wypożyczenia:</strong> {{ rental.rentalStartDate}}</p>
+            <p><strong>Data zwrotu:</strong> {{ rental.rentalEndDate}}</p>
             <p *ngIf="rental.overdue"><strong>Opóźnione!</strong></p>
             <div *ngIf="Loanbooks.length === 0">
                 <p>Brak książek w bazie danych.</p>
