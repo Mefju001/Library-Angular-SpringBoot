@@ -161,4 +161,10 @@ public class RentalServiceImpl implements RentalService{
         rental.cancelLoan();
         rentalRepository.save(rental);
     }
+
+    @Override
+    public Long getActiveBorrowsCount() {
+        Long size = rentalRepository.countByStatusIn(List.of(RentalStatus.loaned, RentalStatus.extend));
+        return size;
+    }
 }

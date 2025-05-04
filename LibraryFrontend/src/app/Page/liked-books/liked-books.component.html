@@ -39,6 +39,7 @@
             <div *ngIf="Loanbooks.length === 0">
                 <p>Brak książek w bazie danych.</p>
             </div>
+            <button (click)="returnLoanedBooks(rental.bookId)" *ngIf="rental.status === 'loaned'">Zwróć</button>
         </div>
         </ng-container>
     </div>

@@ -10,11 +10,15 @@ import { AddLibraryComponent } from './FormPage/add-library/add-library.componen
 import { FormdetailsComponent } from './FormPage/formdetails/formdetails.component';
 import { FormpasswordComponent } from './FormPage/formpassword/formpassword.component';
 import { LikedBooksComponent } from './Page/liked-books/liked-books.component';
+import { DashboardAdminComponent } from './Page/dashboard-admin/dashboard-admin.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'book/:id', component: BookDetailsComponent },
+  { path: 'AdminPanel', component: DashboardAdminComponent },
+
 
   { path: 'addbook', component: AddBookComponent },
   { path: 'addbook/:id', component: AddBookComponent },

@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService{
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
     }
-    public List<FavoriteBooksResponse> findall(Long userId) {
+    public List<FavoriteBooksResponse> findAllLikedBooks(Long userId) {
             List<Favoritebooks> favoritebooks = favoritebooksRepository.findFavoritebooksByUser_Id(userId);
         return favoritebooks.stream()
                     .map(favoriteBooksMapper::toDto)
@@ -200,11 +200,17 @@ public class UserServiceImpl implements UserService{
         return existingdata;
 
     }
+    @Override
     @Transactional
     public void deletefavoritebooks(Integer id)
     {
         Favoritebooks existingdata = favoritebooksRepository.findById(id)
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "not found"));
             favoritebooksRepository.delete(existingdata);
+    }
+
+    @Override
+    public Long getUserCount() {
+        return userRepository.countUsersByRoleName("ROLE_USER");
     }
 }

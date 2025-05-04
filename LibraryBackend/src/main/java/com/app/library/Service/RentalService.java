@@ -2,6 +2,7 @@ package com.app.library.Service;
 import com.app.library.DTO.Response.LoanBookResponse;
 import com.app.library.Entity.LoanDeadlineInfo;
 import com.app.library.Entity.Rental;
+import com.app.library.Entity.RentalStatus;
 
 import java.util.List;
 public interface RentalService {
@@ -24,4 +25,5 @@ public interface RentalService {
     void approveExtendLoan(Integer rentalId);
 
     void cancelLoanBook(Integer rentalId);
+    Long getActiveBorrowsCount();
 }

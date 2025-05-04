@@ -24,7 +24,7 @@ public class RentalEventListener {
         }
     }
     @EventListener
-    public void onRentalReturned(RentalCreatedEvent event) {
+    public void onRentalReturned(RentalReturnEvent event) {
         Rental rental = event.getRental();
         if (RentalStatus.return_requested.equals(rental.getStatus())) {
             rentalService.approveReturn(rental.getRentalId());

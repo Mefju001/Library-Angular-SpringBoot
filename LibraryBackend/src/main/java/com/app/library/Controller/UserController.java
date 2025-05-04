@@ -33,7 +33,7 @@ public class UserController {
     @GetMapping("/")
     @Operation(summary = "Pobiera listę książek ulubionych użytkownika", description = "Zwraca listę ulubionych książek na podstawie ID użytkownika.")
     public ResponseEntity<List<FavoriteBooksResponse>> listoffavoritebooksByUserId(@Parameter(description = "ID użytkownika, którego ulubione książki mają zostać pobrane") @RequestParam Long userId) {
-        List<FavoriteBooksResponse> favoriteBooks = userService.findall(userId);
+        List<FavoriteBooksResponse> favoriteBooks = userService.findAllLikedBooks(userId);
         if (favoriteBooks.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

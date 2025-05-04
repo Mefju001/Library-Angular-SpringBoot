@@ -9,23 +9,15 @@ import com.app.library.Security.DTO.Response.JwtResponse;
 
 import java.util.List;
 public interface UserService {
-    List<FavoriteBooksResponse> findall(Long userId);
-
+    List<FavoriteBooksResponse> findAllLikedBooks(Long userId);
     UserResponse findbyid(Long id);
-
     JwtResponse login(UserRequest loginRequest);
-
     void changedetails(Long id, UserDetailsRequest userRequest);
-
     void changepassword(Long id, UserPasswordRequest userPasswordRequest);
-
     void registerUp(UserRequest signUpRequest);
-
     void deleteuser(Long id);
-
     FavoriteBooksResponse addfavoritebooks(Integer bookId, Long userId);
-
     Favoritebooks updatefavoritebooks(Favoritebooks favoritebooks);
-
     void deletefavoritebooks(Integer id);
+    Long getUserCount();
 }

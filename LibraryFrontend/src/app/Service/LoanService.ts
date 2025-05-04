@@ -19,4 +19,7 @@ export class LoanService {
   loanBookByUser(userid:number,bookId:number): Observable<any> {
     return this.http.post(`${this.apiUrl}/loan/request/${userid}/${bookId}`,null);
   }
+  returnLoanBookByUser(userid:number,bookId:number): Observable<any> {
+    return this.http.put(`${this.apiUrl}/return/request/${userid}/${bookId}`,null);
+  }
   }

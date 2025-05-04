@@ -8,8 +8,6 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
     @Size(max = 20)
     @Column(name = "name")
     private String rola;

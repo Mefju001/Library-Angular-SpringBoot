@@ -71,6 +71,7 @@ public class WebConfig implements WebMvcConfigurer {
                                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")
                                 .permitAll()
                                 .requestMatchers("/Img/**").permitAll()
+                                .requestMatchers("/api/adminPanel/**").permitAll()
                                 .requestMatchers("/api/rentals/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/books/**").permitAll()    //hasAnyRole("ADMIN", "USER")

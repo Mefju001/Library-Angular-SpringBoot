@@ -57,6 +57,17 @@ export class LikedBooksComponent implements OnInit {
       });
     }
   }
+  returnLoanedBooks(bookId:number):void {
+    this.userId=this.getId();
+    this.loanService.returnLoanBookByUser(this.userId,bookId).subscribe(
+      data => {
+        console.log('Zwrot wysłany', data);
+      },
+      error => {
+        console.error('Błąd podczas wysyłania zwrotu książki:', error);
+      }
+    );
+  }
   getId(): number{
     const user = localStorage.getItem('user');
     if (user) {
