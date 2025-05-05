@@ -32,15 +32,29 @@ public class AdminController {
     @Operation(summary = "", description = "")
     public ResponseEntity<Long> getUserCount()
     {
-        Long size = userService.getUserCount();
-        System.out.println(size);
-        return ResponseEntity.ok(size);
+        Long userCount = userService.getUserCount();
+        return ResponseEntity.ok(userCount);
     }
     @GetMapping("/loan/count")
     @Operation(summary = "", description = "")
     public ResponseEntity<Long> getActiveBorrowsCount()
     {
-        Long size = rentalService.getActiveBorrowsCount();
-        return ResponseEntity.ok(size);
+        Long loanCount = rentalService.getActiveBorrowsCount();
+        return ResponseEntity.ok(loanCount);
     }
+    @GetMapping("/newBooks/count")
+    @Operation(summary = "", description = "")
+    public ResponseEntity<Long> getNewBooksCount()
+    {
+        Long newBooksCount = bookService.getNewBooksCount();
+        return ResponseEntity.ok(newBooksCount);
+    }
+    @GetMapping("/overdue/count")
+    @Operation(summary = "", description = "")
+    public ResponseEntity<Long> getOverdueCount()
+    {
+        Long overdueCount = rentalService.getOverdueCount();
+        return ResponseEntity.ok(overdueCount);
+    }
+
 }

@@ -19,11 +19,13 @@ public interface RentalService {
     LoanDeadlineInfo howManyDaysLeft(Integer rentalId);
 
     Boolean isOverdue(Integer rentalId);
-
+    void checkOverdueRentals();
     void requestExtendLoan(Integer rentalId);
 
     void approveExtendLoan(Integer rentalId);
 
     void cancelLoanBook(Integer rentalId);
     Long getActiveBorrowsCount();
+    Long getOverdueCount();
+
 }

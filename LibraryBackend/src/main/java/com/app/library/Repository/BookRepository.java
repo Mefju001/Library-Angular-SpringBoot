@@ -26,8 +26,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     Page<Book>findBooksByPublicationDateBetween(LocalDate year1, LocalDate year2, Pageable pageable);
     @Query("SELECT b FROM Book b WHERE FUNCTION('YEAR', b.publicationDate) = :publicationDateYear")
     Page<Book> findBooksByPublicationDateYear(@Param("publicationDateYear") int publicationDateYear, Pageable pageable);
-
     Page<Book>findBooksByPublicationDateIsGreaterThan(LocalDate year,Pageable pageable);
-
+    Long countBooksByPublicationDateAfter(LocalDate todayDate);
 
 }

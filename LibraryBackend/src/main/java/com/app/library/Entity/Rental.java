@@ -103,8 +103,70 @@ public class Rental {
         this.status = RentalStatus.cancelled;
     }
 
+    public Integer getRentalId() {
+        return rentalId;
+    }
 
-    /*
+    public void setRentalId(Integer rentalId) {
+        this.rentalId = rentalId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public LocalDate getRentalStartDate() {
+        return rentalStartDate;
+    }
+
+    public void setRentalStartDate(LocalDate rentalStartDate) {
+        this.rentalStartDate = rentalStartDate;
+    }
+
+    public LocalDate getRentalEndDate() {
+        return rentalEndDate;
+    }
+
+    public void setRentalEndDate(LocalDate rentalEndDate) {
+        this.rentalEndDate = rentalEndDate;
+    }
+
+    public LocalDate getReturnRequestDate() {
+        return returnRequestDate;
+    }
+
+    public void setReturnRequestDate(LocalDate returnRequestDate) {
+        this.returnRequestDate = returnRequestDate;
+    }
+
+    public RentalStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(RentalStatus status) {
+        this.status = status;
+    }
+
+    public Double getPenalty() {
+        return penalty;
+    }
+
+    public void setPenalty(Double penalty) {
+        this.penalty = penalty;
+    }
+/*
 
 Historia wypożyczeń użytkownika (/users/{id}/history).
  */

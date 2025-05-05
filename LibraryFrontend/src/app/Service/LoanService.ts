@@ -22,4 +22,7 @@ export class LoanService {
   returnLoanBookByUser(userid:number,bookId:number): Observable<any> {
     return this.http.put(`${this.apiUrl}/return/request/${userid}/${bookId}`,null);
   }
+  checkOverdueStatus(): Observable<number> {
+    return this.http.post<number>(`${this.apiUrl}/check-overdue`,null);
+  }
   }

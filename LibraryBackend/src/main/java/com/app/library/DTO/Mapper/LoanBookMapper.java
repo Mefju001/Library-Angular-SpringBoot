@@ -26,7 +26,7 @@ public interface  LoanBookMapper {
     @Mapping(source = "book.author.surname", target = "bookAuthorSurname")
     @Mapping(source = "book.genre.name", target = "bookGenre")
     @Mapping(source = "book.publisher.name", target = "bookPublisher")
-    @Mapping(source = "rental.book.publicationDate", target = "bookPublicationDate")
+    @Mapping(source = "book.publicationDate", target = "bookPublicationDate")
     @Mapping(source = "book.isbn", target = "bookIsbn")
     @Mapping(source = "book.language", target = "bookLanguage")
     @Mapping(source = "book.pages", target = "bookPages")
@@ -36,11 +36,13 @@ public interface  LoanBookMapper {
     @Mapping(target = "rentalStartDate", expression = "java(mapDate(rental.getRentalStartDate()))")
     @Mapping(target = "rentalEndDate", expression = "java(mapDate(rental.getRentalEndDate()))")
     @Mapping(target = "returnRequestDate", expression = "java(mapDate(rental.getReturnRequestDate()))")
+
     @Mapping(source = "status", target = "status")
     @Mapping(source = "penalty", target = "penalty")
-    @Mapping(source = "days", target = "days")
-    @Mapping(source = "remainingDays.days", target = "remainingDays")
-    @Mapping(source = "overdue", target = "overdue")
+
+    @Mapping(target = "days", expression = "java(rental.getDays())")
+    @Mapping(target = "remainingDays", expression = "java(rental.getRemainingDays().getDays())")
+    @Mapping(target = "overdue", expression = "java(rental.getRemainingDays().isOverdue())")
     LoanBookResponse toloanBookResponse(Rental rental);
     default  String mapDate(LocalDate date) {
         return date != null ? date.toString() : null;

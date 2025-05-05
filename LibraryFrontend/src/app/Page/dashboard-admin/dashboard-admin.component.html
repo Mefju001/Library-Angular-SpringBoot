@@ -12,6 +12,7 @@
       <header>
         <h1>Dashboard</h1>
         <span>Witaj, Admin!</span>
+        <button (click)="checkOverdues()" class="check-btn">🔄 Sprawdź zaległości</button>
       </header>
       <section class="cards">
         <div class="card">
@@ -24,11 +25,11 @@
         </div>
         <div class="card">
           <h3>Nowe książki</h3>
-          <p>12</p>
+          <p>{{newBooksSize}}</p>
         </div>
         <div class="card">
           <h3>Zaległości</h3>
-          <p>7</p>
+          <p>{{overdueBooksSize}}</p>
         </div>
       </section>
     </main>

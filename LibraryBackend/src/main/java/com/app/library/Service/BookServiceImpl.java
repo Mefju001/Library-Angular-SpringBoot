@@ -104,6 +104,12 @@ public class BookServiceImpl implements BookService {
         Page<Book> books = bookRepository.findBooksByPublicationDateYear(date.getYear(),pageable);
         return books.map(bookMapper::toDto);
     }
+
+    @Override
+    public Long getNewBooksCount() {
+        return bookRepository.countBooksByPublicationDateAfter(LocalDate.now().minusMonths(1));
+    }
+
     public Page<BookResponse> findforeshadowedbooks(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         LocalDate date = LocalDate.now();

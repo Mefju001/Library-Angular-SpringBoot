@@ -104,7 +104,7 @@ public class LibraryServiceImpl implements LibraryService{
                 .pages(request.getPages())
                 .price(request.getPrice())
                 .idLibrary(request.getIdLibrary())
-                .name(request.getName())
+                .location(request.getName())
                 .address(request.getAddress())
                 .build();
     }

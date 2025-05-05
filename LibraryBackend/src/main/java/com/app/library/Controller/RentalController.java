@@ -2,7 +2,6 @@ package com.app.library.Controller;
 
 import com.app.library.DTO.Response.LoanBookResponse;
 import com.app.library.Entity.LoanDeadlineInfo;
-import com.app.library.Entity.Rental;
 import com.app.library.Service.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -123,5 +122,12 @@ public class RentalController {
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
         }
+    }
+    @PostMapping("/check-overdue")
+    @Operation(summary = "", description = "")
+    public ResponseEntity<String> checkOverdueRentals()
+    {
+        rentalService.checkOverdueRentals();
+        return ResponseEntity.ok("Checked");
     }
 }

@@ -21,6 +21,7 @@ public interface BookService {
     Page<BookResponse> findbooksbyprice(Float min, Float max, int page, int size);
     Page<BookResponse> findbooksbyyear(LocalDate year1, LocalDate year2, int page, int size);
     Page<BookResponse> findnewbooks(int page, int size);
+    Long getNewBooksCount();
     Page<BookResponse> findforeshadowedbooks(int page, int size);
     Page<BookResponse> sortbooktitle(int page, int size, String type);
     Page<BookResponse> sortbookprice(int page, int size, String type);

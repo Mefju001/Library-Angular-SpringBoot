@@ -21,7 +21,8 @@ public interface LibraryBookMapper {
     @Mapping(source = "book.pages", target = "pages")
     @Mapping(source = "book.price", target = "price")
     @Mapping(source = "library.id", target = "idLibrary")
-    @Mapping(source = "library.name", target = "name")
+    @Mapping(source = "library.location", target = "location")
     @Mapping(source = "library.address", target = "address")
+    @Mapping(source = "library.map", target = "map")
     LibraryBookResponse toLibraryBookResponse(LibraryBook libraryBook);
 }

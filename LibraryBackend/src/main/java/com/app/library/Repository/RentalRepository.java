@@ -5,6 +5,7 @@ import com.app.library.Entity.RentalStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -14,8 +15,8 @@ public interface RentalRepository extends JpaRepository<Rental,Integer> {
     List<Rental>findRentalsByUser_Id(Long userId);
     List<Rental>findRentalsByUser_IdAndStatusIs(Long userId, RentalStatus rentalStatus);
     Optional<Rental> findRentalByBook_IdAndUser_Id(Integer BookId, Long userId);
-
     Long countByStatusIn(Collection<RentalStatus> statuses);
+    List<Rental>findByStatusAndRentalEndDateBefore(RentalStatus rentalStatus, LocalDate date);
 
 
 }

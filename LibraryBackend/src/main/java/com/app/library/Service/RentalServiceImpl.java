@@ -1,6 +1,5 @@
 package com.app.library.Service;
 
-import com.app.library.DTO.Mapper.BookMapper;
 import com.app.library.DTO.Mapper.LoanBookMapper;
 import com.app.library.DTO.Response.LoanBookResponse;
 import com.app.library.Entity.*;
@@ -13,13 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -127,6 +124,17 @@ public class RentalServiceImpl implements RentalService{
         return rental.isOverdue();
     }
 
+    @Override
+    @Transactional
+    public void checkOverdueRentals() {
+        List<Rental>rentalList=rentalRepository.findByStatusAndRentalEndDateBefore(RentalStatus.loaned, LocalDate.now());
+        for(Rental listRental: rentalList)
+        {
+            listRental.setStatus(RentalStatus.overdue);
+        }
+        rentalRepository.saveAll(rentalList);
+    }
+
     @Transactional
     public void requestExtendLoan(Integer rentalId) {
         Rental rental = rentalRepository.findById(rentalId)
@@ -164,7 +172,11 @@ public class RentalServiceImpl implements RentalService{
 
     @Override
     public Long getActiveBorrowsCount() {
-        Long size = rentalRepository.countByStatusIn(List.of(RentalStatus.loaned, RentalStatus.extend));
-        return size;
+        return rentalRepository.countByStatusIn(List.of(RentalStatus.loaned, RentalStatus.extend));
+    }
+
+    @Override
+    public Long getOverdueCount() {
+        return rentalRepository.countByStatusIn(List.of(RentalStatus.overdue));
     }
 }

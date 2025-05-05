@@ -1,5 +1,7 @@
 import { Component,OnInit  } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { AdminService } from 'src/app/Service/AdminService';
+import { LoanService } from 'src/app/Service/LoanService';
 
 @Component({
   selector: 'app-dashboard-admin',
@@ -7,23 +9,34 @@ import { AdminService } from 'src/app/Service/AdminService';
   styleUrls: ['./dashboard-admin.component.css']
 })
 export class DashboardAdminComponent {
-  constructor(private adminService: AdminService,) { }
+  constructor(private adminService: AdminService,private loanService: LoanService) { }
   userSize:number=0;
   loanSize:number=0;
+  newBooksSize:number=0;
+  overdueBooksSize:number=0;
   ngOnInit(): void {
-    this.getUserCount();
-    this.getLoanCount();
+    this.getDashboardData()
   }
-  getUserCount():void
-  {
-    this.adminService.getUserCount().subscribe((data) => {
-      this.userSize = data;
-    },error => console.error('Błąd podczas pobierania danych:', error));
+  getDashboardData(): void {
+    forkJoin({
+      userCount: this.adminService.getUserCount(),
+      loanCount: this.adminService.getLoanCount(),
+      newBooksCount: this.adminService.getNewBooksCount(),
+      overdueBooks: this.adminService.getOverdueBooksCount()
+    }).subscribe(
+      (data) => {
+        this.userSize = data.userCount;
+        this.loanSize = data.loanCount;
+        this.newBooksSize = data.newBooksCount;
+        this.overdueBooksSize = data.overdueBooks;
+      },
+      (error) => console.error('Błąd podczas pobierania danych:', error)
+    );
   }
-  getLoanCount():void
-  {
-    this.adminService.getLoanCount().subscribe((data) => {
-      this.loanSize = data;
-    },error => console.error('Błąd podczas pobierania danych:', error));
+  checkOverdues(): void {
+    console.log("aa")
+    this.loanService.checkOverdueStatus().subscribe(() => {
+      alert('Zaległości zostały sprawdzone!');
+    }, error => console.error('Błąd przy sprawdzaniu zaległości:', error));
   }
 }

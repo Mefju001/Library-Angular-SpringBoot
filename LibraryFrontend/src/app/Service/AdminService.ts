@@ -13,11 +13,16 @@ export class AdminService {
   constructor(private http: HttpClient) { }
 
   getUserCount(): Observable<number> {
-    // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.get<number>(`${this.apiUrl}/user/count`);
   }
   getLoanCount(): Observable<number> {
-    // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.get<number>(`${this.apiUrl}/loan/count`);
   }
+  getNewBooksCount(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/newBooks/count`);
+  }
+  getOverdueBooksCount(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/overdue/count`);
+  }
+
   }

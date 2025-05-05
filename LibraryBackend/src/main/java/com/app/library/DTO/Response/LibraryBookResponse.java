@@ -23,10 +23,11 @@ public class LibraryBookResponse {
     private final float price;
     //Library
     private final Integer idLibrary;
-    private final String name;
+    private final String location;
     private final String address;
+    private final String map;
 
-    public LibraryBookResponse(Integer id, String title, String authorName, String authorSurname, LocalDate publicationDate, long isbn, String genreName, String language, String publisherName, int pages, float price, Integer idLibrary, String name, String address) {
+    public LibraryBookResponse(Integer id, String title, String authorName, String authorSurname, LocalDate publicationDate, long isbn, String genreName, String language, String publisherName, int pages, float price, Integer idLibrary, String location, String address, String map) {
         this.id = id;
         this.title = title;
         this.authorName = authorName;
@@ -39,7 +40,8 @@ public class LibraryBookResponse {
         this.pages = pages;
         this.price = price;
         this.idLibrary = idLibrary;
-        this.name = name;
+        this.location = location;
         this.address = address;
+        this.map = map;
     }
 }
