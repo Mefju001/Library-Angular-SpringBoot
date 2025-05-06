@@ -34,9 +34,13 @@ export class DashboardAdminComponent {
     );
   }
   checkOverdues(): void {
-    console.log("aa")
     this.loanService.checkOverdueStatus().subscribe(() => {
       alert('Zaległości zostały sprawdzone!');
     }, error => console.error('Błąd przy sprawdzaniu zaległości:', error));
+  }
+  checkRequests(): void {
+    this.loanService.checkRequestStatus().subscribe(() => {
+      alert('Requesty zostały sprawdzone i zaaktualizowane!');
+    }, error => console.error('Błąd przy sprawdzaniu requestów:', error));
   }
 }

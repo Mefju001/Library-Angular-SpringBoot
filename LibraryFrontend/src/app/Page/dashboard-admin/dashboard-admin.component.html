@@ -4,6 +4,7 @@
       <ul>
         <li><a href="#">📚 Książki</a></li>
         <li><a href="#">👤 Użytkownicy</a></li>
+        <li><a href="#">💸 Promocje</a></li>
         <li><a href="#">📖 Wypożyczenia</a></li>
         <li><a href="#">⚙️ Ustawienia</a></li>
       </ul>
@@ -12,6 +13,7 @@
       <header>
         <h1>Dashboard</h1>
         <span>Witaj, Admin!</span>
+        <button (click)="checkRequests()" class="check-btn">Zatwierdź wszystko</button>
         <button (click)="checkOverdues()" class="check-btn">🔄 Sprawdź zaległości</button>
       </header>
       <section class="cards">

@@ -25,4 +25,7 @@ export class LoanService {
   checkOverdueStatus(): Observable<number> {
     return this.http.post<number>(`${this.apiUrl}/check-overdue`,null);
   }
+  checkRequestStatus(): Observable<number> {
+    return this.http.post<number>(`${this.apiUrl}/check-request`,null);
+  }
   }

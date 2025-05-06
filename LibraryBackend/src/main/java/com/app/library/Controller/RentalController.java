@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rentals")
@@ -125,9 +126,15 @@ public class RentalController {
     }
     @PostMapping("/check-overdue")
     @Operation(summary = "", description = "")
-    public ResponseEntity<String> checkOverdueRentals()
+    public ResponseEntity<Map<String, Object>> checkOverdueRentals()
     {
-        rentalService.checkOverdueRentals();
-        return ResponseEntity.ok("Checked");
+        return ResponseEntity.ok(rentalService.checkOverdueRentals());
+    }
+    @PostMapping("/check-request")
+    @Operation(summary = "", description = "")
+    public ResponseEntity<String> checkRequestForRentals()
+    {
+        rentalService.approveAll();
+        return ResponseEntity.ok("Checked and approve");
     }
 }

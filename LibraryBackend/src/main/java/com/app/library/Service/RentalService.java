@@ -3,8 +3,11 @@ import com.app.library.DTO.Response.LoanBookResponse;
 import com.app.library.Entity.LoanDeadlineInfo;
 import com.app.library.Entity.Rental;
 import com.app.library.Entity.RentalStatus;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Map;
+
 public interface RentalService {
     List<LoanBookResponse> rentalList(Long userId);
 
@@ -16,10 +19,14 @@ public interface RentalService {
 
     void approveReturn(Integer rentalId);
 
+
+    void approveAll();
+
     LoanDeadlineInfo howManyDaysLeft(Integer rentalId);
 
     Boolean isOverdue(Integer rentalId);
-    void checkOverdueRentals();
+
+    Map<String,Object> checkOverdueRentals();
     void requestExtendLoan(Integer rentalId);
 
     void approveExtendLoan(Integer rentalId);
