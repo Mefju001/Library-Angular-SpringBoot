@@ -11,11 +11,13 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,6 +28,7 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
     private static final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
     private final BookRepository bookRepository;
+    private final AuditService auditService;
     private final BookImgRepository bookImgRepository;
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;
@@ -34,8 +37,9 @@ public class BookServiceImpl implements BookService {
     private final GenreMapper genreMapper;
 
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository, BookImgRepository bookImgRepository, GenreRepository genreRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository, BookMapper bookMapper, GenreMapper genreMapper) {
+    public BookServiceImpl(BookRepository bookRepository, AuditService auditService, BookImgRepository bookImgRepository, GenreRepository genreRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository, BookMapper bookMapper, GenreMapper genreMapper) {
         this.bookRepository = bookRepository;
+        this.auditService = auditService;
         this.bookImgRepository = bookImgRepository;
         this.genreRepository = genreRepository;
         this.publisherRepository = publisherRepository;
@@ -186,12 +190,18 @@ public class BookServiceImpl implements BookService {
        }
         Book newBook = new Book();
         setbook(newBook, bookRequest);
+        String user = SecurityContextHolder.getContext().getAuthentication().getName();
+        auditService.log("Post","Book",user,"Dodawanie ksiazki do bazy danych",newBook);
         return bookRequest;
     }
     @Transactional
     public BookRequest updateBook(Integer id,BookRequest bookRequest){
         Book Book = bookRepository.findById(id).orElseThrow(()->new RuntimeException("Książka nie znaleziona"));
+        Book Book2 = new Book();
+        BeanUtils.copyProperties(Book,Book2);
         setbook(Book, bookRequest);
+        String user = SecurityContextHolder.getContext().getAuthentication().getName();
+        auditService.logUpdate("Update","Book",user,Book2,Book);
         return bookRequest;
     }
     @Transactional
@@ -200,7 +210,10 @@ public class BookServiceImpl implements BookService {
         {
             throw new EntityNotFoundException("Book not found with id like"+id);
         }
+        Book deletedBook = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Book not found with id " + id));
         bookRepository.deleteById(id);
+        String user = SecurityContextHolder.getContext().getAuthentication().getName();
+        auditService.log("Delete","Book",user,"Usuwanie ksiazki z bazy danych",deletedBook);
     }
 }
 
