@@ -64,6 +64,7 @@ public class AuditServiceImpl implements AuditService{
     public void writeToFile(AuditRequest event) {
         try (FileWriter file = new FileWriter(FILE_PATH, true)) {
             ObjectMapper mapper = new ObjectMapper();
+            mapper.findAndRegisterModules();
             file.write(mapper.writeValueAsString(event) + System.lineSeparator());
         } catch (IOException e) {
             e.printStackTrace(); //logger

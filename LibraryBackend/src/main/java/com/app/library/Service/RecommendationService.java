@@ -1,9 +1,9 @@
 package com.app.library.Service;
 
-import com.app.library.DTO.Response.BookResponse;
+import com.app.library.Entity.Book;
 
-import java.util.List;
+import java.util.Set;
 
 public interface RecommendationService {
-    public List<BookResponse> generateForUser(Long userId);
+     Set<Book> generateForUser(Long userId);
 }

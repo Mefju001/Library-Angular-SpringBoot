@@ -4,7 +4,9 @@ import com.app.library.DTO.Request.UserDetailsRequest;
 import com.app.library.DTO.Request.UserPasswordRequest;
 import com.app.library.DTO.Response.FavoriteBooksResponse;
 import com.app.library.DTO.Response.UserResponse;
+import com.app.library.Entity.Book;
 import com.app.library.Entity.Favoritebooks;
+import com.app.library.Service.RecommendationService;
 import com.app.library.Service.RentalServiceImpl;
 import com.app.library.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/user")
@@ -25,10 +28,12 @@ import java.util.List;
 @Tag(name = "User Controller", description = "Zarządzanie danymi użytkownika w aplikacji")
 public class UserController {
     private final UserService userService;
+    private final RecommendationService recommendationService;
 
     @Autowired
-    public UserController(UserService userService, RentalServiceImpl rentalServiceImpl) {
+    public UserController(UserService userService, RentalServiceImpl rentalServiceImpl, RecommendationService recommendationService) {
         this.userService = userService;
+        this.recommendationService = recommendationService;
     }
     @GetMapping("/")
     @Operation(summary = "Pobiera listę książek ulubionych użytkownika", description = "Zwraca listę ulubionych książek na podstawie ID użytkownika.")
@@ -87,5 +92,10 @@ public class UserController {
         userService.changepassword(id, userPasswordRequest);
         return ResponseEntity.ok("Hasło zostało zmienione.");
     }
-
+    @GetMapping("/Recomend")
+    @Operation(summary = "", description = "")
+    public ResponseEntity<Set<Book>> recomend(@RequestParam Long userId) {
+        Set<Book> recom = recommendationService.generateForUser(userId);
+        return ResponseEntity.ok(recom);
+    }
 }
