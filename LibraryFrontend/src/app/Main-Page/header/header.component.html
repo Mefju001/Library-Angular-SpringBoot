@@ -7,7 +7,7 @@
         <a *ngIf="isAdmin()" routerLink="/addbook">Dodaj ksiazke</a>
         <a routerLink="/library">Biblioteki</a>
         <a href="#">Promocje</a>
-        <a href="#">Rekomendacja</a>
+        <a [routerLink]="['/likedBooks', 'recommendation']">Rekomendacja</a>
         <a href="#">Kontakt</a>
         <a [routerLink]="['/likedBooks', 'liked']">Polubione</a>
         <a [routerLink]="['/likedBooks', 'loaned']">Wypożyczone</a>

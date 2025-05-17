@@ -4,44 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.Date;
 
-@Getter
+/**
+ * @param id        Book
+ * @param idLibrary Library
+ */
 @Builder
-public class LibraryBookResponse {
-    //Book
-    private final Integer id;
-    private final String title;
-    private final String authorName;
-    private final String authorSurname;
-    private final LocalDate publicationDate;
-    private final long isbn;
-    private final String genreName;
-    private final String language;
-    private final String publisherName;
-    private final int pages;
-    private final float price;
-    //Library
-    private final Integer idLibrary;
-    private final String location;
-    private final String address;
-    private final String map;
-
-    public LibraryBookResponse(Integer id, String title, String authorName, String authorSurname, LocalDate publicationDate, long isbn, String genreName, String language, String publisherName, int pages, float price, Integer idLibrary, String location, String address, String map) {
-        this.id = id;
-        this.title = title;
-        this.authorName = authorName;
-        this.authorSurname = authorSurname;
-        this.publicationDate = publicationDate;
-        this.isbn = isbn;
-        this.genreName = genreName;
-        this.language = language;
-        this.publisherName = publisherName;
-        this.pages = pages;
-        this.price = price;
-        this.idLibrary = idLibrary;
-        this.location = location;
-        this.address = address;
-        this.map = map;
-    }
+public record LibraryBookResponse(Integer id, String title, String authorName, String authorSurname,
+                                  LocalDate publicationDate, long isbn, String genreName, String language,
+                                  String publisherName, int pages, float price, Integer idLibrary, String location,
+                                  String address, String map) {
 }

@@ -26,13 +26,9 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     @Override
     public Set<Book> generateForUser(Long userId) {
-        Set<Long> favoriteIds = favoritebooksRepository.findBook_IdByUser_Id(userId);
-        Set<Long> rentedIds = rentalRepository.findBook_IdByUser_Id(userId);
-
         List<Favoritebooks>favoriteBooks = favoritebooksRepository.findFavoritebooksByUser_Id(userId);
         List<Rental>rentalList = rentalRepository.findRentalsByUser_Id(userId);
         List<Book> allBooks = bookRepository.findAll();
-        // Scoring i filtrowanie książek
         return filterBooks(rentalList,favoriteBooks,allBooks);
     }
     private Set<Book>filterBooks(List<Rental> rents, List<Favoritebooks> favs,List<Book> allBooks)
@@ -47,7 +43,41 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         return allBooks.stream()
                 .filter(book -> !rentedBookIds.contains(book.getId()) && !favoriteBookIds.contains(book.getId()))
+                .map(book -> new AbstractMap.SimpleEntry<>(book, computeScore(book, favs, rents)))
+                .filter(entry -> entry.getValue() > 0.2)
+                .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
+                .limit(10)
+                .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
+    }
+    private double computeScore(Book book, List<Favoritebooks> favs, List<Rental> rents) {
+        double score = 0.0;
+
+        boolean matchesGenre = favs.stream()
+                .anyMatch(f -> f.getBook().getGenre() != null && f.getBook().getGenre().equals(book.getGenre()))
+            ||rents.stream()
+                .anyMatch(r->r.getBook().getGenre()!= null && r.getBook().getGenre().equals(book.getGenre()));
+        if (matchesGenre) {
+            score += 0.5;
+        }
+
+        boolean matchesAuthor = rents.stream()
+                .anyMatch(r -> r.getBook().getAuthor() != null && r.getBook().getAuthor().equals(book.getAuthor()))
+            ||favs.stream()
+                .anyMatch(f -> f.getBook().getAuthor() != null && f.getBook().getAuthor().equals(book.getAuthor())) ;
+        if (matchesAuthor) {
+            score += 0.3;
+        }
+        boolean matchesPublisher = rents.stream()
+                .anyMatch(r -> r.getBook().getPublisher()!=null&&r.getBook().getPublisher().equals(book.getPublisher()))
+            ||favs.stream()
+                .anyMatch(f -> f.getBook().getPublisher()!=null&&f.getBook().getPublisher().equals(book.getPublisher()));;
+        if (matchesPublisher) {
+            score += 0.2;
+        }
+        // Popularność (np. ile razy wypożyczona)
+
+        return score;
     }
 
 }

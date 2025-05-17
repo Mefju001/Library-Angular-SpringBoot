@@ -17,13 +17,7 @@ public class AuditServiceImpl implements AuditService{
     private static final String FILE_PATH = "audit-log.json";
     @Override
     public void log(String action, String entity, String user, String details,Object object) {
-        AuditRequest event = new AuditRequest();
-        event.setAction(action);
-        event.setEntity(entity);
-        event.setPerformedBy(user);
-        event.setTimestamp(LocalDateTime.now());
-        event.setDetails(details);
-        event.setObject(object);
+        AuditRequest event = new AuditRequest(action,entity,user,LocalDateTime.now(),details,object);
         writeToFile(event);
     }
     @Override
@@ -32,12 +26,7 @@ public class AuditServiceImpl implements AuditService{
         Map<String, Object> changes = findDifferences(oldObject, newObject);
         String details = "Zmodyfikowane pola: " + changes.toString();
 
-        AuditRequest audit = new AuditRequest();
-        audit.setAction("Update");
-        audit.setEntity(entity);
-        audit.setPerformedBy(user);
-        audit.setTimestamp(LocalDateTime.now());
-        audit.setDetails(details);
+        AuditRequest audit = new AuditRequest("Update",entity,user,LocalDateTime.now(),details,newObject);
         writeToFile(audit);
     }
 

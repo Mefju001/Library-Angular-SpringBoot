@@ -13,7 +13,8 @@ import { LoanService } from 'src/app/Service/LoanService';
 })
 export class LikedBooksComponent implements OnInit {
   selectedTab:'liked'|'loaned'='liked';
-  likedBooks: likedBook[] =[]; // Zmienna na dane książki
+  likedBooks: likedBook[] =[];
+  RecommedationBooks: likedBook[]=[];
   Loanbooks: BorrowedBook[]=[];
   userId: number = 0;
   type: string = '';
@@ -31,6 +32,8 @@ export class LikedBooksComponent implements OnInit {
         this.LikedBooks();
       } else if (this.type === 'loaned') {
         this.LoanedBook();
+      } else if(this.type === 'recommendation'){
+        this.recommedationBooks();
       }
     });
   }
@@ -38,7 +41,6 @@ export class LikedBooksComponent implements OnInit {
   LikedBooks():void{
     const bookId = Number(this.route.snapshot.paramMap.get('id')); // Pobranie ID z URL
     this.userId=this.getId();
-    console.log(this.userId);
     if (this.userId) {
       this.userService.getLikedBook(this.userId).subscribe(data => {
         console.log(data)
@@ -46,10 +48,18 @@ export class LikedBooksComponent implements OnInit {
       });
     }
   }
+  recommedationBooks():void{
+    const bookId = Number(this.route.snapshot.paramMap.get('id')); // Pobranie ID z URL
+    this.userId=this.getId();
+    if (this.userId) {
+      this.userService.getRecommedation(this.userId).subscribe(data => {
+        this.RecommedationBooks = data;
+      });
+    }
+  }
   LoanedBook():void{
     const bookId = Number(this.route.snapshot.paramMap.get('id')); // Pobranie ID z URL
     this.userId=this.getId();
-    console.log(this.userId);
     if (this.userId) {
       this.loanService.getLoanBooksByUserId(this.userId).subscribe(data => {
         this.Loanbooks = data;

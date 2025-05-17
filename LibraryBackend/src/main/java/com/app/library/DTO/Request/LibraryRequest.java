@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LibraryRequest {
+public record LibraryRequest {
     private Integer id;
     @NotBlank(message = "Library location cannot be blank")
     private String location;

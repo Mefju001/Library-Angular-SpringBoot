@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserPasswordRequest {
+public record UserPasswordRequest {
     @NotBlank(message = "Old password cannot be blank")
     private String oldpassword;
 

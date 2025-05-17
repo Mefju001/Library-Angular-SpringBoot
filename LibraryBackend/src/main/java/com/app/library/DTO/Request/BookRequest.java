@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.Date;
 @Getter
 @Setter
-public class BookRequest {
+public record BookRequest {
     @NotBlank(message = "Title cannot be blank")
     private String title;
     @NotBlank(message = "Author name cannot be blank")

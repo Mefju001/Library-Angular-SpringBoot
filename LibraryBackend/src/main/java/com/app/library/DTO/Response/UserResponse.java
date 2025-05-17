@@ -7,11 +7,6 @@ import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.Set;
-@Getter
 @Builder
-public class UserResponse {
-    private final Long id;
-    private final String username;
-    private final String password;
-    private final String role;
+public record UserResponse (Long id,String username,String password,String role){
 }

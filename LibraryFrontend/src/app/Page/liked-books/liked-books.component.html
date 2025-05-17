@@ -19,7 +19,22 @@
           </div>
         </ng-container>
 
-
+        <ng-container *ngIf="type === 'recommendation'">
+          <div *ngFor="let book of RecommedationBooks" class="book">
+            <h2>{{ book.title }}</h2>
+            <p><strong>Autor:</strong> {{ book.authorName }} {{ book.authorSurname }}</p>
+            <p><strong>Gatunek:</strong> {{ book.genreName }}</p>
+            <p><strong>Wydawca:</strong> {{ book.publisherName }}</p>
+            <p><strong>Rok wydania:</strong> {{ book.publicationYear }}</p>
+            <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+            <p><strong>Język:</strong> {{ book.language }}</p>
+            <p><strong>Cena:</strong> {{ book.price }} zł</p>
+            <p><strong>Liczba stron:</strong> {{ book.pages }}</p>
+            <div *ngIf="RecommedationBooks.length === 0">
+                <p>Brak książek w bazie danych.</p>
+            </div>
+          </div>
+        </ng-container>
       
         <ng-container *ngIf="type === 'loaned'">
           <div *ngFor="let rental of Loanbooks" class="book">

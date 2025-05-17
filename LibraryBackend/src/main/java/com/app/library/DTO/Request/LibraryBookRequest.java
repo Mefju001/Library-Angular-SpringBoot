@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 @Getter
 @Setter
-public class LibraryBookRequest {
+public record LibraryBookRequest {
     private Integer id;
     @NotBlank(message = "Title cannot be blank")
     private String title;

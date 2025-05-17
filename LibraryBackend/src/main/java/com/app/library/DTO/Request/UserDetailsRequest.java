@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDetailsRequest {
+public record UserDetailsRequest {
     @NotBlank(message = "Name cannot be blank")
     private String name;
 

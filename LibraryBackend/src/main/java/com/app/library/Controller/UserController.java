@@ -92,7 +92,7 @@ public class UserController {
         userService.changepassword(id, userPasswordRequest);
         return ResponseEntity.ok("Hasło zostało zmienione.");
     }
-    @GetMapping("/Recomend")
+    @GetMapping("/recommendation")
     @Operation(summary = "", description = "")
     public ResponseEntity<Set<Book>> recomend(@RequestParam Long userId) {
         Set<Book> recom = recommendationService.generateForUser(userId);
