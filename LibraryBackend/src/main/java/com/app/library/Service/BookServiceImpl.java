@@ -155,16 +155,16 @@ public class BookServiceImpl implements BookService {
     }
 
     private void setbook(Book book, BookRequest bookRequest){
-        book.setTitle(bookRequest.getTitle());
-        book.setpublicationDate(bookRequest.getPublicationDate());
-        book.setIsbn(bookRequest.getIsbn());
-        book.setLanguage(bookRequest.getLanguage());
-        book.setPages(bookRequest.getPages());
-        book.setPrice(bookRequest.getPrice());
-        book.setOldprice(bookRequest.getPrice());
-        book.setGenre(getOrCreateGenre(bookRequest.getGenreName()));
-        book.setAuthor(getOrCreateAuthor(bookRequest.getAuthorName(), bookRequest.getAuthorSurname()));
-        book.setPublisher(getOrCreatePublisher(bookRequest.getPublisherName()));
+        book.setTitle(bookRequest.title());
+        book.setpublicationDate(bookRequest.publicationDate());
+        book.setIsbn(bookRequest.isbn());
+        book.setLanguage(bookRequest.language());
+        book.setPages(bookRequest.pages());
+        book.setPrice(bookRequest.price());
+        book.setOldprice(bookRequest.price());
+        book.setGenre(getOrCreateGenre(bookRequest.genreName()));
+        book.setAuthor(getOrCreateAuthor(bookRequest.authorName(), bookRequest.authorSurname()));
+        book.setPublisher(getOrCreatePublisher(bookRequest.publisherName()));
         bookRepository.save(book);
     }
     private Genre getOrCreateGenre(String name) {
@@ -184,7 +184,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     public BookRequest addbook(BookRequest bookRequest) {
-       if (bookRepository.findBookByIsbnIs(bookRequest.getIsbn()) != null) {
+       if (bookRepository.findBookByIsbnIs(bookRequest.isbn()) != null) {
            System.out.println("Książka z tym ISBN już istnieje");
            logger.info("Książka z tym ISBN już istnieje");
        }

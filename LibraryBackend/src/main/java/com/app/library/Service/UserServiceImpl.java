@@ -94,14 +94,14 @@ public class UserServiceImpl implements UserService{
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Użytkownik o podanym ID nie istnieje"));
 
-        if (userRequest.getName() != null && !existingUser.getName().equals(userRequest.getName())) {
-            existingUser.setName(userRequest.getName());
+        if (userRequest.name() != null && !existingUser.getName().equals(userRequest.name())) {
+            existingUser.setName(userRequest.name());
         }
-        if (userRequest.getSurname() != null && !existingUser.getSurname().equals(userRequest.getSurname())) {
-            existingUser.setSurname(userRequest.getSurname());
+        if (userRequest.surname() != null && !existingUser.getSurname().equals(userRequest.surname())) {
+            existingUser.setSurname(userRequest.surname());
         }
-        if (userRequest.getEmail() != null && !existingUser.getEmail().equals(userRequest.getEmail())) {
-            existingUser.setEmail(userRequest.getEmail());
+        if (userRequest.email() != null && !existingUser.getEmail().equals(userRequest.email())) {
+            existingUser.setEmail(userRequest.email());
         }
 
         userRepository.save(existingUser);
@@ -112,22 +112,22 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(() -> new RuntimeException("Użytkownik o podanym ID nie istnieje"));
 
         // 1. Sprawdzanie, czy stare hasło jest poprawne
-        if (!encoder.matches(userPasswordRequest.getOldpassword(), existingUser.getPassword())) {
+        if (!encoder.matches(userPasswordRequest.oldpassword(), existingUser.getPassword())) {
             throw new IllegalArgumentException("Stare hasło jest niepoprawne");
         }
 
         // 2. Sprawdzanie, czy nowe hasło nie jest takie samo jak stare
-        if (userPasswordRequest.getOldpassword().equals(userPasswordRequest.getNewpassword())) {
+        if (userPasswordRequest.oldpassword().equals(userPasswordRequest.newpassword())) {
             throw new IllegalArgumentException("Nowe hasło nie może być takie samo jak stare");
         }
 
         // 3. Sprawdzanie, czy nowe hasła pasują do siebie
-        if (!userPasswordRequest.getNewpassword().equals(userPasswordRequest.getConfirmpassword())) {
+        if (!userPasswordRequest.newpassword().equals(userPasswordRequest.confirmpassword())) {
             throw new IllegalArgumentException("Hasła do siebie nie pasują");
         }
 
         // 4. Zaszyfrowanie nowego hasła
-        existingUser.setPassword(encoder.encode(userPasswordRequest.getNewpassword()));
+        existingUser.setPassword(encoder.encode(userPasswordRequest.newpassword()));
         userRepository.save(existingUser);
     }
     @Transactional

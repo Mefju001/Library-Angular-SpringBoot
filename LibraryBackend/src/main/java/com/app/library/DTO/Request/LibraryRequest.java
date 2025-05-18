@@ -5,15 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
-public record LibraryRequest {
-    private Integer id;
-    @NotBlank(message = "Library location cannot be blank")
-    private String location;
-    @NotBlank(message = "Library address cannot be blank")
-    private String address;
-    @NotBlank(message = "Map cannot be blank")
-    private String map;
+
+public record LibraryRequest(Integer id,
+                             @NotBlank(message = "Library location cannot be blank")String location,
+                             @NotBlank(message = "Library address cannot be blank")String address,
+                             @NotBlank(message = "Map cannot be blank")String map){
 }
 

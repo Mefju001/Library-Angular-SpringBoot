@@ -70,16 +70,16 @@ public class LibraryServiceImpl implements LibraryService{
     public LibraryResponse addlibrary(LibraryRequest library)
     {
         Library savedLibrary = new Library();
-        savedLibrary.setLocation(library.getLocation());
-        savedLibrary.setAddress(library.getAddress());
-        savedLibrary.setMap(library.getMap());
+        savedLibrary.setLocation(library.location());
+        savedLibrary.setAddress(library.address());
+        savedLibrary.setMap(library.map());
         libraryRepository.save(savedLibrary);
         return new LibraryResponse(savedLibrary.getId(), savedLibrary.getLocation(), savedLibrary.getAddress(),savedLibrary.getMap());
     }
     LibraryBook setLibraryBook(LibraryBookRequest request)
     {
-        Book book = bookRepository.findBookByIsbnIs(request.getIsbn());
-        Library library = libraryRepository.findById(request.getIdLibrary()).orElseThrow();
+        Book book = bookRepository.findBookByIsbnIs(request.isbn());
+        Library library = libraryRepository.findById(request.idLibrary()).orElseThrow();
 
         LibraryBook libraryBook = new LibraryBook();
         libraryBook.setBook(book);
@@ -92,20 +92,20 @@ public class LibraryServiceImpl implements LibraryService{
         libraryBookRepository.save(setLibraryBook(request));
 
         return LibraryBookResponse.builder()
-                .id(request.getId())
-                .title(request.getTitle())
-                .authorName(request.getAuthorName())
-                .authorSurname(request.getAuthorSurname())
-                .publicationDate(request.getPublicationDate())
-                .isbn(request.getIsbn())
-                .genreName(request.getGenreName())
-                .language(request.getLanguage())
-                .publisherName(request.getPublisherName())
-                .pages(request.getPages())
-                .price(request.getPrice())
-                .idLibrary(request.getIdLibrary())
-                .location(request.getName())
-                .address(request.getAddress())
+                .id(request.id())
+                .title(request.title())
+                .authorName(request.authorName())
+                .authorSurname(request.authorSurname())
+                .publicationDate(request.publicationDate())
+                .isbn(request.isbn())
+                .genreName(request.genreName())
+                .language(request.language())
+                .publisherName(request.publisherName())
+                .pages(request.pages())
+                .price(request.price())
+                .idLibrary(request.idLibrary())
+                .location(request.name())
+                .address(request.address())
                 .build();
     }
 
@@ -115,9 +115,9 @@ public class LibraryServiceImpl implements LibraryService{
         Optional<Library> existinglibrary = libraryRepository.findById(id);
         if(existinglibrary.isPresent()) {
             Library updatedlibrary = existinglibrary.get();
-            updatedlibrary.setLocation(library.getLocation());
-            updatedlibrary.setAddress(library.getAddress());
-            updatedlibrary.setMap(library.getMap());
+            updatedlibrary.setLocation(library.location());
+            updatedlibrary.setAddress(library.address());
+            updatedlibrary.setMap(library.map());
             libraryRepository.save(updatedlibrary);
             return new LibraryResponse(existinglibrary.get().getId(),existinglibrary.get().getLocation(),existinglibrary.get().getAddress(),existinglibrary.get().getMap());
         }
@@ -128,21 +128,21 @@ public class LibraryServiceImpl implements LibraryService{
     @Transactional
     public LibraryBookResponse updatebookandlibrary(LibraryBookRequest libraryBookRequest)
     {
-        Optional<LibraryBook> existingdata = libraryBookRepository.findById(libraryBookRequest.getId());
+        Optional<LibraryBook> existingdata = libraryBookRepository.findById(libraryBookRequest.id());
         if(existingdata.isPresent()) {
             libraryBookRepository.save(setLibraryBook(libraryBookRequest));
             return LibraryBookResponse.builder()
-                    .id(libraryBookRequest.getId())
-                    .title(libraryBookRequest.getTitle())
-                    .authorName(libraryBookRequest.getAuthorName())
-                    .authorSurname(libraryBookRequest.getAuthorSurname())
-                    .publicationDate(libraryBookRequest.getPublicationDate())
-                    .isbn(libraryBookRequest.getIsbn())
-                    .genreName(libraryBookRequest.getGenreName())
-                    .language(libraryBookRequest.getLanguage())
-                    .publisherName(libraryBookRequest.getPublisherName())
-                    .pages(libraryBookRequest.getPages())
-                    .price(libraryBookRequest.getPrice())
+                    .id(libraryBookRequest.id())
+                    .title(libraryBookRequest.title())
+                    .authorName(libraryBookRequest.authorName())
+                    .authorSurname(libraryBookRequest.authorSurname())
+                    .publicationDate(libraryBookRequest.publicationDate())
+                    .isbn(libraryBookRequest.isbn())
+                    .genreName(libraryBookRequest.genreName())
+                    .language(libraryBookRequest.language())
+                    .publisherName(libraryBookRequest.publisherName())
+                    .pages(libraryBookRequest.pages())
+                    .price(libraryBookRequest.price())
                     .build();
         }
         else {

@@ -8,36 +8,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-@Getter
-@Setter
-public record LibraryBookRequest {
-    private Integer id;
-    @NotBlank(message = "Title cannot be blank")
-    private String title;
-    @NotBlank(message = "Author name cannot be blank")
-    private String authorName;
-    @NotBlank(message = "Author surname cannot be blank")
-    private String authorSurname;
-    @NotNull(message = "Publication date is required")
-    private LocalDate publicationDate;
-    @Pattern(regexp = "\\d{13}", message = "ISBN must be exactly 13 digits")
-    private long isbn;
-    @NotBlank(message = "Genre cannot be blank")
-    private String genreName;
-    @NotBlank(message = "Language cannot be blank")
-    private String language;
-    @NotBlank(message = "Publisher name cannot be blank")
-    private String publisherName;
-    @Positive(message = "Number of pages must be positive")
-    private int pages;
-    @Positive(message = "Price must be positive")
-    private float price;
-    //Library
-    @NotNull(message = "Library ID must be provided")
-    private Integer idLibrary;
-    @NotBlank(message = "Library name cannot be blank")
-    private String name;
-    @NotBlank(message = "Library address cannot be blank")
-    private String address;
 
+public record LibraryBookRequest(Integer id,
+                                 @NotBlank(message = "Title cannot be blank")String title,
+                                 @NotBlank(message = "Author name cannot be blank")String authorName,
+                                 @NotBlank(message = "Author surname cannot be blank")String authorSurname,
+                                 @NotNull(message = "Publication date is required")LocalDate publicationDate,
+                                 @Pattern(regexp = "\\d{13}", message = "ISBN must be exactly 13 digits")Long isbn,
+                                 @NotBlank(message = "Genre cannot be blank")String genreName,
+                                 @NotBlank(message = "Language cannot be blank")String language,
+                                 @NotBlank(message = "Publisher name cannot be blank")String publisherName,
+                                 @Positive(message = "Number of pages must be positive")Integer pages,
+                                 @Positive(message = "Price must be positive")Float price,
+                                 @NotNull(message = "Library ID must be provided")Integer idLibrary,
+                                 @NotBlank(message = "Library name cannot be blank")String name,
+                                 @NotBlank(message = "Library address cannot be blank")String address
+                                 ) {
 }
