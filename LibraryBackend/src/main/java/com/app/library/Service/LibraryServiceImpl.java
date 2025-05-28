@@ -35,11 +35,13 @@ public class LibraryServiceImpl implements LibraryService{
         this.libraryMapper = libraryMapper;
         this.libraryBookMapper = libraryBookMapper;
     }
+    @Override
     public List<LibraryResponse>findall()
     {
         List<Library> libraries = libraryRepository.findAll();
         return libraries.stream().map(libraryMapper::toDto).toList();
     }
+    @Override
     public LibraryResponse findbyid(Integer id)
     {
         Optional<Library> Optlibrary = libraryRepository.findById(id);
@@ -51,21 +53,25 @@ public class LibraryServiceImpl implements LibraryService{
             throw new EntityNotFoundException("not found");
         }
     }
+    @Override
     public List<LibraryResponse>findlibrarybylocation(String location)
     {
         List<Library> libraries = libraryRepository.findLibraryByLocation(location);
         return libraries.stream().map(libraryMapper::toDto).toList();
     }
+    @Override
     public List<LibraryBookResponse>findallbookandlibrary()
     {
         List<LibraryBook> libraries = libraryBookRepository.findAll();
         return libraries.stream().map(libraryBookMapper::toLibraryBookResponse).toList();
     }
+    @Override
     public List<LibraryBookResponse>findbookinlibraries(String title)
     {
         List<LibraryBook> libraries = libraryBookRepository.findLibraryBookByBook_Title(title);
         return libraries.stream().map(libraryBookMapper::toLibraryBookResponse).toList();
     }
+    @Override
     @Transactional
     public LibraryResponse addlibrary(LibraryRequest library)
     {
@@ -76,6 +82,7 @@ public class LibraryServiceImpl implements LibraryService{
         libraryRepository.save(savedLibrary);
         return new LibraryResponse(savedLibrary.getId(), savedLibrary.getLocation(), savedLibrary.getAddress(),savedLibrary.getMap());
     }
+
     LibraryBook setLibraryBook(LibraryBookRequest request)
     {
         Book book = bookRepository.findBookByIsbnIs(request.isbn());
@@ -86,6 +93,7 @@ public class LibraryServiceImpl implements LibraryService{
         libraryBook.setLibrary(library);
         return libraryBook;
     }
+    @Override
     @Transactional
     public LibraryBookResponse addbooktolibrary(LibraryBookRequest request)
     {
@@ -108,7 +116,7 @@ public class LibraryServiceImpl implements LibraryService{
                 .address(request.address())
                 .build();
     }
-
+    @Override
     @Transactional
     public LibraryResponse updatelibrary(Integer id,LibraryRequest library)
     {
@@ -125,6 +133,7 @@ public class LibraryServiceImpl implements LibraryService{
             throw new EntityNotFoundException("not found");
         }
     }
+    @Override
     @Transactional
     public LibraryBookResponse updatebookandlibrary(LibraryBookRequest libraryBookRequest)
     {
@@ -149,6 +158,7 @@ public class LibraryServiceImpl implements LibraryService{
             throw new EntityNotFoundException("not found");
         }
     }
+    @Override
     @Transactional
     public void deletelibrary(Integer id)
     {
@@ -157,6 +167,7 @@ public class LibraryServiceImpl implements LibraryService{
         }
         libraryRepository.deleteById(id);
     }
+    @Override
     @Transactional
     public void deletebookandlibrary(Integer id)
     {

@@ -47,61 +47,67 @@ public class BookServiceImpl implements BookService {
         this.bookMapper = bookMapper;
         this.genreMapper = genreMapper;
     }
+    @Override
     public Page<BookResponse> findall(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findAll(pageable);
         return books.map(bookMapper::toDto);
     }
+    @Override
     public BookResponse findbyid(Integer id) {
         Optional<Book> books = bookRepository.findById(id);
         return books.map(bookMapper::toDto).orElseThrow();
     }
+    @Override
     public BookImg findByBookId(Integer id)
     {
         BookImg bookImg = bookImgRepository.findBookImgByBook_Id(id);
         return bookImg;
     }
+    @Override
     public List<GenreResponse> findallgenres() {
             List<Genre> genres = genreRepository.findAll();
             return genres.stream()
                          .map(genreMapper::toDto)
                          .toList();
     }
-
+    @Override
     public Page<BookResponse> findbooksbygenre(String name,int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findBooksByGenreName(name,pageable);
         return books.map(bookMapper::toDto);
     }
-
+    @Override
     public Page<BookResponse> findbooksbypublisher(String name,int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findBooksByPublisherName(name,pageable);
         return books.map(bookMapper::toDto);
     }
-
+    @Override
     public Page<BookResponse> findbooksbytitle(String title,int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findBooksByTitleContaining(title,pageable);
         return books.map(bookMapper::toDto);
     }
-
+    @Override
     public Page<BookResponse> findbooksbyauthor(String name, String surname,int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findBooksByAuthor_NameOrAuthor_Surname(name, surname,pageable);
         return books.map(bookMapper::toDto);
     }
-
+    @Override
     public Page<BookResponse> findbooksbyprice(Float min, Float max,int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findBooksByPriceIsBetween(min, max,pageable);
         return books.map(bookMapper::toDto);
     }
+    @Override
     public Page<BookResponse> findbooksbyyear(LocalDate year1, LocalDate year2,int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findBooksByPublicationDateBetween(year1, year2,pageable);
         return books.map(bookMapper::toDto);
     }
+    @Override
     public Page<BookResponse> findnewbooks(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         LocalDate date = LocalDate.now();
@@ -113,13 +119,14 @@ public class BookServiceImpl implements BookService {
     public Long getNewBooksCount() {
         return bookRepository.countBooksByPublicationDateAfter(LocalDate.now().minusMonths(1));
     }
-
+    @Override
     public Page<BookResponse> findforeshadowedbooks(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         LocalDate date = LocalDate.now();
         Page<Book> books = bookRepository.findBooksByPublicationDateIsGreaterThan(date,pageable);
         return books.map(bookMapper::toDto);
     }
+    @Override
     public Page<BookResponse> sortbooktitle(int page, int size,String type) {
         if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
             throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
@@ -131,6 +138,7 @@ public class BookServiceImpl implements BookService {
         Page<Book> books = bookRepository.findAll(pageable);
         return books.map(bookMapper::toDto);
     }
+    @Override
     public Page<BookResponse> sortbookprice(int page, int size,String type){
         if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
             throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
@@ -142,6 +150,7 @@ public class BookServiceImpl implements BookService {
         Page<Book> books = bookRepository.findAll(pageable);
         return books.map(bookMapper::toDto);
     }
+    @Override
     public Page<BookResponse> sortbookyear(int page, int size,String type){
         if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
             throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
@@ -181,7 +190,7 @@ public class BookServiceImpl implements BookService {
         return publisherRepository.findPublisherByName(name)
                 .orElseGet(() -> publisherRepository.save(new Publisher(name)));
     }
-
+    @Override
     @Transactional
     public BookRequest addbook(BookRequest bookRequest) {
        if (bookRepository.findBookByIsbnIs(bookRequest.isbn()) != null) {
@@ -194,6 +203,7 @@ public class BookServiceImpl implements BookService {
         auditService.log("Post","Book",user,"Dodawanie ksiazki do bazy danych",newBook);
         return bookRequest;
     }
+    @Override
     @Transactional
     public BookRequest updateBook(Integer id,BookRequest bookRequest){
         Book Book = bookRepository.findById(id).orElseThrow(()->new RuntimeException("Książka nie znaleziona"));
@@ -204,6 +214,7 @@ public class BookServiceImpl implements BookService {
         auditService.logUpdate("Update","Book",user,Book2,Book);
         return bookRequest;
     }
+    @Override
     @Transactional
     public void deletebook(Integer id) {
         if(!bookRepository.existsById(id))

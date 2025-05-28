@@ -59,12 +59,14 @@ public class UserServiceImpl implements UserService{
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
     }
+    @Override
     public List<FavoriteBooksResponse> findAllLikedBooks(Long userId) {
             List<Favoritebooks> favoritebooks = favoritebooksRepository.findFavoritebooksByUser_Id(userId);
         return favoritebooks.stream()
                     .map(favoriteBooksMapper::toDto)
                     .toList();
     }
+    @Override
     public UserResponse findbyid(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         return UserResponse.builder()
@@ -74,6 +76,7 @@ public class UserServiceImpl implements UserService{
                 .role(String.valueOf(user.getRoles()))
                 .build();
     }
+    @Override
     public JwtResponse login(UserRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -89,6 +92,7 @@ public class UserServiceImpl implements UserService{
                 userDetails.getAuthorities());
 
     }
+    @Override
     @Transactional
     public void changedetails(Long id, UserDetailsRequest userRequest) {
         User existingUser = userRepository.findById(id)
@@ -106,6 +110,7 @@ public class UserServiceImpl implements UserService{
 
         userRepository.save(existingUser);
     }
+    @Override
     @Transactional
     public void changepassword(Long id, UserPasswordRequest userPasswordRequest) {
         User existingUser = userRepository.findById(id)
@@ -130,6 +135,7 @@ public class UserServiceImpl implements UserService{
         existingUser.setPassword(encoder.encode(userPasswordRequest.newpassword()));
         userRepository.save(existingUser);
     }
+    @Override
     @Transactional
     public void registerUp(UserRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -146,6 +152,7 @@ public class UserServiceImpl implements UserService{
         user.setRoles(roles);
         userRepository.save(user);
     }
+    @Override
     @Transactional
     public void deleteuser(Long id)
     {
@@ -155,7 +162,7 @@ public class UserServiceImpl implements UserService{
         }
         userRepository.deleteById(id);
     }
-
+    @Override
     @Transactional
     public FavoriteBooksResponse addfavoritebooks(Integer bookId, Long userId)
     {
@@ -188,6 +195,7 @@ public class UserServiceImpl implements UserService{
                 .price(favoritebooks.getBook().getPrice())
                 .build();
     }
+    @Override
     @Transactional
     public Favoritebooks updatefavoritebooks(Favoritebooks favoritebooks)
     {

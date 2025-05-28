@@ -40,7 +40,7 @@ public class PromotionServiceImpl implements PromotionService{
             }
         });
     }*/
-
+   @Override
     @Transactional
     public void setpromotion(Integer bookId, long promotionId) {
         Book book = bookRepository.findById(bookId)
@@ -75,6 +75,7 @@ public class PromotionServiceImpl implements PromotionService{
             }
         }
     }
+    @Override
     @Transactional
     public void deactivatePromotion(Long promotionId) {
         Optional<Promotions> promotionsOptional = promotionRepository.findById(promotionId);
@@ -89,7 +90,7 @@ public class PromotionServiceImpl implements PromotionService{
             }
         }
     }
-
+    @Override
     @Transactional
     public Boolean deleteBookPromotion(Long bookPromotionId) {
         Optional<BookPromotion> bookPromotionOptional = bookPromotionRepository.findById(bookPromotionId);
