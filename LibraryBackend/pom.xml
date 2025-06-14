@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com</groupId>
     <artifactId>LibraryBackend</artifactId>
@@ -31,6 +31,10 @@
 
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -68,7 +72,7 @@
         <dependency>
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
-            <version>2.5.2</version> <!-- Wersja, która nie ma luki -->
+            <version>2.5.2</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
