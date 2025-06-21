@@ -10,6 +10,7 @@ import com.app.library.Security.DTO.Response.JwtResponse;
 import java.util.List;
 public interface UserService {
     List<FavoriteBooksResponse> findAllLikedBooks(Long userId);
+    List<UserResponse> findAll();
     UserResponse findbyid(Long id);
     JwtResponse login(UserRequest loginRequest);
     void changedetails(Long id, UserDetailsRequest userRequest);

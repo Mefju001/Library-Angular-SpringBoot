@@ -1,6 +1,7 @@
 package com.app.library.Service;
 
 import com.app.library.DTO.Mapper.FavoriteBooksMapper;
+import com.app.library.DTO.Mapper.UserMapper;
 import com.app.library.DTO.Request.UserDetailsRequest;
 import com.app.library.DTO.Request.UserPasswordRequest;
 import com.app.library.DTO.Response.FavoriteBooksResponse;
@@ -44,18 +45,20 @@ public class UserServiceImpl implements UserService{
     private final BookRepository bookRepository;
     private final RoleRepository roleRepository;
     private final FavoriteBooksMapper favoriteBooksMapper;
+    private final UserMapper userMapper;
     private final PasswordEncoder encoder;
 
 
     private final JwtUtils jwtUtils;
     @Autowired
-    public UserServiceImpl(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, FavoriteBooksMapper favoriteBooksMapper, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public UserServiceImpl(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, FavoriteBooksMapper favoriteBooksMapper, UserMapper userMapper, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.favoritebooksRepository = favoritebooksRepository;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.roleRepository = roleRepository;
         this.favoriteBooksMapper = favoriteBooksMapper;
+        this.userMapper = userMapper;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
     }
@@ -65,6 +68,13 @@ public class UserServiceImpl implements UserService{
         return favoritebooks.stream()
                     .map(favoriteBooksMapper::toDto)
                     .toList();
+    }
+    @Override
+    public List<UserResponse> findAll() {
+        List<User> users = userRepository.findUsersByRole("Role_User");
+        return users.stream()
+                .map(userMapper::toDto)
+                .toList();
     }
     @Override
     public UserResponse findbyid(Long id) {

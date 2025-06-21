@@ -35,7 +35,7 @@ public class BookController {
     }
     @GetMapping("/")
     @Operation(summary = "Zwraca ksiazki z bazy danych", description = "Zwraca dane książek z bazy danych")
-    public ResponseEntity<Page<BookResponse>>listofbooks(
+    public ResponseEntity<Page<BookResponse>>Pageofbooks(
             @Parameter(description = "Numer strony paginacji")
             @RequestParam(defaultValue = "0") int page,
 
@@ -44,6 +44,18 @@ public class BookController {
     {
 
         Page<BookResponse>books= bookService.findall(page,size);
+        if(books.isEmpty())
+        {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(books);
+    }
+    @GetMapping("/books")
+    @Operation(summary = "Zwraca ksiazki z bazy danych", description = "Zwraca dane książek z bazy danych")
+    public ResponseEntity<List<BookResponse>>listofbooks()
+    {
+
+        List<BookResponse>books= bookService.findAllList();
         if(books.isEmpty())
         {
             return ResponseEntity.noContent().build();

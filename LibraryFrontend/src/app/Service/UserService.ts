@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Library } from '../Models/Library.model';
 import { UserDetails } from '../Models/UserDetails.model';
 import { UserPassword } from '../Models/UserPassword.model';
+import { UserAdmin } from '../Models/UserAdmin.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,10 @@ export class UserService {
   getuserbyid(id: number): Observable<any> {
     // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.get(`${this.apiUrl}/${id}`);
+  }
+  getUsers():Observable<UserAdmin[]>
+  {
+    return this.http.get<UserAdmin[]>(`${this.apiUrl}/all`);
   }
   changedetails(id: number,userDetails:UserDetails): Observable<any> {
     // Wywołanie backendu, który zwróci dane w formacie Book[]

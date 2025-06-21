@@ -50,6 +50,12 @@ public class UserController {
         UserResponse user = userService.findbyid(id);
         return ResponseEntity.ok(user);
     }
+    @GetMapping("/all")
+    @Operation(summary = "", description = "")
+    public ResponseEntity<List<UserResponse>> GetUsers() {
+        List<UserResponse> user = userService.findAll();
+        return ResponseEntity.ok(user);
+    }
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     @Operation(summary = "Dodaje książkę do ulubionych użytkownika", description = "Dodaje książkę do ulubionych na podstawie ID książki i ID użytkownika.")

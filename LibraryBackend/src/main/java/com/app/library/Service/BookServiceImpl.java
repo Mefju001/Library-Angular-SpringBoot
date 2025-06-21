@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -53,6 +54,13 @@ public class BookServiceImpl implements BookService {
         Page<Book> books = bookRepository.findAll(pageable);
         return books.map(bookMapper::toDto);
     }
+
+    @Override
+    public List<BookResponse> findAllList() {
+        List<Book> books = bookRepository.findAll();
+        return books.stream().map(bookMapper::toDto).collect(Collectors.toList());
+    }
+
     @Override
     public BookResponse findbyid(Integer id) {
         Optional<Book> books = bookRepository.findById(id);
