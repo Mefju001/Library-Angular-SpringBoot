@@ -2,6 +2,7 @@ import { Component,OnInit  } from '@angular/core';
 import { ActivatedRoute, Router, Routes } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { Book } from 'src/app/Models/book.model';
+import { DashboardStats } from 'src/app/Models/DashboardStats.model';
 import { User } from 'src/app/Models/User.model';
 import { UserAdmin } from 'src/app/Models/UserAdmin.model';
 import { AdminService } from 'src/app/Service/AdminService';
@@ -24,13 +25,16 @@ export class DashboardAdminComponent {
       loans: 'Wypożyczenia',
       settings: 'Ustawienia'
   }
-  userSize:number=0;
-  loanSize:number=0;
-  newBooksSize:number=0;
-  overdueBooksSize:number=0;
   currentPage = 0;
   totalPages = 0;
   pageSize = 10;
+
+stats: DashboardStats = {
+  userCount: 0,
+  loanCount: 0,
+  newBooksCount: 0,
+  overdueCount: 0
+};
   books: Book[] = [];
   book = {
     id:0,
@@ -53,7 +57,14 @@ export class DashboardAdminComponent {
   role: ''
   }
   ngOnInit(): void {
-    this.getDashboardData()
+      this.adminService.getDashboardStats().subscribe({
+      next: (response) =>{
+        this.stats = response;
+      },
+      error:(err)=>{
+        console.error("Błąd pobierania statystyk:",err)
+      }
+    })
   }
   changeView(viewName: string):void{
     this.view = viewName;
@@ -104,22 +115,6 @@ goToBook(id: number) {
       this.totalPages = response.totalPages;
       
     },error => console.error('Błąd podczas pobierania książek:', error));
-  }
-  getDashboardData(): void {
-    forkJoin({
-      userCount: this.adminService.getUserCount(),
-      loanCount: this.adminService.getLoanCount(),
-      newBooksCount: this.adminService.getNewBooksCount(),
-      overdueBooks: this.adminService.getOverdueBooksCount()
-    }).subscribe(
-      (data) => {
-        this.userSize = data.userCount;
-        this.loanSize = data.loanCount;
-        this.newBooksSize = data.newBooksCount;
-        this.overdueBooksSize = data.overdueBooks;
-      },
-      (error) => console.error('Błąd podczas pobierania danych:', error)
-    );
   }
   checkOverdues(): void {
     this.loanService.checkOverdueStatus().subscribe(() => {

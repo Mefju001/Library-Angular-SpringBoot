@@ -274,35 +274,4 @@ public class BookController {
         }
         return ResponseEntity.ok(bookResponse);
     }
-    //////
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/add")
-    @Operation(summary = "Dodaje ksiazke do bazy danych", description = "Dodaje ksiazke uzupelnioną przez użytkownika do bazy danych")
-    public ResponseEntity<BookRequest> addbook(@Parameter(description = "Obiekt zawierający dane książki, które mają zostać dodane do bazy danych")
-                                                   @RequestBody @Valid BookRequest bookRequest) {
-        BookRequest addedbook = bookService.addbook(bookRequest);
-        return ResponseEntity.ok(addedbook);
-    }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/update/{id}")
-    @Operation(summary = "Aktualizuje ksiazke do bazy danych", description = "Aktualizuje ksiazke uzupelnioną przez użytkownika do bazy danych")
-    public ResponseEntity<BookRequest> updatebook(@Parameter(description = "Numer identyfikacyjny ksiazki")
-                                                    @PathVariable Integer id,
-                                                  @Parameter(description = "Obiekt zawierający dane książki, które mają zostać zaaktualizowane do bazy danych")
-                                                    @RequestBody BookRequest bookRequest) {
-        BookRequest updatedBook = bookService.updateBook(id,bookRequest);
-        return ResponseEntity.ok(updatedBook);
-    }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/delete/{id}")
-    @Operation(summary = "Usuwa ksiazke z bazy danych", description = "Usuwa ksiazke o podanym ID z bazy danych")
-    public ResponseEntity<?> delete(@Parameter(description = "Numer identyfikacyjny ksiazki")
-                                        @PathVariable Integer id) {
-        try {
-            bookService.deletebook(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }

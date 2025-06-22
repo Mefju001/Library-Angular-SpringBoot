@@ -19,19 +19,19 @@
       <section class="cards" *ngIf="view === 'dashboard'">
         <div class="card">
           <h3>Użytkownicy</h3>
-          <p>{{userSize}}</p>
+          <p>{{stats.userCount}}</p>
         </div>
         <div class="card">
           <h3>Wypożyczenia</h3>
-          <p>{{loanSize}}</p>
+          <p>{{stats.loanCount}}</p>
         </div>
         <div class="card">
           <h3>Nowe książki</h3>
-          <p>{{newBooksSize}}</p>
+          <p>{{stats.newBooksCount}}</p>
         </div>
         <div class="card">
           <h3>Zaległości</h3>
-          <p>{{overdueBooksSize}}</p>
+          <p>{{stats.overdueCount}}</p>
         </div>
       </section>
       <section *ngIf="view === 'books'">

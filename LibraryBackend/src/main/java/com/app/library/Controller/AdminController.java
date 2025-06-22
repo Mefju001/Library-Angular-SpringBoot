@@ -1,23 +1,25 @@
 package com.app.library.Controller;
 
+import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
+import com.app.library.DTO.Response.DashboardStatsResponse;
 import com.app.library.Service.BookService;
 import com.app.library.Service.RentalService;
 import com.app.library.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/adminPanel")
-@Tag(name = "Admin Controller", description = "Udostępnia funckję dla administratora w adminPanelu")
+@Tag(name = "Admin Controller", description = "Udostępnia funkcję dla administratora w adminPanelu")
 public class AdminController {
     private final BookService bookService;
     private final UserService userService;
@@ -28,33 +30,61 @@ public class AdminController {
         this.userService = userService;
         this.rentalService = rentalService;
     }
-    @GetMapping("/user/count")
-    @Operation(summary = "", description = "")
-    public ResponseEntity<Long> getUserCount()
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/dashboard/stats")
+    @Operation(summary = "Pobiera statystyki dashboardu", description = "Zwraca ilość użytkowników, wypożyczeń, nowych książek i zaległości")
+    public ResponseEntity<DashboardStatsResponse> getDashboardStats()
     {
         Long userCount = userService.getUserCount();
-        return ResponseEntity.ok(userCount);
-    }
-    @GetMapping("/loan/count")
-    @Operation(summary = "", description = "")
-    public ResponseEntity<Long> getActiveBorrowsCount()
-    {
         Long loanCount = rentalService.getActiveBorrowsCount();
-        return ResponseEntity.ok(loanCount);
-    }
-    @GetMapping("/newBooks/count")
-    @Operation(summary = "", description = "")
-    public ResponseEntity<Long> getNewBooksCount()
-    {
         Long newBooksCount = bookService.getNewBooksCount();
-        return ResponseEntity.ok(newBooksCount);
-    }
-    @GetMapping("/overdue/count")
-    @Operation(summary = "", description = "")
-    public ResponseEntity<Long> getOverdueCount()
-    {
         Long overdueCount = rentalService.getOverdueCount();
-        return ResponseEntity.ok(overdueCount);
+        return ResponseEntity.ok(new DashboardStatsResponse(userCount,loanCount,newBooksCount,overdueCount));
     }
 
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/add")
+    @Operation(
+            summary = "Dodaje nową książkę",
+            description = """
+        Tworzy nowy rekord książki w bazie danych.
+        Endpoint dostępny wyłącznie dla administratorów (ROLE_ADMIN).
+        """)
+
+    public ResponseEntity<BookRequest> addbook(@Parameter(description = "Obiekt zawierający dane książki, które mają zostać dodane do bazy danych")
+                                                       @RequestBody @Valid BookRequest bookRequest) {
+        BookRequest addedbook = bookService.addbook(bookRequest);
+        return ResponseEntity.ok(addedbook);
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/update/{id}")
+    @Operation(
+            summary = "Aktualizuje książkę w bazie danych",
+            description = "Aktualizuje dane istniejącej książki w bazie danych na podstawie przesłanego identyfikatora i nowych danych. Wymagane są uprawnienia administratora."
+    )
+    public ResponseEntity<BookRequest> updatebook(
+            @Parameter(description = "Identyfikator książki, która ma zostać zaktualizowana", example = "123")
+            @PathVariable Integer id,
+
+            @Parameter(description = "Zaktualizowane dane książki", required = true)
+            @RequestBody @Valid BookRequest bookRequest){
+        BookRequest updatedBook = bookService.updateBook(id,bookRequest);
+        return ResponseEntity.ok(updatedBook);
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/delete/{id}")
+    @Operation(
+            summary = "Usuwa książkę z bazy danych",
+            description = "Usuwa książkę z bazy danych na podstawie jej identyfikatora. Wymagane są uprawnienia administratora. Zwraca kod 204, jeśli operacja zakończy się sukcesem, lub 404, jeśli książka nie zostanie znaleziona."
+    )    public ResponseEntity<?> delete(
+            @Parameter(description = "Identyfikator książki do usunięcia", example = "123", required = true)
+            @PathVariable Integer id) {
+        try {
+            bookService.deletebook(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
