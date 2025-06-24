@@ -6,16 +6,17 @@ import com.app.library.Entity.LoanDeadlineInfo;
 import com.app.library.Service.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rental")
+@Tag(name = "Rental Controller", description = "Obsługuje operacje związane z wypożyczeniami książek")
 public class RentalController {
 
     private final RentalService rentalService;

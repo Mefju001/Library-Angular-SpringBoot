@@ -82,7 +82,7 @@ public class PromotionServiceImpl implements PromotionService{
 
         if (promotionsOptional.isPresent()) {
             Promotions promotion = promotionsOptional.get();
-            promotion.setActive(false); // Dezaktywacja promocji
+            promotion.setActive(false);
 
             List<BookPromotion> bookPromotions = bookPromotionRepository.findBookPromotionByPromotions_Id(promotion.getId());
             for (BookPromotion bookPromotion : bookPromotions) {
@@ -99,7 +99,7 @@ public class PromotionServiceImpl implements PromotionService{
             BookPromotion bookPromotion = bookPromotionOptional.get();
             Book book = bookPromotion.getBook();
 
-            if (book.getOldprice() != -1.0f) { // Sprawdzenie czy stara cena istnieje
+            if (book.getOldprice() != -1.0f) {
                 book.setPrice(book.getOldprice());
             }
             bookRepository.save(book);

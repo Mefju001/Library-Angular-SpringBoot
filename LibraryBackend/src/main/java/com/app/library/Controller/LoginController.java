@@ -3,7 +3,6 @@ package com.app.library.Controller;
 import com.app.library.Security.DTO.Request.UserRequest;
 import com.app.library.Security.DTO.Response.JwtResponse;
 import com.app.library.Service.UserService;
-import com.app.library.Service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
