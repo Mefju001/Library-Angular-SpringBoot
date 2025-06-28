@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-public record UserDetailsRequest(@NotBlank(message = "Name cannot be blank")String name,
-                                 @NotBlank(message = "Surname cannot be blank")String surname,
-                                 @NotBlank(message = "Email cannot be blank") @Email(message = "Email must be valid")
-                                 String email)
+public record UserDetailsRequest(
+        @NotBlank(message = "Name cannot be blank")String name,
+        @NotBlank(message = "Surname cannot be blank")String surname,
+        @NotBlank(message = "Email cannot be blank") @Email(message = "Email must be valid") String email)
 {
 }

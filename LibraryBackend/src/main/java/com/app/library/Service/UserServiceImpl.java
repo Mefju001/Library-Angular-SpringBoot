@@ -4,6 +4,7 @@ import com.app.library.DTO.Mapper.FavoriteBooksMapper;
 import com.app.library.DTO.Mapper.UserMapper;
 import com.app.library.DTO.Request.UserDetailsRequest;
 import com.app.library.DTO.Request.UserPasswordRequest;
+import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.FavoriteBooksResponse;
 import com.app.library.DTO.Response.UserResponse;
 import com.app.library.Entity.Book;
@@ -193,16 +194,8 @@ public class UserServiceImpl implements UserService{
 
         return  FavoriteBooksResponse.builder()
                 .id(favoritebooks.getId())
-                .title(favoritebooks.getBook().getTitle())
-                .authorName(favoritebooks.getBook().getAuthor().getName())
-                .authorSurname(favoritebooks.getBook().getAuthor().getSurname())
-                .publicationDate(favoritebooks.getBook().getpublicationDate())
-                .isbn(favoritebooks.getBook().getIsbn())
-                .genreName(favoritebooks.getBook().getGenre().getName())
-                .language(favoritebooks.getBook().getLanguage())
-                .publisherName(favoritebooks.getBook().getPublisher().getName())
-                .pages(favoritebooks.getBook().getPages())
-                .price(favoritebooks.getBook().getPrice())
+                .book(new BookResponse(favoritebooks.getBook().getId(),favoritebooks.getBook().getTitle(),favoritebooks.getBook().getAuthor().getName(),favoritebooks.getBook().getAuthor().getSurname(),favoritebooks.getBook().getpublicationDate(),
+                        favoritebooks.getBook().getIsbn(),favoritebooks.getBook().getGenre().getName(),favoritebooks.getBook().getLanguage(),favoritebooks.getBook().getPublisher().getName(),favoritebooks.getBook().getPages(),favoritebooks.getBook().getPrice()))
                 .build();
     }
     @Override

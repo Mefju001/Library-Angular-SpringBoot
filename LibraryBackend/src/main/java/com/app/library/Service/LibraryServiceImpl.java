@@ -1,9 +1,11 @@
 package com.app.library.Service;
 
+import com.app.library.DTO.Mapper.BookMapper;
 import com.app.library.DTO.Mapper.LibraryBookMapper;
 import com.app.library.DTO.Mapper.LibraryMapper;
 import com.app.library.DTO.Request.LibraryBookRequest;
 import com.app.library.DTO.Request.LibraryRequest;
+import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.LibraryBookResponse;
 import com.app.library.DTO.Response.LibraryResponse;
 import com.app.library.Entity.Book;
@@ -15,7 +17,9 @@ import com.app.library.Repository.LibraryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,9 +89,9 @@ public class LibraryServiceImpl implements LibraryService{
 
     LibraryBook setLibraryBook(LibraryBookRequest request)
     {
-        Book book = bookRepository.findBookByIsbnIs(request.isbn());
-        Library library = libraryRepository.findById(request.idLibrary()).orElseThrow();
-
+        var book = bookRepository.findBookByIsbnIs(request.book().isbn());
+        var library = libraryRepository.findLibraryByLocationContainingIgnoreCaseAndAddressContainsIgnoreCase(request.library().location(),request.library().address());
+        if(book == null||library == null)throw new ResponseStatusException(HttpStatus.NOT_FOUND, "not found");
         LibraryBook libraryBook = new LibraryBook();
         libraryBook.setBook(book);
         libraryBook.setLibrary(library);
@@ -97,24 +101,9 @@ public class LibraryServiceImpl implements LibraryService{
     @Transactional
     public LibraryBookResponse addbooktolibrary(LibraryBookRequest request)
     {
-        libraryBookRepository.save(setLibraryBook(request));
-
-        return LibraryBookResponse.builder()
-                .id(request.id())
-                .title(request.title())
-                .authorName(request.authorName())
-                .authorSurname(request.authorSurname())
-                .publicationDate(request.publicationDate())
-                .isbn(request.isbn())
-                .genreName(request.genreName())
-                .language(request.language())
-                .publisherName(request.publisherName())
-                .pages(request.pages())
-                .price(request.price())
-                .idLibrary(request.idLibrary())
-                .location(request.name())
-                .address(request.address())
-                .build();
+        LibraryBook libraryBook = libraryBookRepository.save(setLibraryBook(request));
+        LibraryBookResponse response = libraryBookMapper.toLibraryBookResponse(libraryBook);
+        return response;
     }
     @Override
     @Transactional
@@ -126,8 +115,9 @@ public class LibraryServiceImpl implements LibraryService{
             updatedlibrary.setLocation(library.location());
             updatedlibrary.setAddress(library.address());
             updatedlibrary.setMap(library.map());
-            libraryRepository.save(updatedlibrary);
-            return new LibraryResponse(existinglibrary.get().getId(),existinglibrary.get().getLocation(),existinglibrary.get().getAddress(),existinglibrary.get().getMap());
+            Library saved = libraryRepository.save(updatedlibrary);
+            LibraryResponse response = libraryMapper.toDto(saved);
+            return response;
         }
         else {
             throw new EntityNotFoundException("not found");
@@ -135,24 +125,13 @@ public class LibraryServiceImpl implements LibraryService{
     }
     @Override
     @Transactional
-    public LibraryBookResponse updatebookandlibrary(LibraryBookRequest libraryBookRequest)
+    public LibraryBookResponse updatebookandlibrary(int id, LibraryBookRequest libraryBookRequest)
     {
-        Optional<LibraryBook> existingdata = libraryBookRepository.findById(libraryBookRequest.id());
+        Optional<LibraryBook> existingdata = libraryBookRepository.findById(id);
         if(existingdata.isPresent()) {
-            libraryBookRepository.save(setLibraryBook(libraryBookRequest));
-            return LibraryBookResponse.builder()
-                    .id(libraryBookRequest.id())
-                    .title(libraryBookRequest.title())
-                    .authorName(libraryBookRequest.authorName())
-                    .authorSurname(libraryBookRequest.authorSurname())
-                    .publicationDate(libraryBookRequest.publicationDate())
-                    .isbn(libraryBookRequest.isbn())
-                    .genreName(libraryBookRequest.genreName())
-                    .language(libraryBookRequest.language())
-                    .publisherName(libraryBookRequest.publisherName())
-                    .pages(libraryBookRequest.pages())
-                    .price(libraryBookRequest.price())
-                    .build();
+            LibraryBook libraryBook = libraryBookRepository.save(setLibraryBook(libraryBookRequest));
+            LibraryBookResponse response = libraryBookMapper.toLibraryBookResponse(libraryBook);
+            return response;
         }
         else {
             throw new EntityNotFoundException("not found");

@@ -83,16 +83,17 @@ public class AdminLibraryController {
         return ResponseEntity.ok(libraryService.addbooktolibrary(request));
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/library-books")
+    @PutMapping("/library-books/{id}")
     @Operation(
             summary = "Aktualizuje powiązanie książki z biblioteką",
             description = "Aktualizuje dane o dostępności książki w danej bibliotece."
     )
     public ResponseEntity<LibraryBookResponse>updateBookInLibrary(
             @Parameter(description = "Dane do aktualizacji książki w bibliotece")
-            @RequestBody @Valid LibraryBookRequest request)
+            @RequestBody @Valid LibraryBookRequest request,
+            @PathVariable int id)
     {
-        LibraryBookResponse updatedLibraryBook = libraryService.updatebookandlibrary(request);
+        LibraryBookResponse updatedLibraryBook = libraryService.updatebookandlibrary(id,request);
         if (updatedLibraryBook == null) {
             return ResponseEntity.notFound().build();
         }

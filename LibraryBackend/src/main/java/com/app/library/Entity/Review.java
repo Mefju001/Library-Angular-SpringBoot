@@ -23,6 +23,14 @@ public class Review {
     @JoinColumn(name = "book_id")
     private Book book;
 
+    public Review(String content, int rating, LocalDateTime createdAt, User user, Book book) {
+        this.content = content;
+        this.rating = rating;
+        this.createdAt = createdAt;
+        this.user = user;
+        this.book = book;
+    }
+
     public Review() {
         this.createdAt = LocalDateTime.now();
     }

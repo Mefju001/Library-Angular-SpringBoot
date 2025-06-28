@@ -31,7 +31,7 @@ public class UserController {
     private final RecommendationService recommendationService;
 
     @Autowired
-    public UserController(UserService userService, RentalServiceImpl rentalServiceImpl, RecommendationService recommendationService) {
+    public UserController(UserService userService, RecommendationService recommendationService) {
         this.userService = userService;
         this.recommendationService = recommendationService;
     }
