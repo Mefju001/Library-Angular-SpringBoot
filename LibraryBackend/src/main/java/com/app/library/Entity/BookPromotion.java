@@ -20,6 +20,7 @@ public class BookPromotion {
     public BookPromotion() {
 
     }
+
     public BookPromotion(Book book, Promotions promotions) {
         this.book = book;
         this.promotions = promotions;

@@ -1,6 +1,7 @@
 package com.app.library.Entity;
 
 import jakarta.persistence.*;
+
 @Entity
 @Table(name = "booklibrary")
 public class LibraryBook {

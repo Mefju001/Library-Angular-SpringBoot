@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PromotionServiceImpl implements PromotionService{
+public class PromotionServiceImpl implements PromotionService {
     private final PromotionRepository promotionRepository;
 
     private final BookRepository bookRepository;
@@ -28,25 +28,25 @@ public class PromotionServiceImpl implements PromotionService{
         this.bookPromotionRepository = bookPromotionRepository;
     }
 
-   /* @Transactional
-    public void isActive(Long promotionId) {
-        bookPromotionRepository.findById(promotionId).ifPresent(bookPromotion -> {
-            Promotions promotion = bookPromotion.getPromotions();
-            if (promotion != null && Boolean.FALSE.equals(promotion.getActive())) {
-                BookPromotion bookPromotionToDelete = bookPromotionRepository.findBookPromotionByPromotions_Id(promotionId);
-                if (bookPromotionToDelete != null) {
-                    deletebookpromotion(bookPromotionToDelete.getId());
-                }
-            }
-        });
-    }*/
-   @Override
+    /* @Transactional
+     public void isActive(Long promotionId) {
+         bookPromotionRepository.findById(promotionId).ifPresent(bookPromotion -> {
+             Promotions promotion = bookPromotion.getPromotions();
+             if (promotion != null && Boolean.FALSE.equals(promotion.getActive())) {
+                 BookPromotion bookPromotionToDelete = bookPromotionRepository.findBookPromotionByPromotions_Id(promotionId);
+                 if (bookPromotionToDelete != null) {
+                     deletebookpromotion(bookPromotionToDelete.getId());
+                 }
+             }
+         });
+     }*/
+    @Override
     @Transactional
     public void setpromotion(Integer bookId, long promotionId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new RuntimeException("Produkt nie znaleziony"));
         BigDecimal finalPrice = BigDecimal.valueOf(book.getPrice());
-        Optional<Promotions> promotionOpt = promotionRepository.findPromotionsByIdAndIsActive(promotionId,true);
+        Optional<Promotions> promotionOpt = promotionRepository.findPromotionsByIdAndIsActive(promotionId, true);
         if (promotionOpt.isPresent()) {
             Promotions promotion = promotionOpt.get();
             if (promotion.getDiscountType() == DiscountType.percentage) {
@@ -54,14 +54,14 @@ public class PromotionServiceImpl implements PromotionService{
                 finalPrice = finalPrice.setScale(2, RoundingMode.HALF_UP);
                 book.setPrice(finalPrice.floatValue());
                 bookRepository.save(book);
-                BookPromotion bookPromotion = new BookPromotion(book,promotion);
+                BookPromotion bookPromotion = new BookPromotion(book, promotion);
                 bookPromotionRepository.save(bookPromotion);
             } else if (promotion.getDiscountType() == DiscountType.fixed) {
                 finalPrice = finalPrice.subtract(promotion.getDiscountValue());
                 finalPrice = finalPrice.setScale(2, RoundingMode.HALF_UP);
                 book.setPrice(finalPrice.floatValue());
                 bookRepository.save(book);
-                BookPromotion bookPromotion = new BookPromotion(book,promotion);
+                BookPromotion bookPromotion = new BookPromotion(book, promotion);
                 bookPromotionRepository.save(bookPromotion);
             }
 
@@ -70,11 +70,12 @@ public class PromotionServiceImpl implements PromotionService{
                 finalPrice = finalPrice.setScale(2, RoundingMode.HALF_UP);
                 book.setPrice(finalPrice.floatValue());
                 bookRepository.save(book);
-                BookPromotion bookPromotion = new BookPromotion(book,promotion);
+                BookPromotion bookPromotion = new BookPromotion(book, promotion);
                 bookPromotionRepository.save(bookPromotion);
             }
         }
     }
+
     @Override
     @Transactional
     public void deactivatePromotion(Long promotionId) {
@@ -90,6 +91,7 @@ public class PromotionServiceImpl implements PromotionService{
             }
         }
     }
+
     @Override
     @Transactional
     public Boolean deleteBookPromotion(Long bookPromotionId) {

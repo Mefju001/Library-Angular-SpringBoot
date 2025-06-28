@@ -1,8 +1,7 @@
 package com.app.library.DTO.Response;
 
-import lombok.Getter;
-
 import java.time.LocalDate;
+
 public record LoanBookResponse(
         Integer rentalId,
         Integer userId,

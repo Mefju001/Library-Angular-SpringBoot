@@ -5,9 +5,9 @@ import com.app.library.DTO.Mapper.ReviewMapper;
 import com.app.library.DTO.Mapper.UserMapper;
 import com.app.library.DTO.Request.ReviewRequest;
 import com.app.library.DTO.Response.ReviewResponse;
+import com.app.library.Entity.Review;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.ReviewRepository;
-import com.app.library.Entity.Review;
 import com.app.library.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
@@ -40,8 +40,8 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewResponse add(ReviewRequest request) {
         var user = userRepository.findById(request.userId());
         var book = bookRepository.findById(request.bookId());
-        if(user.isEmpty()||book.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"User or book not found");
+        if (user.isEmpty() || book.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User or book not found");
         var review = new Review(
                 request.content(),
                 request.rating(),
@@ -54,7 +54,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewResponse> listOfReviewForUser(long id) {
-        List<Review> reviews= reviewRepository.findReviewsByUser_Id(id);
+        List<Review> reviews = reviewRepository.findReviewsByUser_Id(id);
         return reviews.stream()
                 .map(reviewMapper::toDto)
                 .collect(Collectors.toList());

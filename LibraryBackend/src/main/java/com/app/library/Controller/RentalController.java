@@ -36,6 +36,7 @@ public class RentalController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
     @PostMapping("/loan")
     @Operation(summary = "Wypożycza książkę dla użytkownika")
     public ResponseEntity<String> loanBook(@RequestBody @Valid LoanRequest request) {
@@ -49,9 +50,10 @@ public class RentalController {
             description = "Użytkownik zgłasza chęć zwrotu wypożyczonej książki. przekazując identyfikatory książki i użytkownika w treści żądania."
     )
     public ResponseEntity<String> requestReturn(@RequestBody @Valid LoanRequest request) {
-            rentalService.requestReturn(request.bookId(), request.userId());
-            return ResponseEntity.ok("Book return request submitted successfully.");
+        rentalService.requestReturn(request.bookId(), request.userId());
+        return ResponseEntity.ok("Book return request submitted successfully.");
     }
+
     @GetMapping("/loan/{bookId}/days-left")
     @Operation(summary = "Sprawdza ile dni pozostało do końca wypożyczenia książki")
     public ResponseEntity<LoanDeadlineInfo> howManyDaysLeft(
@@ -60,6 +62,7 @@ public class RentalController {
         LoanDeadlineInfo data = rentalService.howManyDaysLeft(bookId);
         return ResponseEntity.ok(data);
     }
+
     //do edycji
     @PutMapping("/loan/extend/request/{userId}/{bookId}")
     @Operation(summary = "Zgłasza prośbę o przedłużenie wypożyczenia książki dla użytkownika")
@@ -75,6 +78,7 @@ public class RentalController {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
         }
     }
+
     @PutMapping("/cancel/requestforloan/{bookId}")
     @Operation(
             summary = "Anuluje prośbę o wypożyczenie książki",

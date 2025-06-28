@@ -15,8 +15,11 @@ import java.util.Set;
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.rola = :roleName")
     List<User> findUsersByRole(@Param("roleName") String roleName);
+
     Optional<User> findByUsername(String username);
+
     Boolean existsByUsername(String username);
+
     long countUsersByRolesIs(Set<Role> role);
 
     @Query("SELECT COUNT(u) FROM User u JOIN u.roles r WHERE r.rola = :roleName")

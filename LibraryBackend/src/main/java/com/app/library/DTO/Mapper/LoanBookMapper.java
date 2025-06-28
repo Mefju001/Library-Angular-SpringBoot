@@ -1,8 +1,6 @@
 package com.app.library.DTO.Mapper;
 
-import com.app.library.DTO.Response.LibraryBookResponse;
 import com.app.library.DTO.Response.LoanBookResponse;
-import com.app.library.Entity.LibraryBook;
 import com.app.library.Entity.Rental;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,7 +10,7 @@ import java.time.LocalDate;
 
 @Component
 @Mapper(componentModel = "Spring")
-public interface  LoanBookMapper {
+public interface LoanBookMapper {
 
     @Mapping(source = "rentalId", target = "rentalId")
     @Mapping(source = "user.id", target = "userId")
@@ -44,7 +42,8 @@ public interface  LoanBookMapper {
     @Mapping(target = "remainingDays", expression = "java(rental.getRemainingDays().getDays())")
     @Mapping(target = "overdue", expression = "java(rental.getRemainingDays().isOverdue())")
     LoanBookResponse toloanBookResponse(Rental rental);
-    default  String mapDate(LocalDate date) {
+
+    default String mapDate(LocalDate date) {
         return date != null ? date.toString() : null;
     }
 }

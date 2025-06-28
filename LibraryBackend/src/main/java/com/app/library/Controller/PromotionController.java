@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Promotion Controller", description = "Zarządzanie promocjami w sklepie")
 public class PromotionController {
     private final PromotionService promotionService;
+
     @Autowired
     public PromotionController(PromotionService promotionServiceImpl) {
         this.promotionService = promotionServiceImpl;

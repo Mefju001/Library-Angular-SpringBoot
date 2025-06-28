@@ -1,8 +1,5 @@
 package com.app.library.DTO.Response;
 
-import com.app.library.DTO.Request.BookRequest;
-import com.app.library.Security.DTO.Request.UserRequest;
-
 import java.time.LocalDateTime;
 
 public record ReviewResponse(
@@ -11,4 +8,5 @@ public record ReviewResponse(
         int rating,
         LocalDateTime createdAt,
         UserResponse user,
-        BookResponse book){}
+        BookResponse book) {
+}

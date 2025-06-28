@@ -36,7 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final FavoritebooksRepository favoritebooksRepository;
 
     private final AuthenticationManager authenticationManager;
@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService{
 
 
     private final JwtUtils jwtUtils;
+
     @Autowired
     public UserServiceImpl(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, FavoriteBooksMapper favoriteBooksMapper, UserMapper userMapper, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.favoritebooksRepository = favoritebooksRepository;
@@ -63,13 +64,15 @@ public class UserServiceImpl implements UserService{
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
     }
+
     @Override
     public List<FavoriteBooksResponse> findAllLikedBooks(Long userId) {
-            List<Favoritebooks> favoritebooks = favoritebooksRepository.findFavoritebooksByUser_Id(userId);
+        List<Favoritebooks> favoritebooks = favoritebooksRepository.findFavoritebooksByUser_Id(userId);
         return favoritebooks.stream()
-                    .map(favoriteBooksMapper::toDto)
-                    .toList();
+                .map(favoriteBooksMapper::toDto)
+                .toList();
     }
+
     @Override
     public List<UserResponse> findAll() {
         List<User> users = userRepository.findUsersByRole("Role_User");
@@ -77,6 +80,7 @@ public class UserServiceImpl implements UserService{
                 .map(userMapper::toDto)
                 .toList();
     }
+
     @Override
     public UserResponse findbyid(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
@@ -87,6 +91,7 @@ public class UserServiceImpl implements UserService{
                 .role(String.valueOf(user.getRoles()))
                 .build();
     }
+
     @Override
     public JwtResponse login(UserRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -103,6 +108,7 @@ public class UserServiceImpl implements UserService{
                 userDetails.getAuthorities());
 
     }
+
     @Override
     @Transactional
     public void changedetails(Long id, UserDetailsRequest userRequest) {
@@ -121,6 +127,7 @@ public class UserServiceImpl implements UserService{
 
         userRepository.save(existingUser);
     }
+
     @Override
     @Transactional
     public void changepassword(Long id, UserPasswordRequest userPasswordRequest) {
@@ -146,6 +153,7 @@ public class UserServiceImpl implements UserService{
         existingUser.setPassword(encoder.encode(userPasswordRequest.newpassword()));
         userRepository.save(existingUser);
     }
+
     @Override
     @Transactional
     public void registerUp(UserRequest signUpRequest) {
@@ -163,20 +171,20 @@ public class UserServiceImpl implements UserService{
         user.setRoles(roles);
         userRepository.save(user);
     }
+
     @Override
     @Transactional
-    public void deleteuser(Long id)
-    {
+    public void deleteuser(Long id) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isEmpty()) {
             throw new IllegalArgumentException("User with ID " + id + " not found.");
         }
         userRepository.deleteById(id);
     }
+
     @Override
     @Transactional
-    public FavoriteBooksResponse addfavoritebooks(Integer bookId, Long userId)
-    {
+    public FavoriteBooksResponse addfavoritebooks(Integer bookId, Long userId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
 
@@ -189,19 +197,19 @@ public class UserServiceImpl implements UserService{
             throw new IllegalArgumentException("is exist");
         }
 
-        Favoritebooks favoritebooks = new Favoritebooks(book,user);
+        Favoritebooks favoritebooks = new Favoritebooks(book, user);
         favoritebooksRepository.save(favoritebooks);
 
-        return  FavoriteBooksResponse.builder()
+        return FavoriteBooksResponse.builder()
                 .id(favoritebooks.getId())
-                .book(new BookResponse(favoritebooks.getBook().getId(),favoritebooks.getBook().getTitle(),favoritebooks.getBook().getAuthor().getName(),favoritebooks.getBook().getAuthor().getSurname(),favoritebooks.getBook().getpublicationDate(),
-                        favoritebooks.getBook().getIsbn(),favoritebooks.getBook().getGenre().getName(),favoritebooks.getBook().getLanguage(),favoritebooks.getBook().getPublisher().getName(),favoritebooks.getBook().getPages(),favoritebooks.getBook().getPrice()))
+                .book(new BookResponse(favoritebooks.getBook().getId(), favoritebooks.getBook().getTitle(), favoritebooks.getBook().getAuthor().getName(), favoritebooks.getBook().getAuthor().getSurname(), favoritebooks.getBook().getpublicationDate(),
+                        favoritebooks.getBook().getIsbn(), favoritebooks.getBook().getGenre().getName(), favoritebooks.getBook().getLanguage(), favoritebooks.getBook().getPublisher().getName(), favoritebooks.getBook().getPages(), favoritebooks.getBook().getPrice()))
                 .build();
     }
+
     @Override
     @Transactional
-    public Favoritebooks updatefavoritebooks(Favoritebooks favoritebooks)
-    {
+    public Favoritebooks updatefavoritebooks(Favoritebooks favoritebooks) {
         Favoritebooks existingdata = favoritebooksRepository.findById(favoritebooks.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -211,13 +219,13 @@ public class UserServiceImpl implements UserService{
         return existingdata;
 
     }
+
     @Override
     @Transactional
-    public void deletefavoritebooks(Integer id)
-    {
+    public void deletefavoritebooks(Integer id) {
         Favoritebooks existingdata = favoritebooksRepository.findById(id)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "not found"));
-            favoritebooksRepository.delete(existingdata);
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "not found"));
+        favoritebooksRepository.delete(existingdata);
     }
 
     @Override

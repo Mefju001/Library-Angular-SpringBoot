@@ -8,7 +8,7 @@ interface Genre {
 @Injectable({
   providedIn: 'root'
 })
-export class MyServiceService {
+export class BookService {
   private apiUrl = 'http://localhost:8080/api/books'; // Dostosuj do swojego backendu
 
   constructor(private http: HttpClient) {}

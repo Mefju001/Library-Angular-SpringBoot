@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @EnableScheduling
 public class RentalServiceScheduler {
     final RentalService rentalService;
+
     @Autowired
     public RentalServiceScheduler(RentalService rentalService) {
         this.rentalService = rentalService;

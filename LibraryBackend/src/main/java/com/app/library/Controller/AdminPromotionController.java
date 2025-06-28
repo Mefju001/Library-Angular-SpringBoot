@@ -25,23 +25,24 @@ public class AdminPromotionController {
                                           @RequestParam Integer bookId,
                                           @Parameter(description = "ID promocji, którą przypisujemy do książki")
                                           @RequestParam long promotionId) {
-        promotionService.setpromotion(bookId,promotionId);
+        promotionService.setpromotion(bookId, promotionId);
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/promotion/deactive")
     @Operation(summary = "Dezaktywuje promocję", description = "Dezaktywuje promocję na podstawie identyfikatora promocji.")
     public void deactivepromotions(@Parameter(description = "ID promocji, którą chcemy dezaktywować")
-                                   @RequestParam long promotionId)
-    {
+                                   @RequestParam long promotionId) {
         promotionService.deactivatePromotion(promotionId);
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/promotion/{id}")
     @Operation(summary = "Usuwa promocję", description = "Usuwa promocję na podstawie identyfikatora promocji.")
     public ResponseEntity<?> deletepromotion(@Parameter(description = "ID promocji, którą chcemy usunąć")
                                              @PathVariable Long id) {
         Boolean aBoolean = promotionService.deleteBookPromotion(id);
-        if(aBoolean.equals(Boolean.TRUE))
+        if (aBoolean.equals(Boolean.TRUE))
             return ResponseEntity.ok(true);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

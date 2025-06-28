@@ -21,11 +21,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleEntityNotFound(EntityNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
     }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<?> handleBadRequest(BadRequestException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("error", ex.getMessage(), "code", HttpStatus.BAD_REQUEST.value()));
     }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult()
@@ -44,6 +46,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("error", "Validation failed", "details", errors));
     }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<?> handleConstraintViolation(ConstraintViolationException ex) {
         List<String> errors = ex.getConstraintViolations()

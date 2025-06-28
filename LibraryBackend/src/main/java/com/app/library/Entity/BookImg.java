@@ -1,7 +1,6 @@
 package com.app.library.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 @Entity
 @Table(name = "bookimg")

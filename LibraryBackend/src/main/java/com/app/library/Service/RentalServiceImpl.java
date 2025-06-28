@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @EnableScheduling
-public class RentalServiceImpl implements RentalService{
+public class RentalServiceImpl implements RentalService {
     private static final Logger logger = LoggerFactory.getLogger(RentalServiceImpl.class);
     private final RentalRepository rentalRepository;
     private final ApplicationEventPublisher publisher;
@@ -35,31 +35,30 @@ public class RentalServiceImpl implements RentalService{
     private final LoanBookMapper loanBookMapper;
 
     @Autowired
-    RentalServiceImpl(ApplicationEventPublisher publisher, RentalRepository rentalRepository, BookRepository bookRepository, UserRepository userRepository, LoanBookMapper loanBookMapper)
-    {
+    RentalServiceImpl(ApplicationEventPublisher publisher, RentalRepository rentalRepository, BookRepository bookRepository, UserRepository userRepository, LoanBookMapper loanBookMapper) {
         this.publisher = publisher;
         this.rentalRepository = rentalRepository;
-        this.bookRepository =bookRepository;
+        this.bookRepository = bookRepository;
         this.userRepository = userRepository;
         this.loanBookMapper = loanBookMapper;
     }
+
     @Override
-    public List<LoanBookResponse>rentalList(Long UserId)
-    {
-        List<Rental>loanbooks = rentalRepository.findRentalsByUser_Id(UserId);
-        List<LoanBookResponse>rentalList = loanbooks.stream().map(loanBookMapper::toloanBookResponse).collect(Collectors.toList());
+    public List<LoanBookResponse> rentalList(Long UserId) {
+        List<Rental> loanbooks = rentalRepository.findRentalsByUser_Id(UserId);
+        List<LoanBookResponse> rentalList = loanbooks.stream().map(loanBookMapper::toloanBookResponse).collect(Collectors.toList());
         return rentalList;
     }
+
     @Override
     @Transactional
-    public void requestloanBook(Integer BookId,Long UserId) {
-        List<Rental> rentalList = rentalRepository.findRentalsByUser_IdAndStatusIs(UserId,RentalStatus.loaned);
-        if(rentalList.size()>=5)
-        {
+    public void requestloanBook(Integer BookId, Long UserId) {
+        List<Rental> rentalList = rentalRepository.findRentalsByUser_IdAndStatusIs(UserId, RentalStatus.loaned);
+        if (rentalList.size() >= 5) {
             throw new IllegalStateException("Cannot loan more than 5 books.");
         }
-        Book book= bookRepository.findById(BookId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        User user= userRepository.findById(UserId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        Book book = bookRepository.findById(BookId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        User user = userRepository.findById(UserId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         Rental rental = new Rental();
         rental.setBook(book);
         rental.setUser(user);
@@ -67,36 +66,35 @@ public class RentalServiceImpl implements RentalService{
         rentalRepository.save(rental);
         publisher.publishEvent(new RentalCreatedEvent(rental));
     }
+
     @Override
     @Transactional
-    public void approveLoanBook(Integer BookId,Long UserId)
-    {
-        Optional<Rental> loanbook = rentalRepository.findRentalByBook_IdAndUser_Id(BookId,UserId);
-        if(loanbook.isPresent()&&loanbook.get().getStatus()== RentalStatus.pending)
-        {
+    public void approveLoanBook(Integer BookId, Long UserId) {
+        Optional<Rental> loanbook = rentalRepository.findRentalByBook_IdAndUser_Id(BookId, UserId);
+        if (loanbook.isPresent() && loanbook.get().getStatus() == RentalStatus.pending) {
             Rental rental = loanbook.get();
             rental.startLoan();
             rentalRepository.save(rental);
-        }else {
+        } else {
             throw new IllegalStateException("This book is not loaned by you");
         }
     }
+
     @Override
     @Transactional
-    public void requestReturn(Integer BookId,Long UserId)
-    {
-        Optional<Rental> loanbook = rentalRepository.findRentalByBook_IdAndUser_Id(BookId,UserId);
-        if(loanbook.isPresent()&&loanbook.get().getStatus()== RentalStatus.loaned)
-        {
+    public void requestReturn(Integer BookId, Long UserId) {
+        Optional<Rental> loanbook = rentalRepository.findRentalByBook_IdAndUser_Id(BookId, UserId);
+        if (loanbook.isPresent() && loanbook.get().getStatus() == RentalStatus.loaned) {
             Rental rental = loanbook.get();
             rental.requestEndLoan();
             rentalRepository.save(rental);
             publisher.publishEvent(new RentalCreatedEvent(rental));
-        }else {
+        } else {
             throw new IllegalStateException("This book is not loaned by you");
 
         }
     }
+
     @Override
     @Transactional
     public void approveReturn(Integer rentalId) {
@@ -107,18 +105,18 @@ public class RentalServiceImpl implements RentalService{
             throw new IllegalStateException("To wypożyczenie nie ma zgłoszonego zwrotu");
         }
         rental.endLoan();
-        Penalty penalty =new Penalty();
+        Penalty penalty = new Penalty();
         int overdueDays = rental.getDays();
         Double penaltyPrice = penalty.calculatePenaltyPrice(overdueDays);
         rental.setPenalty(penaltyPrice);
         rentalRepository.save(rental);
     }
+
     @Override
     @Transactional
     public void approveAll() {
-        List<Rental> rentalList = rentalRepository.findRentalsByStatusIn(List.of(RentalStatus.return_requested,RentalStatus.pending,RentalStatus.extend_requested));
-        for (Rental rentals: rentalList)
-        {
+        List<Rental> rentalList = rentalRepository.findRentalsByStatusIn(List.of(RentalStatus.return_requested, RentalStatus.pending, RentalStatus.extend_requested));
+        for (Rental rentals : rentalList) {
             if (rentals.getStatus().equals(RentalStatus.return_requested)) {
                 rentals.setStatus(RentalStatus.returned);
             } else if (rentals.getStatus().equals(RentalStatus.pending)) {
@@ -130,6 +128,7 @@ public class RentalServiceImpl implements RentalService{
         }
         rentalRepository.saveAll(rentalList);
     }
+
     @Override
     public LoanDeadlineInfo howManyDaysLeft(Integer rentalId) {
         Rental rental = rentalRepository.findById(rentalId)
@@ -140,6 +139,7 @@ public class RentalServiceImpl implements RentalService{
         }
         return rental.getRemainingDays();
     }
+
     @Override
     public Boolean isOverdue(Integer rentalId) {
         Rental rental = rentalRepository.findById(rentalId)
@@ -154,18 +154,18 @@ public class RentalServiceImpl implements RentalService{
     @Override
     @Transactional
     public Map<String, Object> checkOverdueRentals() {
-        List<Rental>rentalList=rentalRepository.findByStatusInAndRentalEndDateBefore(List.of(RentalStatus.loaned,RentalStatus.extend), LocalDate.now());
-        int updatedcount=0;
-        for(Rental listRental: rentalList)
-        {
+        List<Rental> rentalList = rentalRepository.findByStatusInAndRentalEndDateBefore(List.of(RentalStatus.loaned, RentalStatus.extend), LocalDate.now());
+        int updatedcount = 0;
+        for (Rental listRental : rentalList) {
             listRental.setStatus(RentalStatus.overdue);
             updatedcount++;
         }
         rentalRepository.saveAll(rentalList);
-        Map<String,Object> response = new HashMap<>();
-        response.put("updated",updatedcount);
+        Map<String, Object> response = new HashMap<>();
+        response.put("updated", updatedcount);
         return response;
     }
+
     @Override
     @Transactional
     public void requestExtendLoan(Integer rentalId) {
@@ -179,6 +179,7 @@ public class RentalServiceImpl implements RentalService{
         rental.setStatus(RentalStatus.extend_requested);
         rentalRepository.save(rental);
     }
+
     @Override
     @Transactional
     public void approveExtendLoan(Integer rentalId) {
@@ -191,6 +192,7 @@ public class RentalServiceImpl implements RentalService{
         rental.extendLoan();
         rentalRepository.save(rental);
     }
+
     @Override
     @Transactional
     public void cancelLoanBook(Integer rentalId) {

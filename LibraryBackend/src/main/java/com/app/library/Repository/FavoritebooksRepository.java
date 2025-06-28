@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public interface FavoritebooksRepository extends JpaRepository<Favoritebooks,Integer> {
+public interface FavoritebooksRepository extends JpaRepository<Favoritebooks, Integer> {
     boolean existsByBookAndUser(Book book, User user);
 
     List<Favoritebooks> findFavoritebooksByUser_Id(Long userId);
+
     @Query("SELECT f.book.id FROM Favoritebooks f WHERE f.user.id = :userId")
     Set<Long> findBook_IdByUser_Id(Long userId);
 }
