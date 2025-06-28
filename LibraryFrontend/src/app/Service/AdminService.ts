@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Library } from '../Models/Library.model';
+import { DashboardStats } from '../Models/DashboardStats.model';
 import { LibraryBook } from '../Models/Library_book.model';
 
 @Injectable({
@@ -12,17 +12,7 @@ export class AdminService {
 
   constructor(private http: HttpClient) { }
 
-  getUserCount(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/user/count`);
+  getDashboardStats(): Observable<DashboardStats> {
+    return this.http.get<DashboardStats>(`${this.apiUrl}/dashboard/stats`);
   }
-  getLoanCount(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/loan/count`);
-  }
-  getNewBooksCount(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/newBooks/count`);
-  }
-  getOverdueBooksCount(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/overdue/count`);
-  }
-
   }

@@ -24,7 +24,7 @@ public interface LibraryService {
 
     LibraryResponse updatelibrary(Integer id, LibraryRequest library);
 
-    LibraryBookResponse updatebookandlibrary(LibraryBookRequest libraryBookRequest);
+    LibraryBookResponse updatebookandlibrary(int id, LibraryBookRequest libraryBookRequest);
 
     void deletelibrary(Integer id);
 

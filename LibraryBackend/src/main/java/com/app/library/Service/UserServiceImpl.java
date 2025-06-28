@@ -1,8 +1,10 @@
 package com.app.library.Service;
 
 import com.app.library.DTO.Mapper.FavoriteBooksMapper;
+import com.app.library.DTO.Mapper.UserMapper;
 import com.app.library.DTO.Request.UserDetailsRequest;
 import com.app.library.DTO.Request.UserPasswordRequest;
+import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.FavoriteBooksResponse;
 import com.app.library.DTO.Response.UserResponse;
 import com.app.library.Entity.Book;
@@ -44,18 +46,20 @@ public class UserServiceImpl implements UserService{
     private final BookRepository bookRepository;
     private final RoleRepository roleRepository;
     private final FavoriteBooksMapper favoriteBooksMapper;
+    private final UserMapper userMapper;
     private final PasswordEncoder encoder;
 
 
     private final JwtUtils jwtUtils;
     @Autowired
-    public UserServiceImpl(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, FavoriteBooksMapper favoriteBooksMapper, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public UserServiceImpl(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, FavoriteBooksMapper favoriteBooksMapper, UserMapper userMapper, PasswordEncoder encoder, JwtUtils jwtUtils) {
         this.favoritebooksRepository = favoritebooksRepository;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.roleRepository = roleRepository;
         this.favoriteBooksMapper = favoriteBooksMapper;
+        this.userMapper = userMapper;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
     }
@@ -65,6 +69,13 @@ public class UserServiceImpl implements UserService{
         return favoritebooks.stream()
                     .map(favoriteBooksMapper::toDto)
                     .toList();
+    }
+    @Override
+    public List<UserResponse> findAll() {
+        List<User> users = userRepository.findUsersByRole("Role_User");
+        return users.stream()
+                .map(userMapper::toDto)
+                .toList();
     }
     @Override
     public UserResponse findbyid(Long id) {
@@ -183,16 +194,8 @@ public class UserServiceImpl implements UserService{
 
         return  FavoriteBooksResponse.builder()
                 .id(favoritebooks.getId())
-                .title(favoritebooks.getBook().getTitle())
-                .authorName(favoritebooks.getBook().getAuthor().getName())
-                .authorSurname(favoritebooks.getBook().getAuthor().getSurname())
-                .publicationDate(favoritebooks.getBook().getpublicationDate())
-                .isbn(favoritebooks.getBook().getIsbn())
-                .genreName(favoritebooks.getBook().getGenre().getName())
-                .language(favoritebooks.getBook().getLanguage())
-                .publisherName(favoritebooks.getBook().getPublisher().getName())
-                .pages(favoritebooks.getBook().getPages())
-                .price(favoritebooks.getBook().getPrice())
+                .book(new BookResponse(favoritebooks.getBook().getId(),favoritebooks.getBook().getTitle(),favoritebooks.getBook().getAuthor().getName(),favoritebooks.getBook().getAuthor().getSurname(),favoritebooks.getBook().getpublicationDate(),
+                        favoritebooks.getBook().getIsbn(),favoritebooks.getBook().getGenre().getName(),favoritebooks.getBook().getLanguage(),favoritebooks.getBook().getPublisher().getName(),favoritebooks.getBook().getPages(),favoritebooks.getBook().getPrice()))
                 .build();
     }
     @Override

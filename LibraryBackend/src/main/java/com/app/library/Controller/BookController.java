@@ -1,27 +1,19 @@
 package com.app.library.Controller;
 
-import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
 import com.app.library.Entity.BookImg;
 import com.app.library.Service.BookService;
-import com.app.library.Service.BookServiceImpl;
-import com.app.library.Service.PromotionServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
@@ -35,7 +27,7 @@ public class BookController {
     }
     @GetMapping("/")
     @Operation(summary = "Zwraca ksiazki z bazy danych", description = "Zwraca dane książek z bazy danych")
-    public ResponseEntity<Page<BookResponse>>listofbooks(
+    public ResponseEntity<Page<BookResponse>>Pageofbooks(
             @Parameter(description = "Numer strony paginacji")
             @RequestParam(defaultValue = "0") int page,
 
@@ -44,6 +36,18 @@ public class BookController {
     {
 
         Page<BookResponse>books= bookService.findall(page,size);
+        if(books.isEmpty())
+        {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(books);
+    }
+    @GetMapping("/books")
+    @Operation(summary = "Zwraca ksiazki z bazy danych", description = "Zwraca dane książek z bazy danych")
+    public ResponseEntity<List<BookResponse>>listofbooks()
+    {
+
+        List<BookResponse>books= bookService.findAllList();
         if(books.isEmpty())
         {
             return ResponseEntity.noContent().build();
@@ -261,36 +265,5 @@ public class BookController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(bookResponse);
-    }
-    //////
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/add")
-    @Operation(summary = "Dodaje ksiazke do bazy danych", description = "Dodaje ksiazke uzupelnioną przez użytkownika do bazy danych")
-    public ResponseEntity<BookRequest> addbook(@Parameter(description = "Obiekt zawierający dane książki, które mają zostać dodane do bazy danych")
-                                                   @RequestBody @Valid BookRequest bookRequest) {
-        BookRequest addedbook = bookService.addbook(bookRequest);
-        return ResponseEntity.ok(addedbook);
-    }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/update/{id}")
-    @Operation(summary = "Aktualizuje ksiazke do bazy danych", description = "Aktualizuje ksiazke uzupelnioną przez użytkownika do bazy danych")
-    public ResponseEntity<BookRequest> updatebook(@Parameter(description = "Numer identyfikacyjny ksiazki")
-                                                    @PathVariable Integer id,
-                                                  @Parameter(description = "Obiekt zawierający dane książki, które mają zostać zaaktualizowane do bazy danych")
-                                                    @RequestBody BookRequest bookRequest) {
-        BookRequest updatedBook = bookService.updateBook(id,bookRequest);
-        return ResponseEntity.ok(updatedBook);
-    }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/delete/{id}")
-    @Operation(summary = "Usuwa ksiazke z bazy danych", description = "Usuwa ksiazke o podanym ID z bazy danych")
-    public ResponseEntity<?> delete(@Parameter(description = "Numer identyfikacyjny ksiazki")
-                                        @PathVariable Integer id) {
-        try {
-            bookService.deletebook(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
     }
 }

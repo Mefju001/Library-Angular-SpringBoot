@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface BookService {
     Page<BookResponse> findall(int page, int size);
+    List<BookResponse> findAllList();
     BookResponse findbyid(Integer id);
     BookImg findByBookId(Integer id);
     List<GenreResponse> findallgenres();

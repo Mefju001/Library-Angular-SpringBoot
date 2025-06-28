@@ -19,6 +19,9 @@ export class MyServiceService {
     .set('page', page)
     .set('size', size)});
   }
+    getListOfAllBooks(): Observable<any[]> {
+    return this.http.get<Book[]>(`${this.apiUrl}/books`);
+  }
   //nie ma
   getData(): Observable<any[]> {
     return this.http.get<Genre[]>(`${this.apiUrl}/genres`);

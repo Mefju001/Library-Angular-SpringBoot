@@ -26,7 +26,6 @@ export class HeaderComponent implements OnInit{
   }
   isAdmin(): boolean {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    console.log(user.role[0].authority)
     if(user.role[0].authority ==='ROLE_ADMIN')
       return true;
 

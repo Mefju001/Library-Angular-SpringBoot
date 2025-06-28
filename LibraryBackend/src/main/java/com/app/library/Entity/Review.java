@@ -20,8 +20,16 @@ public class Review {
     @JoinColumn(name = "user_id")
     private User user;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "books_id")
+    @JoinColumn(name = "book_id")
     private Book book;
+
+    public Review(String content, int rating, LocalDateTime createdAt, User user, Book book) {
+        this.content = content;
+        this.rating = rating;
+        this.createdAt = createdAt;
+        this.user = user;
+        this.book = book;
+    }
 
     public Review() {
         this.createdAt = LocalDateTime.now();
