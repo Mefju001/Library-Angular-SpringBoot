@@ -1,15 +1,15 @@
 package com.app.library.Service;
 
-import com.app.library.DTO.Mapper.BookMapper;
 import com.app.library.DTO.Mapper.ReviewMapper;
-import com.app.library.DTO.Mapper.UserMapper;
 import com.app.library.DTO.Request.ReviewRequest;
+import com.app.library.DTO.Response.ReviewAvrResponse;
 import com.app.library.DTO.Response.ReviewResponse;
 import com.app.library.Entity.Review;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.ReviewRepository;
 import com.app.library.Repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,16 +23,12 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final BookMapper bookMapper;
     private final ReviewMapper reviewMapper;
-
-    public ReviewServiceImpl(ReviewRepository reviewRepository, BookRepository bookRepository, UserRepository userRepository, UserMapper userMapper, BookMapper bookMapper, ReviewMapper reviewMapper) {
+    @Autowired
+    public ReviewServiceImpl(ReviewRepository reviewRepository, BookRepository bookRepository, UserRepository userRepository, ReviewMapper reviewMapper) {
         this.reviewRepository = reviewRepository;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.bookMapper = bookMapper;
         this.reviewMapper = reviewMapper;
     }
 
@@ -58,5 +54,8 @@ public class ReviewServiceImpl implements ReviewService {
         return reviews.stream()
                 .map(reviewMapper::toDto)
                 .collect(Collectors.toList());
+    }
+    public List<ReviewAvrResponse> listReviewsAvrForBooks() {
+        return reviewRepository.getAvarageForBooks();
     }
 }

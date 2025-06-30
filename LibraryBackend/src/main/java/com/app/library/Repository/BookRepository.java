@@ -20,7 +20,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     Page<Book> findBooksByTitleContaining(String title, Pageable pageable);
 
     Book findBookByIsbnIs(Long isbn);
-
+    Page<Book> findBooksByAuthor_NameAndAuthor_Surname(String name, String Surname, Pageable pageable);
     Page<Book> findBooksByAuthor_NameOrAuthor_Surname(String name, String Surname, Pageable pageable);
 
     Page<Book> findBooksByPriceIsBetween(float minprice, float maxprice, Pageable pageable);
