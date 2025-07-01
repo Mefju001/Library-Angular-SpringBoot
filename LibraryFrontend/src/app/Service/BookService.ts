@@ -1,140 +1,65 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
-import { Book,PaginatedResponse  } from '../Models/book.model'; // Upewnij się, że masz model Book
-interface Genre {
-  genreName: string;
-}
+import { map, Observable, retry } from 'rxjs';
+import { Book,PaginatedResponse  } from '../Models/book.model';
+import { Genre } from '../Models/Genre.model';
+import { SearchCriteria } from '../Models/SearchCriteria.DTO';
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class BookService {
-  private apiUrl = 'http://localhost:8080/api/books'; // Dostosuj do swojego backendu
+private apiUrl = 'http://localhost:8080/api/books';
 
-  constructor(private http: HttpClient) {}
-  // Pobiera wszystkie książki
-  getAllBooks(page: number, size: number): Observable<PaginatedResponse<Book>> {
+constructor(private http: HttpClient) {}
+getBooks(page: number, size: number): Observable<PaginatedResponse<Book>> {
     return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/`,{
     params: new HttpParams()
     .set('page', page)
     .set('size', size)});
   }
-    getListOfAllBooks(): Observable<any[]> {
-    return this.http.get<Book[]>(`${this.apiUrl}/books`);
-  }
-  //nie ma
-  getData(): Observable<any[]> {
-    return this.http.get<Genre[]>(`${this.apiUrl}/genres`);
-  }
-  getBooksByAuthor(page: number, size: number,name: string, surname: string): Observable<PaginatedResponse<Book>> {
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/search/author?page=${page}&size=${size}`, {
-      params: new HttpParams()
-        .set('name', name)
-        .set('surname', surname)
-    });
-  }
+getBooksByCriteria(page: number, size: number, criteria:SearchCriteria): Observable<PaginatedResponse<Book>> {
+    let params = new HttpParams()
+    .set('page', page)
+    .set('size', size);
 
-  getbooksbygenre(page: number, size: number,genreName:string): Observable<PaginatedResponse<Book>> {
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/search/genre`,{
-    params: new HttpParams()
+  Object.entries(criteria).forEach(([key, value]) => {
+    if (value !== null && value !== undefined && value !== '') {
+      params = params.set(key, value.toString());
+    }
+  });
+    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/Search`,{params});
+}
+sortBooks(page: number, size: number,sortBy:string,direction?:string): Observable<PaginatedResponse<Book>> {
+  let params = new HttpParams()
     .set('page', page)
     .set('size', size)
-    .set('genre_name', genreName)}).pipe(map(response => response || []));
+    .set('sortBy',sortBy);
+    if (direction !== undefined && direction !== null) {
+      params = params.set('direction', direction);
+    }
+    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/Sort`,{params:params});
+}
+getListOfAllBooks(): Observable<any[]> {
+    return this.http.get<Book[]>(`${this.apiUrl}/books`);
   }
-
-  // Wyszukuje książki po nazwie
-  searchBooks(page: number, size: number,searchName: string): Observable<PaginatedResponse<Book>> {
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/search/title`, {
-      params: new HttpParams()
-      .set('page', page)
-      .set('size', size)
-      .set('title', searchName)
-    });
+getGenres(): Observable<any[]> {
+    return this.http.get<Genre[]>(`${this.apiUrl}/genres`);
   }
-
-  // Pobiera książki z zakresu cenowego
-  getBooksByPriceRange(page: number, size: number,price1: number, price2: number): Observable<PaginatedResponse<Book>> {
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/search/price`, {
-      params: new HttpParams()
-      .set('page', page)
-      .set('size', size)
-      .set('price1', price1)
-      .set('price2', price2)
-    });
-  }
-
-  // Pobiera książki według zakresu lat
-  getBooksByYearRange(page: number, size: number,year1: number, year2: number): Observable<PaginatedResponse<Book>> {
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/search/year`, {
-      params: new HttpParams()
-      .set('page', page)
-      .set('size', size)
-      .set('year1', year1)
-      .set('year2', year2)
-    });
-  }
-
-  // nie ma
-  sortbyprice(value:string,page: number, size: number): Observable<PaginatedResponse<Book>> {
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/sort/price`, {
-      params: new HttpParams()
-        .set('page', page)
-        .set('size', size)
-        .set('name', value)
-    });
-  }
-  sortbytitle(value:string,page: number, size: number): Observable<PaginatedResponse<Book>> {
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/sort/title`, {
-      params: new HttpParams()
-        .set('page', page)
-        .set('size', size)
-        .set('name', value)
-    });
-  }
-  sortbyyear(value:string,page: number, size: number): Observable<PaginatedResponse<Book>> {
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/sort/year`, {
-      params: new HttpParams()
-        .set('page', page)
-        .set('size', size)
-        .set('name', value)
-    });
-  }
-  getBookById(id: number): Observable<Book> {
+getBookById(id: number): Observable<Book> {
     return this.http.get<Book>(`${this.apiUrl}/${id}`, {
     params: new HttpParams().set('id', id)
     });
   }
-  getBookImgById(id: number): Observable<Book> {
+getBookImgById(id: number): Observable<Book> {
     return this.http.get<Book>(`${this.apiUrl}/bookImg/${id}`, {
       params: new HttpParams().set('id', id)
     });
   }
-  getForeshadowedBook(page: number, size: number): Observable<PaginatedResponse<Book>> {
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/foreshadowed`,{
-    params: new HttpParams()
-    .set('page', page)
-    .set('size', size)});
-  }
-  getNewBooks(page: number, size: number): Observable<PaginatedResponse<Book>> {
-    return this.http.get<PaginatedResponse<Book>>(`${this.apiUrl}/news`,{
-    params: new HttpParams()
-    .set('page', page)
-    .set('size', size)});
-  }
-  getBookByIsbn(isbn: string): Observable<Book> {
+getBookByIsbn(isbn: string): Observable<Book> {
     return this.http.get<Book>(`${this.apiUrl}/${isbn}`, {
       params: new HttpParams().set('isbn', isbn)
     });
-  }
-  saveBook(book: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/add`, book);
-  }
-  updateBook(id: number, book: Book): Observable<any> {
-      return this.http.put(`${this.apiUrl}/update/${id}`, book);
-      params: new HttpParams().set('id', id)
-  }
-  
-  deleteBook(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/delete/${id}`);
   }
 }

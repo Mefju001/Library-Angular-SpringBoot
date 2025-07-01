@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MyServiceService } from 'src/app/Service/BookService';
+import { BookService } from 'src/app/Service/BookService';
 import { AuthService } from 'src/app/Service/Auth/auth.service';
 import { UserService } from 'src/app/Service/UserService';
 import { Router } from '@angular/router';
@@ -18,7 +18,7 @@ export class HeaderComponent implements OnInit{
   selectedItem: string = '';
   books: Book[] = [];
   username: string | null = null;
-  constructor(private myService: MyServiceService,private authService: AuthService,private router: Router,private userService: UserService) {}
+  constructor(private myService: BookService,private authService: AuthService,private router: Router,private userService: UserService) {}
   ngOnInit(): void {
     this.id=this.getId();
     this.username = this.getUsername();

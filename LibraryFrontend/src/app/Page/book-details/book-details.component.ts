@@ -1,6 +1,6 @@
 import { Component,OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MyServiceService } from '../../Service/BookService';
+import { BookService } from '../../Service/BookService';
 import { UserService } from 'src/app/Service/UserService';
 import { LibraryService } from 'src/app/Service/LibraryService';
 import { LibraryBook } from 'src/app/Models/Library_book.model';
@@ -20,7 +20,7 @@ export class BookDetailsComponent implements OnInit {
   selectedLibrary: LibraryBook | null = null; // Zmienna przechowująca wybraną bibliotekę
   constructor(
     private route: ActivatedRoute,
-    private myService: MyServiceService,
+    private myService: BookService,
     private userService: UserService,
     private libraryService: LibraryService
   ) {}
@@ -84,8 +84,8 @@ export class BookDetailsComponent implements OnInit {
       }
     );
   }
-  deleteBook(id: number) {
-    this.myService.deleteBook(id).subscribe(
+  /*deleteBook(id: number) {
+    this.b.deleteBook(id).subscribe(
       data => {
         console.log('Książka została usunięta:', data);
         ; // Opcjonalnie, jeśli chcesz odświeżyć listę książek
@@ -94,5 +94,5 @@ export class BookDetailsComponent implements OnInit {
         console.error('Błąd podczas usuwania książki:', error);
       }
     );
-  }
+  }*/
 }

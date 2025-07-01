@@ -1,98 +1,97 @@
-<body>
-    <!-- Sekcja główna -->
-    <div class="main-container">
-        <!-- Filtry -->
-        <aside class="sidebar">
-            <h2>Filtry</h2>
-            <form class ="filtry" (submit)="applyFilters()">
-              <label>Wyszukaj:</label>
-              <input type="text" [(ngModel)]="filters.searchName" name="searchName">
-              <label>Autor</label><br>
-              <label>Imię:</label>
-              <input type="text" [(ngModel)]="filters.name" name="name">
-              <br>
-              <label>Nazwisko:</label>
-              <input type="text" [(ngModel)]="filters.surname" name="surname">              
-              <br>
-              <label>Minimalna cena:</label>
-              <input type="number" [(ngModel)]="filters.price1" name="price1">
-              <br>
-              <label>Maksymalna cena:</label>
-              <input type="number" [(ngModel)]="filters.price2" name="price2">
-              <br>
-              <label>Rok wydania od:</label>
-              <input type="number" [(ngModel)]="filters.year1" name="year1">
-              <br>
-              <label>Rok wydania do:</label>
-              <input type="number" [(ngModel)]="filters.year2" name="year2">
-              <br>
-              <div class="dropdown">
-                <button class="dropbtn">Kategorie</button>
-                <div class="dropdown-content">
-                  <button class="dropdown-item" *ngFor="let item of items"
-                    [value]="item.id"
-                    (click)="filters.genre = item.name; getbooksbygenre(item.name,0)">
-                    {{ item.name }}
-                  </button>
-                </div>
-              </div>
-              <div style="display: flex; justify-content: center; gap: 2rem; align-items: center; margin-top: 2rem;">
-                <label style="display: flex; align-items: center; gap: 0.5rem;">
-                  <input type="checkbox" (change)="onCheckboxChange($event,'Nowości')" />
-                  Nowości
-                </label>
-                <label style="display: flex; align-items: center; gap: 0.5rem;">
-                  <input type="checkbox" (change)="onCheckboxChange($event,'Zapowiedzi')" />
-                  Zapowiedzi
-                </label>
-              </div>
-              <br>
-              <button type="submit">Zastosuj filtry</button>
-              <button type="button" (click)="resetFilters()">Resetuj</button>
-            </form>
-        </aside>
 
-        <!-- Książki -->
-        <section class="main-content">
-            <h1>Najlepsze Książki na Wyciągnięcie Ręki</h1>
-            <p class="subtitle">Znajdź swoją następną książkę w naszym szerokim wyborze</p>
-            <div class="pagination">
-              <div class="dropdown">
-                <button class="dropbtn">Posortuj według</button>
-                <div class="dropdown-content">
-                  <button class="dropdown-item" (click)="sortbytitle('asc',0)">Po nazwie A-Z</button>
-                  <button class="dropdown-item" (click)="sortbytitle('desc',0)">Po nazwie Z-A</button>
-                  <button class="dropdown-item" (click)="sortbyprice('asc',0)">Po cenie A-Z</button>
-                  <button class="dropdown-item" (click)="sortbyprice('desc',0)">Po cenie Z-A</button>
-                  <button class="dropdown-item" (click)="sortbyyear('asc',0)">Po roku A-Z</button>
-                  <button class="dropdown-item" (click)="sortbyyear('desc',0)">Po roku Z-A</button>
-
-                </div>
-              </div>
+  <div class="main-container">
+    <aside class="sidebar">
+      <h3>Filtry wyszukiwania</h3>
+      <div class="form-group">
+        <label for="title">Wyszukaj ogólnie:</label>
+        <input type="text" id="title" [(ngModel)]="criteria.title" name="title" placeholder="Tytuł, ISBN, wydawca...">
+      </div>
+      <div class="form-group">
+        <label>Autor:</label><br>
+        <label for="authorName">Imię:</label>
+        <input type="text" id="authorName" [(ngModel)]="criteria.authorName" name="authorName" placeholder="Imię autora">
+      </div>
+      <div class="form-group">
+        <label for="authorSurname">Nazwisko:</label>
+        <input type="text" id="authorSurname" [(ngModel)]="criteria.authorSurname" name="authorSurname" placeholder="Nazwisko autora">
+      </div>
+      <div class="form-group">
+        <label>Cena:</label><br>
+        <label for="minPrice">Minimalna:</label>
+        <input type="number" id="minPrice" [(ngModel)]="criteria.minPrice" name="minPrice" placeholder="np. 10.00">
+      </div>
+      <div class="form-group">
+        <label for="maxPrice">Maksymalna:</label>
+        <input type="number" id="maxPrice" [(ngModel)]="criteria.maxPrice" name="maxPrice" placeholder="np. 50.00">
+      </div>
+      <div class="form-group">
+        <label>Rok wydania:</label><br>
+        <label for="startYear">Od:</label>
+        <input type="number" id="startYear" [(ngModel)]="criteria.startYear" name="startYear" placeholder="np. 2000">
+      </div>
+      <div class="form-group">
+        <label for="endYear">Do:</label>
+        <input type="number" id="endYear" [(ngModel)]="criteria.endYear" name="endYear" placeholder="np. 2024">
+      </div>
+      <div class="form-group">
+        <label for="genreSelect">Kategoria (Gatunek):</label>
+        <select id="genreSelect" [(ngModel)]="criteria.genre_name" name="genre_name">
+          <option [value]="undefined">Wybierz kategorię</option>
+          <option *ngFor="let genre of genres" [value]="genre.name">{{ genre.name }}</option>
+        </select>
+      </div>
+      <div style="display: flex; justify-content: center; gap: 2rem; align-items: center; margin-top: 2rem;">
+          <label style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" (change)="onCheckboxChange($event,'Nowości')" />
+            Nowości
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.5rem;">
+            <input type="checkbox" (change)="onCheckboxChange($event,'Zapowiedzi')" />
+            Zapowiedzi
+          </label>
+      </div>
+      <div class="form-actions">
+        <button type="submit">Zastosuj filtry</button>
+        <button type="button" >Wyczyść filtry</button>'(click)="resetFilters()"'
+      </div>
+    </aside>
+  <section class="main-content">
+      <h1>Najlepsze Książki na Wyciągnięcie Ręki</h1>
+      <p class="subtitle">Znajdź swoją następną książkę w naszym szerokim wyborze</p>
+      <div class="pagination">
+        <div class="dropdown">
+          <button class="dropbtn">Posortuj według</button>
+          <div class="dropdown-content">
+            <button class="dropdown-item" (click)="sortBooks(0,'title','asc')">Po nazwie A-Z</button>
+            <button class="dropdown-item" (click)="sortBooks(0,'title','desc')">Po nazwie Z-A</button>
+            <button class="dropdown-item" (click)="sortBooks(0,'price','asc')">Po cenie A-Z</button>
+            <button class="dropdown-item" (click)="sortBooks(0,'price','desc')">Po cenie Z-A</button>
+            <button class="dropdown-item" (click)="sortBooks(0,'year','asc')">Po roku A-Z</button>
+            <button class="dropdown-item" (click)="sortBooks(0,'year','desc')">Po roku Z-A</button>
+          </div>
+        </div>
+      </div>
+        <div class="books-container">
+          <div *ngFor="let book of books" class="book">
+            <div [routerLink]="['/book', book.id]">
+              <h3>{{ book.title }}</h3>
+              <p>Autor: {{ book.authorName }} {{ book.authorSurname }}</p>
+              <p>Gatunek: {{ book.genreName }}</p>
+              <p>Cena: {{ book.price }} zł</p>
             </div>
-            <!-- Książki -->
-            <div class="books-container">
-                <div *ngFor="let book of books" class="book">
-                  <div [routerLink]="['/book', book.id]">
-                    <h3>{{ book.title }}</h3>
-                    <p>Autor: {{ book.authorName }} {{ book.authorSurname }}</p>
-                    <p>Gatunek: {{ book.genreName }}</p>
-                    <p>Cena: {{ book.price }} zł</p>
-                  </div>
-                  <button>Kup</button>
-                  <button (click)="loanbook(book.id)">Wypozycz</button>
-                </div>
-                
-                <div *ngIf="books.length === 0">
-                    <p>Brak książek w bazie danych.</p>
-                </div>
-            </div>
-        </section>
-    </div>
+            <button>Kup</button>
+            <button (click)="loanbook(book.id)">Wypozycz</button>
+          </div>
+          
+          <div *ngIf="books.length === 0">
+              <p>Brak książek w bazie danych.</p>
+          </div>
+      </div>
+  </section>
     <div class="pagination">
       <button (click)="prevPage()" [disabled]="currentPage === 0">Poprzednia</button>
       <span>Strona {{ currentPage + 1 }} z {{ totalPages }}</span>
       <button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">Następna</button>
     </div>
-</body>
+
 
