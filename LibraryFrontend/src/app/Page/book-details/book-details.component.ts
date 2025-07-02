@@ -16,7 +16,7 @@ export class BookDetailsComponent implements OnInit {
   bookImg:any;
   items: any[] = [];
   title: string = '';
-  libraries: LibraryBook[] = []; // Tablica bibliotek
+  libraries: LibraryBook[] = [];
   selectedLibrary: LibraryBook | null = null; // Zmienna przechowująca wybraną bibliotekę
   constructor(
     private route: ActivatedRoute,
@@ -49,9 +49,9 @@ export class BookDetailsComponent implements OnInit {
   }
   getLibraries(title:string): void {
     if (title) {
-      this.libraryService.getLibrarieswhereisbook(title).subscribe(
+      this.libraryService.getLibrariesByTitle(title).subscribe(
         (data: LibraryBook[]) => {
-          this.libraries = data;  // Zaktualizuj dane
+          this.libraries = data;
         },
         (error) => {
           console.error('Błąd podczas pobierania danych: ', error);
@@ -84,15 +84,4 @@ export class BookDetailsComponent implements OnInit {
       }
     );
   }
-  /*deleteBook(id: number) {
-    this.b.deleteBook(id).subscribe(
-      data => {
-        console.log('Książka została usunięta:', data);
-        ; // Opcjonalnie, jeśli chcesz odświeżyć listę książek
-      },
-      error => {
-        console.error('Błąd podczas usuwania książki:', error);
-      }
-    );
-  }*/
 }

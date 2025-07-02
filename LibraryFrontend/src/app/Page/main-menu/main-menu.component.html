@@ -60,7 +60,11 @@
       <p class="subtitle">Znajdź swoją następną książkę w naszym szerokim wyborze</p>
       <div class="pagination">
         <div class="dropdown">
-          <button class="dropbtn">Posortuj według</button>
+          <div>
+            <button class="dropbtn">Posortuj według</button>
+          </div>
+          <div>
+          </div>
           <div class="dropdown-content">
             <button class="dropdown-item" (click)="sortBooks(0,'title','asc')">Po nazwie A-Z</button>
             <button class="dropdown-item" (click)="sortBooks(0,'title','desc')">Po nazwie Z-A</button>
@@ -69,6 +73,11 @@
             <button class="dropdown-item" (click)="sortBooks(0,'year','asc')">Po roku A-Z</button>
             <button class="dropdown-item" (click)="sortBooks(0,'year','desc')">Po roku Z-A</button>
           </div>
+        </div>
+        <div class="page-controls">
+          <button (click)="prevPage()" [disabled]="currentPage === 0">Poprzednia</button>
+          <span>Strona {{ currentPage + 1 }} z {{ totalPages }}</span>
+          <button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">Następna</button>
         </div>
       </div>
         <div class="books-container">
@@ -87,11 +96,14 @@
               <p>Brak książek w bazie danych.</p>
           </div>
       </div>
+  <div class="pagination bottom-pagination">
+        <div class="page-controls">
+          <button (click)="prevPage()" [disabled]="currentPage === 0">Poprzednia</button>
+          <span>Strona {{ currentPage + 1 }} z {{ totalPages }}</span>
+          <button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">Następna</button>
+        </div>
+  </div>
   </section>
-    <div class="pagination">
-      <button (click)="prevPage()" [disabled]="currentPage === 0">Poprzednia</button>
-      <span>Strona {{ currentPage + 1 }} z {{ totalPages }}</span>
-      <button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">Następna</button>
-    </div>
+<aside class="pagination"></aside>
 
 

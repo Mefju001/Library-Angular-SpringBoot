@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable, retry } from 'rxjs';
-import { Book,PaginatedResponse  } from '../Models/book.model';
-import { Genre } from '../Models/Genre.model';
+import { Book} from '../Models/book.model';
+import { Genre} from '../Models/Genre.model';
 import { SearchCriteria } from '../Models/SearchCriteria.DTO';
+import { PaginatedResponse } from '../Models/PaginatedResponse';
 
 
 @Injectable({

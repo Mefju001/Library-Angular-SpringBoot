@@ -1,4 +1,3 @@
-  // Library.model.ts
 export interface Library {
     id: number;
     location: string;

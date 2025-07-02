@@ -4,9 +4,7 @@
     </div>
     <nav class="navbar">
         <a  routerLink="/MainMenu">Strona Główna</a>
-        <a *ngIf="isAdmin()" routerLink="/addbook">Dodaj ksiazke</a>
         <a routerLink="/library">Biblioteki</a>
-        <a href="#">Promocje</a>
         <a [routerLink]="['/likedBooks', 'recommendation']">Rekomendacja</a>
         <a href="#">Kontakt</a>
         <a [routerLink]="['/likedBooks', 'liked']">Polubione</a>

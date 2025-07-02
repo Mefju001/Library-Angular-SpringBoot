@@ -16,7 +16,7 @@ export class LibraryService {
     // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.get<Library[]>(`${this.apiUrl}/`);
   }
-  getLibrarieswhereisbook(title: string): Observable<LibraryBook[]> {
+  getLibrariesByTitle(title: string): Observable<LibraryBook[]> {
     return this.http.get<LibraryBook[]>(`${this.apiUrl}/searchby/${title}`);
   }
   getLibraryById(id: number): Observable<Library> {
