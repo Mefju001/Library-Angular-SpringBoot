@@ -44,12 +44,12 @@
     <div class="additional-sections-container">
         <div class="reviews-section">
           <h3>Recenzje</h3>
-      <div >*ngIf="reviews && reviews.length > 0; else noReviews"
-      <div >*ngFor="let review of reviews" class="review-item"
-        <h4></h4>
-        <p class="review-rating"></p>
-        <p></p>
-        <p class="review-date"></p>
+      <div *ngIf="reviews else noReviews">
+      <div *ngFor="let review of reviews" class="review-item" >
+        <h4>treść: {{review.content}}</h4>
+        <p class="review-rating">ocena: {{review.rating}}</p>
+        <p>Użytkownik - {{review.user.username}}</p>
+        <p class="review-date">Data utworzenia: {{review.createdAt}}</p>
       </div>
     </div>
     <ng-template #noReviews>

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("api/reviews")
 public class ReviewController {
     private final ReviewService reviewService;
 
@@ -31,17 +32,23 @@ public class ReviewController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/reviews/{userid}")
+    @GetMapping("/user/{userid}")
     @Operation(summary = "", description = "")
     public ResponseEntity<List<ReviewResponse>> getReviewListByUser(@PathVariable long userid) {
         List<ReviewResponse> response = reviewService.listOfReviewForUser(userid);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/reviews/")
+    @GetMapping("/")
     @Operation(summary = "", description = "")
     public ResponseEntity<List<ReviewAvrResponse>> getAvarageReviewsForBooks() {
         List<ReviewAvrResponse> response = reviewService.listReviewsAvrForBooks();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+    @GetMapping("/title/{title}")
+    @Operation(summary = "", description = "")
+    public ResponseEntity<List<ReviewResponse>> getReviewsForBooks(@PathVariable String title) {
+        List<ReviewResponse> response = reviewService.listReviewsForBooks(title);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

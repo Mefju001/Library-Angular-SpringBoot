@@ -14,4 +14,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT NEW com.app.library.DTO.Response.ReviewAvrResponse(r.book.id, r.book.title, AVG(r.rating)) " +
             "FROM Review r GROUP BY r.book.id, r.book.title")
     List<ReviewAvrResponse>getAvarageForBooks();
+
+    List<Review> getReviewsByBook_Title(String bookTitle);
 }

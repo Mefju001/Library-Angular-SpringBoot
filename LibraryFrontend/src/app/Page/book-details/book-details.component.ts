@@ -5,23 +5,27 @@ import { UserService } from 'src/app/Service/UserService';
 import { LibraryService } from 'src/app/Service/LibraryService';
 import { LibraryBook } from 'src/app/Models/Library_book.model';
 import { BookImg } from 'src/app/Models/BookImg.model';
+import { ReviewService } from 'src/app/Service/ReviewService';
+import { Review } from 'src/app/Models/Review.model';
 @Component({
   selector: 'app-book-details',
   templateUrl: './book-details.component.html',
   styleUrls: ['./book-details.component.css']
 })
 export class BookDetailsComponent implements OnInit {
-  book: any; // Zmienna na dane książki
+  book: any;
+  reviews: Review[] = [];
   userId: number = 0;
   bookImg:any;
-  items: any[] = [];
+  //items: any[] = [];
   title: string = '';
   libraries: LibraryBook[] = [];
-  selectedLibrary: LibraryBook | null = null; // Zmienna przechowująca wybraną bibliotekę
+  selectedLibrary: LibraryBook | null = null;
   constructor(
     private route: ActivatedRoute,
     private myService: BookService,
     private userService: UserService,
+    private reviewService: ReviewService,
     private libraryService: LibraryService
   ) {}
 
@@ -31,14 +35,23 @@ export class BookDetailsComponent implements OnInit {
       this.myService.getBookById(bookId).subscribe(data => {
         this.book = data;
         this.getLibraries(this.book.title);
+        this.getReviewsByTitle(this.book.title);
       });
       this.myService.getBookImgById(bookId).subscribe(data=>
       {
         this.bookImg = data;
       }
-      )
+      );
+      
     }
     this.userId=this.getId();
+  }
+  getReviewsByTitle(title:string){
+      this.reviewService.getReviewsByTitle(this.book.title).subscribe((data: Review[]) => {
+          this.reviews = data;
+        },
+      )
+      console.log(this.reviews)
   }
   isAdmin(): boolean {
     const user = JSON.parse(localStorage.getItem('user') || '{}');

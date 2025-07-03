@@ -13,7 +13,6 @@ export class LibraryService {
   constructor(private http: HttpClient) { }
 
   getLibraries(): Observable<Library[]> {
-    // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.get<Library[]>(`${this.apiUrl}/`);
   }
   getLibrariesByTitle(title: string): Observable<LibraryBook[]> {

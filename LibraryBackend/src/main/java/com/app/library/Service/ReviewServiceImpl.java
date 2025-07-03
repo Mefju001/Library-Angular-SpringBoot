@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class ReviewServiceImpl implements ReviewService {
         var review = new Review(
                 request.content(),
                 request.rating(),
-                LocalDateTime.now(),
+                LocalDate.now(),
                 user.get(),
                 book.get());
         reviewRepository.save(review);
@@ -57,5 +58,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
     public List<ReviewAvrResponse> listReviewsAvrForBooks() {
         return reviewRepository.getAvarageForBooks();
+    }
+
+    @Override
+    public List<ReviewResponse> listReviewsForBooks(String title) {
+        List<Review> reviews = reviewRepository.getReviewsByBook_Title(title);
+        return reviews.stream().map(reviewMapper::toDto).collect(Collectors.toList());
     }
 }

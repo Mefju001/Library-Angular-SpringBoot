@@ -11,4 +11,5 @@ public interface ReviewService {
 
     List<ReviewResponse> listOfReviewForUser(long id);
     List<ReviewAvrResponse> listReviewsAvrForBooks();
+    List<ReviewResponse> listReviewsForBooks(String title);
 }

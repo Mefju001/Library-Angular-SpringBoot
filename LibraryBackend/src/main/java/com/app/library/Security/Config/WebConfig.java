@@ -74,6 +74,7 @@ public class WebConfig implements WebMvcConfigurer {
                                 .permitAll()
                                 .requestMatchers("/Img/**").permitAll()
                                 .requestMatchers("/api/adminPanel/**").permitAll()
+                                .requestMatchers("/api/reviews/**").permitAll()
                                 .requestMatchers("/api/rentals/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/books/**").permitAll()    //hasAnyRole("ADMIN", "USER")
