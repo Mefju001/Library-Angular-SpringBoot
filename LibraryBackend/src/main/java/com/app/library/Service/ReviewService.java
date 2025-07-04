@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ReviewService {
     ReviewResponse add(ReviewRequest request);
-
+    ReviewAvrResponse AvgForBook(String Title);
     List<ReviewResponse> listOfReviewForUser(long id);
     List<ReviewAvrResponse> listReviewsAvrForBooks();
     List<ReviewResponse> listReviewsForBooks(String title);

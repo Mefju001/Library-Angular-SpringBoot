@@ -39,10 +39,16 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/")
+    @GetMapping("/Avg")
     @Operation(summary = "", description = "")
     public ResponseEntity<List<ReviewAvrResponse>> getAvarageReviewsForBooks() {
         List<ReviewAvrResponse> response = reviewService.listReviewsAvrForBooks();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+    @GetMapping("/Avg/title/{BookTitle}")
+    @Operation(summary = "", description = "")
+    public ResponseEntity<ReviewAvrResponse> getAvgForTitle(@PathVariable String BookTitle) {
+        ReviewAvrResponse response = reviewService.AvgForBook(BookTitle);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @GetMapping("/title/{title}")

@@ -4,6 +4,7 @@ import com.app.library.DTO.Response.ReviewAvrResponse;
 import com.app.library.Entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,4 +17,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<ReviewAvrResponse>getAvarageForBooks();
 
     List<Review> getReviewsByBook_Title(String bookTitle);
+
+    @Query("SELECT NEW com.app.library.DTO.Response.ReviewAvrResponse(r.book.id, r.book.title, AVG(r.rating)) " +
+            "FROM Review r WHERE r.book.title = :bookTitle GROUP BY r.book.id, r.book.title ")
+    ReviewAvrResponse getAvgForBook(@Param("bookTitle") String bookTitle);
 }

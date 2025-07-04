@@ -17,7 +17,7 @@ export class BookDetailsComponent implements OnInit {
   reviews: Review[] = [];
   userId: number = 0;
   bookImg:any;
-  //items: any[] = [];
+  AVG: any;
   title: string = '';
   libraries: LibraryBook[] = [];
   selectedLibrary: LibraryBook | null = null;
@@ -30,12 +30,13 @@ export class BookDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const bookId = Number(this.route.snapshot.paramMap.get('id')); // Pobranie ID z URL
+    const bookId = Number(this.route.snapshot.paramMap.get('id'));
     if (bookId) {
       this.myService.getBookById(bookId).subscribe(data => {
         this.book = data;
         this.getLibraries(this.book.title);
         this.getReviewsByTitle(this.book.title);
+        this.getAVGReview(this.book.title);
       });
       this.myService.getBookImgById(bookId).subscribe(data=>
       {
@@ -52,6 +53,13 @@ export class BookDetailsComponent implements OnInit {
         },
       )
       console.log(this.reviews)
+  }
+  getAVGReview(title:string){
+      this.reviewService.getAVGReviewForTitle(this.book.title).subscribe((data:any)  => {
+          this.AVG = data;
+          console.log(this.AVG)
+        },
+      );
   }
   isAdmin(): boolean {
     const user = JSON.parse(localStorage.getItem('user') || '{}');

@@ -59,7 +59,9 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewAvrResponse> listReviewsAvrForBooks() {
         return reviewRepository.getAvarageForBooks();
     }
-
+    public ReviewAvrResponse AvgForBook(String Title) {
+        return reviewRepository.getAvgForBook(Title);
+    }
     @Override
     public List<ReviewResponse> listReviewsForBooks(String title) {
         List<Review> reviews = reviewRepository.getReviewsByBook_Title(title);
