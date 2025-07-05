@@ -13,6 +13,7 @@
             <button class="dropbtn">Zalogowany jako: <strong>{{ username }}</strong></button>
             <div class="dropdown-content">
                 <button *ngIf="isAdmin()" routerLink="/AdminPanel" class="dropdown-item">AdminPanel</button>
+                <button routerLink="" class="dropdown-item">Moje recenzje</button>
                 <button routerLink="/formdetails" class="dropdown-item">Zmiana danych konta</button>
                 <button routerLink="/formpassword" class="dropdown-item">Zmiana hasła konta</button>
                 <button class="dropdown-item"(click)="deleteUser(id)">Usuń konto</button>

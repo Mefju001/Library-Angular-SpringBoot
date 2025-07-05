@@ -64,29 +64,35 @@
         <ng-template #noReviews>
           <p>Brak recenzji dla tej książki. Bądź pierwszy!</p>
         </ng-template>
-        <button class="add-review-button">Dodaj recenzję</button>
-        <button class="add-review-button" (click)="openReviewForm()">Dodaj recenzję</button>
-
-        <div *ngIf="showReviewFormModal" class="modal-overlay" (click)="closeReviewForm()">
-          <div class="modal-content" (click)="$event.stopPropagation()">
-            <h3>Dodaj nową recenzję</h3>
-            <form (ngSubmit)="submitReview()">
-              <div class="form-group">
-                <label for="rating">Ocena (1-5):</label>
-                <input type="number" id="rating" [(ngModel)]="newReview.rating" name="rating" min="1" max="5" required>
-              </div>
-
-              <div class="form-group">
-                <label for="comment">Komentarz:</label>
-                <textarea id="comment" [(ngModel)]="newReview.comment" name="comment" rows="4"></textarea>
-              </div>
-
-              <div class="modal-actions">
-                <button type="submit" class="btn btn-primary">Zapisz recenzję</button>
-                <button type="button" class="btn btn-secondary" (click)="closeReviewForm()">Anuluj</button>
-              </div>
-            </form>
-          </div>
+    <button mat-raised-button
+            color="primary"
+            (click)="showCommentForm = true"
+            *ngIf="!showCommentForm">
+      Dodaj recenzję i ocenę
+    </button>
+        <div *ngIf="showCommentForm" class="comment-form-container">
+          <mat-card>
+            <mat-card-title>Dodaj swoją recenzję i ocenę ksiazki </mat-card-title>
+            <mat-card-content>
+                    <mat-form-field appearance="fill" class="full-width-field">
+        <mat-label>Ocena</mat-label>
+        <mat-select [(ngModel)]="newReview.rating" name="rating" required>
+          <mat-option *ngFor="let num of [1, 2, 3, 4, 5]" [value]="num">
+            {{ num }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+              <mat-form-field appearance="fill" class="full-width-field" floatLabel="always">
+                <mat-label>Komentarz</mat-label>
+                <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="10"
+               [(ngModel)]="newReview.content" name="content" required></textarea>
+              </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary" (click)="submitReview()">Opublikuj</button>
+              <button mat-button (click)="showCommentForm = false">Anuluj</button>
+            </mat-card-actions>
+          </mat-card>
         </div>
       </div>
     </div>

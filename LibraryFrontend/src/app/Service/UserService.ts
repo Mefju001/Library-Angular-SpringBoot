@@ -15,7 +15,6 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   getuserbyid(id: number): Observable<any> {
-    // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.get(`${this.apiUrl}/${id}`);
   }
   getUsers():Observable<UserAdmin[]>
@@ -23,29 +22,24 @@ export class UserService {
     return this.http.get<UserAdmin[]>(`${this.apiUrl}/all`);
   }
   changedetails(id: number,userDetails:UserDetails): Observable<any> {
-    // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.put(`${this.apiUrl}/change/details/${id}`,userDetails);
   }
   changepassword(id: number,userPasswordRequest:UserPassword): Observable<any> {
-    // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.put(`${this.apiUrl}/change/password/${id}`,userPasswordRequest);
   }
   deleteUser(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/delete/${id}`);
   }
   addLikedBook(bookId: number,userId:number): Observable<any> {
-    // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.post(`${this.apiUrl}/add?bookId=${bookId}&userId=${userId}`,null);
   }
   getLikedBook(userId:number): Observable<any> {
-    // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.get(`${this.apiUrl}/?userId=${userId}`);
   }
   deletelikedBook(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/delete/favoritebook/${id}`);
   }
   getRecommedation(id: number): Observable<any> {
-    // Wywołanie backendu, który zwróci dane w formacie Book[]
     return this.http.get(`${this.apiUrl}/recommendation?userId=${id}`);
   }
   }

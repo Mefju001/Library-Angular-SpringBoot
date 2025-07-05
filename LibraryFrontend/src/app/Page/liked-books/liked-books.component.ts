@@ -39,7 +39,7 @@ export class LikedBooksComponent implements OnInit {
   }
 
   LikedBooks():void{
-    const bookId = Number(this.route.snapshot.paramMap.get('id')); // Pobranie ID z URL
+    const bookId = Number(this.route.snapshot.paramMap.get('id'));
     this.userId=this.getId();
     if (this.userId) {
       this.userService.getLikedBook(this.userId).subscribe(data => {
@@ -49,7 +49,7 @@ export class LikedBooksComponent implements OnInit {
     }
   }
   recommedationBooks():void{
-    const bookId = Number(this.route.snapshot.paramMap.get('id')); // Pobranie ID z URL
+    const bookId = Number(this.route.snapshot.paramMap.get('id'));
     this.userId=this.getId();
     if (this.userId) {
       this.userService.getRecommedation(this.userId).subscribe(data => {
@@ -58,7 +58,7 @@ export class LikedBooksComponent implements OnInit {
     }
   }
   LoanedBook():void{
-    const bookId = Number(this.route.snapshot.paramMap.get('id')); // Pobranie ID z URL
+    const bookId = Number(this.route.snapshot.paramMap.get('id'));
     this.userId=this.getId();
     if (this.userId) {
       this.loanService.getLoanBooksByUserId(this.userId).subscribe(data => {

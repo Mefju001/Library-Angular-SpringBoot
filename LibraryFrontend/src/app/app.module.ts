@@ -17,6 +17,13 @@ import { BookDetailsComponent } from './Page/book-details/book-details.component
 import { AddLibraryComponent } from './FormPage/add-library/add-library.component';
 import { LikedBooksComponent } from './Page/liked-books/liked-books.component';
 import { DashboardAdminComponent } from './Page/dashboard-admin/dashboard-admin.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -38,7 +45,14 @@ import { DashboardAdminComponent } from './Page/dashboard-admin/dashboard-admin.
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatInputModule,
+    TextFieldModule,
+    MatSelectModule,
+    MatFormFieldModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }

@@ -15,12 +15,16 @@ export class MainMenuComponent implements OnInit {
   books: Book[] = [];
   currentPage = 0;
   totalPages = 0;
+  currentMode: 'all' | 'search' | 'sort' = 'all';
+  currentCriteria: SearchCriteria | null = null;
+  currentSortBy:string = "";
+  currentDirection?:string;
   pageSize = 10;
   genres: any[] = [];
   selectedItem: string = '';
   criteria: SearchCriteria = {
     genre_name: undefined,
-    publisher_name:undefined,
+    publisher_name: undefined,
     authorName: undefined,
     authorSurname: undefined,
     minPrice: undefined,
@@ -28,19 +32,24 @@ export class MainMenuComponent implements OnInit {
     startYear: undefined,
     endYear: undefined
   };
-  constructor(private bookService: BookService,private userService: UserService,private loanService: LoanService) {}
+  constructor(private bookService: BookService, private userService: UserService, private loanService: LoanService) { }
 
   ngOnInit(): void {
     this.getBooks(0);
     this.getGenres();
   }
+  loadbooks(page: number, current: string) {
+    if (current === 'all') this.getBooks(page);
+    if (current === 'search') this.searchBooks(page, this.criteria);
+    if (current === 'sort') this.sortBooks(page,this.currentSortBy,this.currentDirection);
+  }
   getBooks(page: number): void {
     this.bookService.getBooks(this.currentPage, this.pageSize).subscribe((response) => {
       this.books = response.content;
       this.totalPages = response.totalPages;
-    },error => console.error('Błąd podczas pobierania książek:', error));
+    }, error => console.error('Błąd podczas pobierania książek:', error));
   }
-  getGenres():void{
+  getGenres(): void {
     this.bookService.getGenres().subscribe(data => {
       this.genres = data;
     });
@@ -48,43 +57,48 @@ export class MainMenuComponent implements OnInit {
   nextPage() {
     if (this.currentPage < this.totalPages - 1) {
       this.currentPage++;
-      this.getBooks(this.currentPage);
+      this.loadbooks(this.currentPage,this.currentMode);
     }
   }
   prevPage() {
     if (this.currentPage > 0) {
       this.currentPage--;
-      this.getBooks(this.currentPage);
+      this.loadbooks(this.currentPage,this.currentMode);
     }
   }
-  searchBooks(page: number, criteria:SearchCriteria){
-    this.bookService.getBooksByCriteria(this.currentPage,this.pageSize,criteria).subscribe((response)=>{
+  searchBooks(page: number = this.currentPage, criteria: SearchCriteria) {
+    this.currentMode = 'search'
+    this.currentCriteria = criteria;
+    this.bookService.getBooksByCriteria(this.currentPage, this.pageSize, criteria).subscribe((response) => {
       this.books = response.content;
       this.totalPages = response.totalPages;
     });
   }
-  sortBooks(page: number, sortBy:string,direction?:string){
-    this.bookService.sortBooks(this.currentPage, this.pageSize,sortBy,direction).subscribe((response)=>{
+  sortBooks(page: number, sortBy: string, direction?: string) {
+     this.currentMode = 'sort'
+    this.currentSortBy = sortBy;
+    this.currentDirection = direction;
+    this.bookService.sortBooks(this.currentPage, this.pageSize, sortBy, direction).subscribe((response) => {
       this.books = response.content;
       this.totalPages = response.totalPages;
     });
   }
-  onCheckboxChange(event: Event,text:string,page: number = this.currentPage) {
+  onCheckboxChange(event: Event, text: string, page: number = this.currentPage) {
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) {
-      if(text ==="Nowości"){
-        this.sortBooks(this.currentPage,"NewBooks");
+      if (text === "Nowości") {
+        this.sortBooks(this.currentPage, "NewBooks");
       }
-      if(text ==="Zapowiedzi"){
-        this.sortBooks(this.currentPage,"Foreshadowed");
+      if (text === "Zapowiedzi") {
+        this.sortBooks(this.currentPage, "Foreshadowed");
       }
     } else {
       this.getBooks(page)
     }
   }
-  loanbook(BookId:number):void{
-    const userId:number = this.getId()
-    this.loanService.loanBookByUser(userId,BookId).subscribe({
+  loanbook(BookId: number): void {
+    const userId: number = this.getId()
+    this.loanService.loanBookByUser(userId, BookId).subscribe({
       next: () => {
         alert('Książka została wypożyczona!');
       },
@@ -94,7 +108,7 @@ export class MainMenuComponent implements OnInit {
       }
     });
   }
-  getId(): number{
+  getId(): number {
     const user = localStorage.getItem('user');
     if (user) {
       try {
@@ -104,7 +118,7 @@ export class MainMenuComponent implements OnInit {
         console.error('Błąd parsowania JSON:', error);
       }
     }
-     console.error(Error);
-     return 0;
+    console.error(Error);
+    return 0;
   }
 }

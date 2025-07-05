@@ -23,7 +23,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     @Operation(summary = "", description = "")
     public ResponseEntity<ReviewResponse> addfavoritebooks(@RequestBody ReviewRequest request) {
