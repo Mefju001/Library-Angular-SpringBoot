@@ -1,5 +1,5 @@
 export interface SearchCriteria{
-  title?:string
+  Title?:string
   genre_name?: string;
   publisher_name?: string;
   authorName?: string;

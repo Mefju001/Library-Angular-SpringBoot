@@ -24,6 +24,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatSelectModule } from '@angular/material/select';
+import { UserPanelComponent } from './Page/user-panel/user-panel.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { MatSelectModule } from '@angular/material/select';
     BookDetailsComponent,
     AddLibraryComponent,
     LikedBooksComponent,
-    DashboardAdminComponent
+    DashboardAdminComponent,
+    UserPanelComponent
   ],
   imports: [
     BrowserModule,

@@ -84,7 +84,7 @@ public class RentalServiceImpl implements RentalService {
     @Transactional
     public void requestReturn(Integer BookId, Long UserId) {
         Optional<Rental> loanbook = rentalRepository.findRentalByBook_IdAndUser_Id(BookId, UserId);
-        if (loanbook.isPresent() && loanbook.get().getStatus() == RentalStatus.loaned) {
+        if (loanbook.isPresent() && (loanbook.get().getStatus() == RentalStatus.loaned || loanbook.get().getStatus() == RentalStatus.overdue)) {
             Rental rental = loanbook.get();
             rental.requestEndLoan();
             rentalRepository.save(rental);

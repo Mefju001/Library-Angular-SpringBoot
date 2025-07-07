@@ -6,8 +6,7 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import static com.app.library.Entity.RentalStatus.loaned;
-import static com.app.library.Entity.RentalStatus.pending;
+import static com.app.library.Entity.RentalStatus.*;
 
 @Data
 @Entity
@@ -59,7 +58,7 @@ public class Rental {
     }
 
     public void requestEndLoan() {
-        if (this.status != loaned) {
+        if (this.status != loaned&&this.status != overdue) {
             throw new IllegalStateException("Return can only be requested for loaned books");
         }
         this.status = RentalStatus.return_requested;

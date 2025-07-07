@@ -1,5 +1,7 @@
 package com.app.library.Service;
 
+import com.app.library.DTO.Mapper.BookMapper;
+import com.app.library.DTO.Response.BookResponse;
 import com.app.library.Entity.Book;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Entity.Rental;
@@ -20,23 +22,25 @@ public class RecommendationServiceImpl implements RecommendationService {
     private final FavoritebooksRepository favoritebooksRepository;
     private final RentalRepository rentalRepository;
     private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Autowired
-    public RecommendationServiceImpl(FavoritebooksRepository favoritebooksRepository, RentalRepository rentalRepository, BookRepository bookRepository) {
+    public RecommendationServiceImpl(FavoritebooksRepository favoritebooksRepository, RentalRepository rentalRepository, BookRepository bookRepository, BookMapper bookMapper) {
         this.favoritebooksRepository = favoritebooksRepository;
         this.rentalRepository = rentalRepository;
         this.bookRepository = bookRepository;
+        this.bookMapper = bookMapper;
     }
 
     @Override
-    public Set<Book> generateForUser(Long userId) {
+    public Set<BookResponse> generateForUser(Long userId) {
         List<Favoritebooks> favoriteBooks = favoritebooksRepository.findFavoritebooksByUser_Id(userId);
         List<Rental> rentalList = rentalRepository.findRentalsByUser_Id(userId);
         List<Book> allBooks = bookRepository.findAll();
         return filterBooks(rentalList, favoriteBooks, allBooks);
     }
 
-    private Set<Book> filterBooks(List<Rental> rents, List<Favoritebooks> favs, List<Book> allBooks) {
+    private Set<BookResponse> filterBooks(List<Rental> rents, List<Favoritebooks> favs, List<Book> allBooks) {
         Set<Integer> rentedBookIds = rents.stream()
                 .map(r -> r.getBook().getId())
                 .collect(Collectors.toSet());
@@ -52,9 +56,14 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
                 .limit(10)
                 .map(Map.Entry::getKey)
+                .map(this::mapBookToBookResponse)
                 .collect(Collectors.toSet());
     }
-
+    private BookResponse mapBookToBookResponse(Book book) {
+        // Zaimplementuj tutaj swoją logikę mapowania
+        // Przykład:
+        return bookMapper.toDto(book);
+    }
     private double computeScore(Book book, List<Favoritebooks> favs, List<Rental> rents) {
         double score = 0.0;
 

@@ -21,15 +21,15 @@
 
         <ng-container *ngIf="type === 'recommendation'">
           <div *ngFor="let book of RecommedationBooks" class="book">
-            <h2>{{book.book.title }}</h2>
-            <p><strong>Autor:</strong> {{ book.book.authorName }} {{ book.book.authorSurname }}</p>
-            <p><strong>Gatunek:</strong> {{ book.book.genreName }}</p>
-            <p><strong>Wydawca:</strong> {{ book.book.publisherName }}</p>
-            <p><strong>Rok wydania:</strong> {{ book.book.publicationDate }}</p>
-            <p><strong>ISBN:</strong> {{ book.book.isbn }}</p>
-            <p><strong>Język:</strong> {{ book.book.language }}</p>
-            <p><strong>Cena:</strong> {{ book.book.price }} zł</p>
-            <p><strong>Liczba stron:</strong> {{ book.book.pages }}</p>
+            <h2>{{book.title }}</h2>
+            <p><strong>Autor:</strong> {{ book.authorName }} {{ book.authorSurname }}</p>
+            <p><strong>Gatunek:</strong> {{ book.genreName }}</p>
+            <p><strong>Wydawca:</strong> {{ book.publisherName }}</p>
+            <p><strong>Rok wydania:</strong> {{ book.publicationDate }}</p>
+            <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+            <p><strong>Język:</strong> {{ book.language }}</p>
+            <p><strong>Cena:</strong> {{ book.price }} zł</p>
+            <p><strong>Liczba stron:</strong> {{ book.pages }}</p>
             <div *ngIf="RecommedationBooks.length === 0">
                 <p>Brak książek w bazie danych.</p>
             </div>
@@ -38,15 +38,15 @@
       
         <ng-container *ngIf="type === 'loaned'">
           <div *ngFor="let rental of Loanbooks" class="book">
-            <h2>{{ rental.bookTitle }}</h2>
-            <p><strong>Autor:</strong> {{ rental.bookAuthorName }} {{ rental.bookAuthorSurname }}</p>
-            <p><strong>Gatunek:</strong> {{ rental.bookGenre }}</p>
-            <p><strong>Wydawca:</strong> {{ rental.bookPublisher }}</p>
-            <p><strong>Rok wydania:</strong> {{ rental.bookPublicationDate }}</p>
-            <p><strong>ISBN:</strong> {{ rental.bookIsbn }}</p>
-            <p><strong>Język:</strong> {{ rental.bookLanguage }}</p>
-            <p><strong>Cena:</strong> {{ rental.bookPrice }} zł</p>
-            <p><strong>Liczba stron:</strong> {{ rental.bookPages }}</p>
+            <h2>{{ rental.bookResponse.title }}</h2>
+            <p><strong>Autor:</strong> {{ rental.bookResponse.authorName }} {{ rental.bookResponse.authorSurname }}</p>
+            <p><strong>Gatunek:</strong> {{ rental.bookResponse.genreName }}</p>
+            <p><strong>Wydawca:</strong> {{ rental.bookResponse.publisherName }}</p>
+            <p><strong>Rok wydania:</strong> {{ rental.bookResponse.publicationDate }}</p>
+            <p><strong>ISBN:</strong> {{ rental.bookResponse.isbn }}</p>
+            <p><strong>Język:</strong> {{ rental.bookResponse.language }}</p>
+            <p><strong>Cena:</strong> {{ rental.bookResponse.price }} zł</p>
+            <p><strong>Liczba stron:</strong> {{ rental.bookResponse.pages }}</p>
             <p><strong>Status:</strong> {{ rental.status }}</p>
             <p><strong>Data wypożyczenia:</strong> {{ rental.rentalStartDate}}</p>
             <p><strong>Data zwrotu:</strong> {{ rental.rentalEndDate}}</p>
@@ -54,7 +54,7 @@
             <div *ngIf="Loanbooks.length === 0">
                 <p>Brak książek w bazie danych.</p>
             </div>
-            <button (click)="returnLoanedBooks(rental.bookId)" *ngIf="rental.status === 'loaned'">Zwróć</button>
+            <button (click)="returnLoanedBooks(rental.bookResponse.id)" *ngIf="rental.status === 'loaned'|| rental.status ==='overdue'">Zwróć</button>
         </div>
         </ng-container>
     </div>

@@ -1,22 +1,11 @@
+import { Book } from "./book.model";
+import { User } from "./User.model";
+
 export interface BorrowedBook {
     rentalId: number;
-    userId: number;
-    username: string;
-    userFullName: string;
-    userEmail: string;
     
-    bookId: number;
-    bookTitle: string;
-    bookAuthorName: string;
-    bookAuthorSurname: string;
-    bookGenre: string;
-    bookPublisher: string;
-    bookPublicationDate: number;
-    bookIsbn: string;
-    bookLanguage: string;
-    bookPages: number;
-    bookPrice: number;
-    bookOldPrice: number;
+    userResponse:User;
+    bookResponse:Book;
     
     rentalStartDate: string;
     rentalEndDate: string;

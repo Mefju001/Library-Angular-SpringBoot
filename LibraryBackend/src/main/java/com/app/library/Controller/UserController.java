@@ -2,6 +2,7 @@ package com.app.library.Controller;
 
 import com.app.library.DTO.Request.UserDetailsRequest;
 import com.app.library.DTO.Request.UserPasswordRequest;
+import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.FavoriteBooksResponse;
 import com.app.library.DTO.Response.UserResponse;
 import com.app.library.Entity.Book;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
 
-//@PreAuthorize("hasRole('ROLE_USER')")
+@PreAuthorize("hasRole('ROLE_USER')")
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -104,8 +105,8 @@ public class UserController {
 
     @GetMapping("/recommendation")
     @Operation(summary = "", description = "")
-    public ResponseEntity<Set<Book>> recomend(@RequestParam Long userId) {
-        Set<Book> recom = recommendationService.generateForUser(userId);
+    public ResponseEntity<Set<BookResponse>> recomend(@RequestParam Long userId) {
+        Set<BookResponse> recom = recommendationService.generateForUser(userId);
         return ResponseEntity.ok(recom);
     }
 }

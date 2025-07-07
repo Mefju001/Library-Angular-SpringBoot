@@ -4,6 +4,7 @@ import { Book } from '../../Models/book.model';
 import { UserService } from 'src/app/Service/UserService';
 import { LoanService } from 'src/app/Service/LoanService';
 import { SearchCriteria } from 'src/app/Models/SearchCriteria.DTO';
+import { LoanRequest } from 'src/app/Models/Request/LoanRequest';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class MainMenuComponent implements OnInit {
   genres: any[] = [];
   selectedItem: string = '';
   criteria: SearchCriteria = {
+    Title:undefined,
     genre_name: undefined,
     publisher_name: undefined,
     authorName: undefined,
@@ -32,6 +34,10 @@ export class MainMenuComponent implements OnInit {
     startYear: undefined,
     endYear: undefined
   };
+  loanRequest: LoanRequest = {
+      bookId: 0,
+      userId: 0,
+    };
   constructor(private bookService: BookService, private userService: UserService, private loanService: LoanService) { }
 
   ngOnInit(): void {
@@ -60,6 +66,26 @@ export class MainMenuComponent implements OnInit {
       this.loadbooks(this.currentPage,this.currentMode);
     }
   }
+  submitFilters(){
+    this.bookService.getBooksByCriteria(this.currentPage,this.pageSize,this.criteria).subscribe((response)=>{
+      this.books = response.content;
+      this.totalPages = response.totalPages;
+    });
+  }
+  resetFilters(){
+    this.criteria = {
+    Title:undefined,
+    genre_name: undefined,
+    publisher_name: undefined,
+    authorName: undefined,
+    authorSurname: undefined,
+    minPrice: undefined,
+    maxPrice: undefined,
+    startYear: undefined,
+    endYear: undefined
+    }
+    this.getBooks(this.currentPage);
+  }
   prevPage() {
     if (this.currentPage > 0) {
       this.currentPage--;
@@ -75,7 +101,7 @@ export class MainMenuComponent implements OnInit {
     });
   }
   sortBooks(page: number, sortBy: string, direction?: string) {
-     this.currentMode = 'sort'
+    this.currentMode = 'sort'
     this.currentSortBy = sortBy;
     this.currentDirection = direction;
     this.bookService.sortBooks(this.currentPage, this.pageSize, sortBy, direction).subscribe((response) => {
@@ -96,9 +122,10 @@ export class MainMenuComponent implements OnInit {
       this.getBooks(page)
     }
   }
-  loanbook(BookId: number): void {
-    const userId: number = this.getId()
-    this.loanService.loanBookByUser(userId, BookId).subscribe({
+  loanbook(id: number): void {
+    this.loanRequest.bookId=id;
+    this.loanRequest.userId=this.getId();
+    this.loanService.loanBookByUser(this.loanRequest).subscribe({
       next: () => {
         alert('Książka została wypożyczona!');
       },
