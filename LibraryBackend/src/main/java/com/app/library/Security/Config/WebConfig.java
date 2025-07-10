@@ -30,7 +30,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     UserDetailsServiceImpl userDetailsService;
 
-     AuthEntryPointJwt unauthorizedHandler;
+    AuthEntryPointJwt unauthorizedHandler;
+
     @Autowired
     public WebConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
         this.userDetailsService = userDetailsService;
@@ -61,6 +62,7 @@ public class WebConfig implements WebMvcConfigurer {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
@@ -72,6 +74,7 @@ public class WebConfig implements WebMvcConfigurer {
                                 .permitAll()
                                 .requestMatchers("/Img/**").permitAll()
                                 .requestMatchers("/api/adminPanel/**").permitAll()
+                                .requestMatchers("/api/reviews/**").permitAll()
                                 .requestMatchers("/api/rentals/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/books/**").permitAll()    //hasAnyRole("ADMIN", "USER")
@@ -82,7 +85,7 @@ public class WebConfig implements WebMvcConfigurer {
         http.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedOrigins(List.of("http://localhost:4200")); // Pozwól na frontend
-            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS")); // Obsługiwane metody
+            config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // Obsługiwane metody
             config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
             config.setAllowCredentials(true);
             return config;

@@ -2,6 +2,7 @@ package com.app.library.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+
 @Entity
 @Table(name = "roles")
 public class Role {

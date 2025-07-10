@@ -1,9 +1,7 @@
 package com.app.library.Service;
+
 import com.app.library.DTO.Response.LoanBookResponse;
 import com.app.library.Entity.LoanDeadlineInfo;
-import com.app.library.Entity.Rental;
-import com.app.library.Entity.RentalStatus;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -26,13 +24,16 @@ public interface RentalService {
 
     Boolean isOverdue(Integer rentalId);
 
-    Map<String,Object> checkOverdueRentals();
+    Map<String, Object> checkOverdueRentals();
+
     void requestExtendLoan(Integer rentalId);
 
     void approveExtendLoan(Integer rentalId);
 
     void cancelLoanBook(Integer rentalId);
+
     Long getActiveBorrowsCount();
+
     Long getOverdueCount();
 
 }

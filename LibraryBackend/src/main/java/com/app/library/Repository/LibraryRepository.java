@@ -7,7 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface LibraryRepository extends JpaRepository<Library,Integer> {
+public interface LibraryRepository extends JpaRepository<Library, Integer> {
     Library findLibraryByLocationContainingIgnoreCaseAndAddressContainsIgnoreCase(String location, String address);
-    List<Library>findLibraryByLocation(String location);
+
+    List<Library> findLibraryByLocation(String location);
 }

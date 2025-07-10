@@ -3,23 +3,29 @@
         <a href="#">Książkowy świat</a>
     </div>
     <nav class="navbar">
-        <a  routerLink="/MainMenu">Strona Główna</a>
-        <a *ngIf="isAdmin()" routerLink="/addbook">Dodaj ksiazke</a>
-        <a routerLink="/library">Biblioteki</a>
-        <a href="#">Promocje</a>
-        <a [routerLink]="['/likedBooks', 'recommendation']">Rekomendacja</a>
-        <a href="#">Kontakt</a>
-        <a [routerLink]="['/likedBooks', 'liked']">Polubione</a>
-        <a [routerLink]="['/likedBooks', 'loaned']">Wypożyczone</a>
-        <div class="dropdown">
-            <button class="dropbtn">Zalogowany jako: <strong>{{ username }}</strong></button>
-            <div class="dropdown-content">
-                <button *ngIf="isAdmin()" routerLink="/AdminPanel" class="dropdown-item">AdminPanel</button>
+<a routerLink="/MainMenu">Strona Główna</a>
+<a routerLink="/library">Biblioteki</a>
+<a [routerLink]="['/likedBooks', 'recommendation']">Rekomendacja</a>
+<a href="#">Kontakt</a>
+<a [routerLink]="['/likedBooks', 'liked']">Polubione</a>
+<a [routerLink]="['/likedBooks', 'loaned']">Wypożyczone</a>
+
+<div class="dropdown">
+    <button class="dropbtn">Zalogowany jako: <strong>{{ username }}</strong></button>
+    <div class="dropdown-content">
+        <button *ngIf="isAdmin()" routerLink="/AdminPanel" class="dropdown-item">AdminPanel</button>
+        <button routerLink="" class="dropdown-item">Moje recenzje</button>
+
+        <div class="dropdown nested-dropdown"> 
+            <button class="dropdown-item">Moje dane</button>
+            <div class="dropdown-content nested-dropdown-content">
                 <button routerLink="/formdetails" class="dropdown-item">Zmiana danych konta</button>
                 <button routerLink="/formpassword" class="dropdown-item">Zmiana hasła konta</button>
-                <button class="dropdown-item"(click)="deleteUser(id)">Usuń konto</button>
-                <button (click)="logout()" class="dropdown-item">Wyloguj się</button>
+                <button class="dropdown-item" (click)="deleteUser(id)">Usuń konto</button>
             </div>
         </div>
+        <button (click)="logout()" class="dropdown-item">Wyloguj się</button>
+    </div>
+</div>
     </nav>
 </header>

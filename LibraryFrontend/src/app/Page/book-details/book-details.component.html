@@ -1,6 +1,6 @@
-<div *ngIf="book" class="book-container">
+<section class="book-detail-page-wrapper">
+  <div *ngIf="book" class="book-container">
     <div class="book-content">
-      <!-- Lewa kolumna: informacje -->
       <div class="book-details">
         <h2>{{ book.title }}</h2>
         <p><strong>Autor:</strong> {{ book.authorName }} {{ book.authorSurname }}</p>
@@ -12,29 +12,14 @@
         <p><strong>Cena:</strong> {{ book.price }} zł</p>
         <p><strong>Liczba stron:</strong> {{ book.pages }}</p>
       </div>
-  
-      <!-- Prawa kolumna: obraz -->
-      <div *ngIf="bookImg"class="book-image">
+      <div *ngIf="bookImg" class="book-image">
         <img [src]="bookImg.bookImg" alt="Okładka książki" />
       </div>
     </div>
-  
-    <!-- Przyciski na dole -->
+
     <div class="action-buttons">
-      <form>
-        <button *ngIf="isAdmin()" type="submit" [routerLink]="['/addbook', book.id]" class="button">Edytuj</button>
-      </form>
-  
       <form (submit)="likedBook(book.id, userId)">
         <button type="submit" class="button">Polub</button>
-      </form>
-  
-      <form *ngIf="isAdmin()" (submit)="deleteBook(book.id)">
-        <button type="submit" class="delete-button">Usuń książkę</button>
-      </form>
-      <form >
-        <button *ngIf="isAdmin()" type="button" class="custom-button"(click)="fileInput.click()" >Dodaj okładkę</button>
-        <input #fileInput type="file" style="display: none;" >        
       </form>
       <form>
         <div class="dropdown">
@@ -42,7 +27,7 @@
           <div class="dropdown-content">
             <div *ngIf="libraries.length > 0">
               <option *ngFor="let library of libraries" [ngValue]="library">
-                {{ library.name }} - {{ library.address }}
+                Lokalizacja: {{ library.library.location }} Ilość: {{library.Stock}}
               </option>
             </div>
             <div *ngIf="libraries.length === 0">
@@ -52,7 +37,93 @@
         </div>
       </form>
     </div>
-  
-    <button [routerLink]="['/MainMenu']" class="back-button">Powrót</button>
+    <div class="additional-sections-container">
+      <div class="reviews-section">
+        <h3>Recenzje i oceny</h3>
+        <div class="average-rating-section">
+          <h4>Średnia Ocena Książki </h4>
+          <div *ngIf="AVG; else noAverageData">
+            <p class="average-value">{{ AVG.AVG | number:'1.1-1' }}</p>
+          </div>
+          <ng-template #noAverageData>
+            <p>Ładowanie średniej oceny...</p>
+          </ng-template>
+        </div>
+        <div *ngIf="reviews && reviews.length > 0; else noReviews">
+          <div class="reviews-grid">
+            <div *ngFor="let review of reviews" class="review-item">
+              <div class="review-content-wrapper">
+                <p>Użytkownik: {{review.user.username}}</p>
+                <p class="review-date">Data utworzenia: {{review.createdAt | date:'dd.MM.yyyy'}}</p>
+                <p class="review-rating">Ocena: {{review.rating}}</p>
+                <p class="review-rating">Treść: {{review.content}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #noReviews>
+          <p>Brak recenzji dla tej książki. Bądź pierwszy!</p>
+        </ng-template>
+    <button mat-raised-button
+            color="primary"
+            (click)="showCommentForm = true"
+            *ngIf="!showCommentForm">
+      Dodaj recenzję i ocenę
+    </button>
+        <div *ngIf="showCommentForm" class="comment-form-container">
+          <mat-card>
+            <mat-card-title>Dodaj swoją recenzję i ocenę ksiazki </mat-card-title>
+            <mat-card-content>
+                    <mat-form-field appearance="fill" class="full-width-field">
+        <mat-label>Ocena</mat-label>
+        <mat-select [(ngModel)]="newReview.rating" name="rating" required>
+          <mat-option *ngFor="let num of [1, 2, 3, 4, 5]" [value]="num">
+            {{ num }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+              <mat-form-field appearance="fill" class="full-width-field" floatLabel="always">
+                <mat-label>Komentarz</mat-label>
+                <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="3" cdkAutosizeMaxRows="10"
+               [(ngModel)]="newReview.content" name="content" required></textarea>
+              </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions>
+              <button mat-button color="primary" (click)="submitReview()">Opublikuj</button>
+              <button mat-button (click)="showCommentForm = false">Anuluj</button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+    <div class="promotions-similar-books">
+      <div class="promotions-section">
+        <h3>Promocje</h3>
+        <div>*ngIf="promotions && promotions.length > 0; else noPromotions"
+          <div>*ngFor="let promo of promotions" class="promo-item"
+            <p><strong></strong></p>
+            <p>Rabat:%</p>
+            <p class="promo-validity">Ważna do:</p>
+          </div>
+        </div>
+        <ng-template #noPromotions>
+          <p class="no-content-message">Brak aktualnych promocji.</p>
+        </ng-template>
+      </div>
+      <div class="similar-books-section">
+        <h3>Podobne książki</h3>
+        <div>*ngIf="similarBooks && similarBooks.length > 0; else noSimilarBooks"
+          <div>*ngFor="let similarBook of similarBooks" class="similar-book-item" [routerLink]="['/book',
+            similarBook.id]"
+            <h4>title </h4>
+            <p>Autor:</p>
+            <p>Cena:</p>
+          </div>
+        </div>
+        <ng-template #noSimilarBooks>
+          <p class="no-content-message">Brak podobnych książek.</p>
+        </ng-template>
+      </div>
+    </div>
   </div>
-  
+</section>

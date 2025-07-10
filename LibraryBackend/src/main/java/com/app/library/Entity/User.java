@@ -1,8 +1,10 @@
 package com.app.library.Entity;
+
 import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
+
 @Entity
 @Table(name = "user")
 public class User {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MyServiceService } from 'src/app/Service/BookService';
+import { BookService } from 'src/app/Service/BookService';
 import { Book } from 'src/app/Models/book.model';
 @Component({
   selector: 'app-add-book',
@@ -25,14 +25,14 @@ export class AddBookComponent implements OnInit {
 
   constructor(    
     private route: ActivatedRoute,
-    private myService: MyServiceService,
+    private bookService: BookService,
     private router: Router) {}
     ngOnInit(): void {
       const id = this.route.snapshot.paramMap.get('id'); // Pobranie ID z URL
       console.log(id);
       if (id) {
         this.isEditing = true;
-        this.myService.getBookById(+id).subscribe(
+        this.bookService.getBookById(+id).subscribe(
           (data) => {
             this.book = data;
           },
@@ -46,7 +46,7 @@ export class AddBookComponent implements OnInit {
       console.log("Dane książki przed zapisem:", this.book);
     
       if (this.isEditing) {
-        this.myService.updateBook(this.book.id, this.book).subscribe(
+       /* this.myService.updateBook(this.book.id, this.book).subscribe(
           (data) => {
             console.log('Książka zaktualizowana:', data);
             alert('Książka została zaktualizowana!');
@@ -72,4 +72,4 @@ export class AddBookComponent implements OnInit {
       }
     }
        
-    }
+    }*/}}}

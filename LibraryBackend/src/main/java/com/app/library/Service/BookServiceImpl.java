@@ -3,6 +3,7 @@ package com.app.library.Service;
 import com.app.library.DTO.Mapper.BookMapper;
 import com.app.library.DTO.Mapper.GenreMapper;
 import com.app.library.DTO.Request.BookRequest;
+import com.app.library.DTO.Request.BookSearchCriteria;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
 import com.app.library.Entity.*;
@@ -48,6 +49,7 @@ public class BookServiceImpl implements BookService {
         this.bookMapper = bookMapper;
         this.genreMapper = genreMapper;
     }
+
     @Override
     public Page<BookResponse> findall(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -66,112 +68,75 @@ public class BookServiceImpl implements BookService {
         Optional<Book> books = bookRepository.findById(id);
         return books.map(bookMapper::toDto).orElseThrow();
     }
+
     @Override
-    public BookImg findByBookId(Integer id)
-    {
+    public BookImg findByBookId(Integer id) {
         BookImg bookImg = bookImgRepository.findBookImgByBook_Id(id);
         return bookImg;
     }
+
     @Override
     public List<GenreResponse> findallgenres() {
-            List<Genre> genres = genreRepository.findAll();
-            return genres.stream()
-                         .map(genreMapper::toDto)
-                         .toList();
-    }
-    @Override
-    public Page<BookResponse> findbooksbygenre(String name,int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Book> books = bookRepository.findBooksByGenreName(name,pageable);
-        return books.map(bookMapper::toDto);
-    }
-    @Override
-    public Page<BookResponse> findbooksbypublisher(String name,int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Book> books = bookRepository.findBooksByPublisherName(name,pageable);
-        return books.map(bookMapper::toDto);
-    }
-    @Override
-    public Page<BookResponse> findbooksbytitle(String title,int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Book> books = bookRepository.findBooksByTitleContaining(title,pageable);
-        return books.map(bookMapper::toDto);
-    }
-    @Override
-    public Page<BookResponse> findbooksbyauthor(String name, String surname,int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Book> books = bookRepository.findBooksByAuthor_NameOrAuthor_Surname(name, surname,pageable);
-        return books.map(bookMapper::toDto);
-    }
-    @Override
-    public Page<BookResponse> findbooksbyprice(Float min, Float max,int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Book> books = bookRepository.findBooksByPriceIsBetween(min, max,pageable);
-        return books.map(bookMapper::toDto);
-    }
-    @Override
-    public Page<BookResponse> findbooksbyyear(LocalDate year1, LocalDate year2,int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Book> books = bookRepository.findBooksByPublicationDateBetween(year1, year2,pageable);
-        return books.map(bookMapper::toDto);
-    }
-    @Override
-    public Page<BookResponse> findnewbooks(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        LocalDate date = LocalDate.now();
-        Page<Book> books = bookRepository.findBooksByPublicationDateYear(date.getYear(),pageable);
-        return books.map(bookMapper::toDto);
+        List<Genre> genres = genreRepository.findAll();
+        return genres.stream()
+                .map(genreMapper::toDto)
+                .toList();
     }
 
     @Override
     public Long getNewBooksCount() {
         return bookRepository.countBooksByPublicationDateAfter(LocalDate.now().minusMonths(1));
     }
-    @Override
-    public Page<BookResponse> findforeshadowedbooks(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        LocalDate date = LocalDate.now();
-        Page<Book> books = bookRepository.findBooksByPublicationDateIsGreaterThan(date,pageable);
-        return books.map(bookMapper::toDto);
+
+    private boolean checkDirection(String direction){
+        return !direction.equalsIgnoreCase("asc") && !direction.equalsIgnoreCase("desc");
     }
+
     @Override
-    public Page<BookResponse> sortbooktitle(int page, int size,String type) {
-        if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
-            throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
+    public Page<BookResponse>sortBooks(int page, int size, String sortBy, String direction) {
+        if(sortBy.equalsIgnoreCase("title")) {
+            if (checkDirection(direction)) {
+                throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + direction);
+            }
+            Sort.Direction directionSort = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Pageable pageable = PageRequest.of(page, size, Sort.by(directionSort, "title"));
+            Page<Book> books = bookRepository.findAll(pageable);
+            return books.map(bookMapper::toDto);
         }
-
-        Sort.Direction direction = type.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "title"));
-
-        Page<Book> books = bookRepository.findAll(pageable);
-        return books.map(bookMapper::toDto);
-    }
-    @Override
-    public Page<BookResponse> sortbookprice(int page, int size,String type){
-        if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
-            throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
+        else if(sortBy.equalsIgnoreCase("price")) {
+            if (checkDirection(direction)) {
+                throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + direction);
+            }
+            Sort.Direction directionSort = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Pageable pageable = PageRequest.of(page, size, Sort.by(directionSort, "price"));
+            Page<Book> books = bookRepository.findAll(pageable);
+            return books.map(bookMapper::toDto);
         }
+        else if(sortBy.equalsIgnoreCase("year")) {
+            if (checkDirection(direction)) {
+                throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + direction);
+            }
 
-        Sort.Direction direction = type.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "price"));
-
-        Page<Book> books = bookRepository.findAll(pageable);
-        return books.map(bookMapper::toDto);
-    }
-    @Override
-    public Page<BookResponse> sortbookyear(int page, int size,String type){
-        if (!type.equalsIgnoreCase("asc") && !type.equalsIgnoreCase("desc")) {
-            throw new IllegalArgumentException("Nieprawidłowy typ sortowania: " + type);
+            Sort.Direction directionSort = direction.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Pageable pageable = PageRequest.of(page, size, Sort.by(directionSort, "publicationDate"));
+            Page<Book> books = bookRepository.findAll(pageable);
+            return books.map(bookMapper::toDto);
         }
-
-        Sort.Direction direction = type.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "publicationDate"));
-
-        Page<Book> books = bookRepository.findAll(pageable);
-        return books.map(bookMapper::toDto);
+        else if(sortBy.equalsIgnoreCase("NewBooks")) {
+            Pageable pageable = PageRequest.of(page, size);
+            LocalDate date = LocalDate.now();
+            Page<Book> books = bookRepository.findBooksByPublicationDateYear(date.getYear(), pageable);
+            return books.map(bookMapper::toDto);
+        }
+        if(sortBy.equalsIgnoreCase("Foreshadowed")) {
+            Pageable pageable = PageRequest.of(page, size);
+            LocalDate date = LocalDate.now();
+            Page<Book> books = bookRepository.findBooksByPublicationDateIsGreaterThan(date, pageable);
+            return books.map(bookMapper::toDto);
+        }
+        return Page.empty();
     }
-
-    private void setbook(Book book, BookRequest bookRequest){
+    private void setbook(Book book, BookRequest bookRequest) {
         book.setTitle(bookRequest.title());
         book.setpublicationDate(bookRequest.publicationDate());
         book.setIsbn(bookRequest.isbn());
@@ -184,10 +149,11 @@ public class BookServiceImpl implements BookService {
         book.setPublisher(getOrCreatePublisher(bookRequest.publisherName()));
         bookRepository.save(book);
     }
+
     private Genre getOrCreateGenre(String name) {
         return genreRepository.findGenreByName(name)
                 .orElseGet(() -> genreRepository.save(new Genre(name)));
-        }
+    }
 
     private Author getOrCreateAuthor(String name, String surname) {
         return authorRepository.findAuthorByNameAndSurname(name, surname)
@@ -198,41 +164,83 @@ public class BookServiceImpl implements BookService {
         return publisherRepository.findPublisherByName(name)
                 .orElseGet(() -> publisherRepository.save(new Publisher(name)));
     }
+
     @Override
     @Transactional
     public BookRequest addbook(BookRequest bookRequest) {
-       if (bookRepository.findBookByIsbnIs(bookRequest.isbn()) != null) {
-           System.out.println("Książka z tym ISBN już istnieje");
-           logger.info("Książka z tym ISBN już istnieje");
-       }
+        if (bookRepository.findBookByIsbnIs(bookRequest.isbn()) != null) {
+            System.out.println("Książka z tym ISBN już istnieje");
+            logger.info("Książka z tym ISBN już istnieje");
+        }
         Book newBook = new Book();
         setbook(newBook, bookRequest);
         String user = SecurityContextHolder.getContext().getAuthentication().getName();
-        auditService.log("Post","Book",user,"Dodawanie ksiazki do bazy danych",newBook);
+        auditService.log("Post", "Book", user, "Dodawanie ksiazki do bazy danych", newBook);
         return bookRequest;
     }
+
     @Override
     @Transactional
-    public BookRequest updateBook(Integer id,BookRequest bookRequest){
-        Book Book = bookRepository.findById(id).orElseThrow(()->new RuntimeException("Książka nie znaleziona"));
+    public BookRequest updateBook(Integer id, BookRequest bookRequest) {
+        Book Book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Książka nie znaleziona"));
         Book Book2 = new Book();
-        BeanUtils.copyProperties(Book,Book2);
+        BeanUtils.copyProperties(Book, Book2);
         setbook(Book, bookRequest);
         String user = SecurityContextHolder.getContext().getAuthentication().getName();
-        auditService.logUpdate("Update","Book",user,Book2,Book);
+        auditService.logUpdate("Update", "Book", user, Book2, Book);
         return bookRequest;
     }
+
     @Override
     @Transactional
     public void deletebook(Integer id) {
-        if(!bookRepository.existsById(id))
-        {
-            throw new EntityNotFoundException("Book not found with id like"+id);
+        if (!bookRepository.existsById(id)) {
+            throw new EntityNotFoundException("Book not found with id like" + id);
         }
         Book deletedBook = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Book not found with id " + id));
         bookRepository.deleteById(id);
         String user = SecurityContextHolder.getContext().getAuthentication().getName();
-        auditService.log("Delete","Book",user,"Usuwanie ksiazki z bazy danych",deletedBook);
+        auditService.log("Delete", "Book", user, "Usuwanie ksiazki z bazy danych", deletedBook);
+    }
+
+    @Override
+    public Page<BookResponse> searchBooks(BookSearchCriteria criteria) {
+        if(criteria.Title()!=null) {
+            Pageable pageable = PageRequest.of(criteria.page(), criteria.size());
+            Page<Book> books = bookRepository.findBooksByTitleContaining(criteria.Title(), pageable);
+            return books.map(bookMapper::toDto);
+        }
+        else if(criteria.authorName()!=null&&criteria.authorSurname()!=null){
+            Pageable pageable = PageRequest.of(criteria.page(), criteria.size());
+            Page<Book> books = bookRepository.findBooksByAuthor_NameAndAuthor_Surname(criteria.authorName(), criteria.authorSurname(), pageable);
+            return books.map(bookMapper::toDto);
+        }
+        else if(criteria.authorName()!=null||criteria.authorSurname()!=null){
+            Pageable pageable = PageRequest.of(criteria.page(), criteria.size());
+            Page<Book> books = bookRepository.findBooksByAuthor_NameOrAuthor_Surname(criteria.authorName(), criteria.authorSurname(), pageable);
+            return books.map(bookMapper::toDto);
+        }
+        else if(criteria.genre_name()!=null){
+            Pageable pageable = PageRequest.of(criteria.page(), criteria.size());
+            Page<Book>books = bookRepository.findBooksByGenreName(criteria.genre_name(), pageable);
+            return books.map(bookMapper::toDto);
+        }
+        else if(criteria.publisher_name()!=null){
+            Pageable pageable = PageRequest.of(criteria.page(), criteria.size());
+            Page<Book>books = bookRepository.findBooksByPublisherName(criteria.publisher_name(), pageable);
+            return books.map(bookMapper::toDto);
+        }
+        else if(criteria.minPrice()!=null&&criteria.maxPrice()!=null&&criteria.minPrice()<criteria.maxPrice()) {
+            Pageable pageable = PageRequest.of(criteria.page(), criteria.size());
+            Page<Book>books = bookRepository.findBooksByPriceIsBetween(criteria.minPrice(), criteria.maxPrice(), pageable);
+            return books.map(bookMapper::toDto);
+        }
+        else if(criteria.startYear()!=null&&criteria.endYear()!=null&&criteria.startYear().isBefore(criteria.endYear())) {
+            Pageable pageable = PageRequest.of(criteria.page(), criteria.size());
+            Page<Book>books = bookRepository.findBooksByPublicationDateBetween(criteria.startYear(), criteria.endYear(), pageable);
+            return books.map(bookMapper::toDto);
+        }
+        return Page.empty();
     }
 }
 

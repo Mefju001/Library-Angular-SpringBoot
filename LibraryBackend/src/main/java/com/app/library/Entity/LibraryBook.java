@@ -1,6 +1,7 @@
 package com.app.library.Entity;
 
 import jakarta.persistence.*;
+
 @Entity
 @Table(name = "booklibrary")
 public class LibraryBook {
@@ -14,6 +15,15 @@ public class LibraryBook {
     @ManyToOne
     @JoinColumn(name = "library_id", nullable = false)
     private Library library;
+    int Stock;
+
+    public int getStock() {
+        return Stock;
+    }
+
+    public void setStock(int stock) {
+        Stock = stock;
+    }
 
     public Integer getId() {
         return id;

@@ -6,7 +6,7 @@ import { DashboardStats } from 'src/app/Models/DashboardStats.model';
 import { User } from 'src/app/Models/User.model';
 import { UserAdmin } from 'src/app/Models/UserAdmin.model';
 import { AdminService } from 'src/app/Service/AdminService';
-import { MyServiceService } from 'src/app/Service/BookService';
+import { BookService } from 'src/app/Service/BookService';
 import { LoanService } from 'src/app/Service/LoanService';
 import { UserService } from 'src/app/Service/UserService';
 
@@ -16,7 +16,7 @@ import { UserService } from 'src/app/Service/UserService';
   styleUrls: ['./dashboard-admin.component.css']
 })
 export class DashboardAdminComponent {
-  constructor(private userService:UserService, private router: Router,private myService: MyServiceService,private adminService: AdminService,private loanService: LoanService) { }
+  constructor(private userService:UserService, private router: Router,private myService: BookService,private adminService: AdminService,private loanService: LoanService) { }
   view:string ='dashboard';
   viewTitles:{[key:string]:string} = {
       dashboard: 'Dashboard',
@@ -68,7 +68,7 @@ stats: DashboardStats = {
   }
   changeView(viewName: string):void{
     this.view = viewName;
-    if(viewName ==="books")this.getAllBooks(0);
+    if(viewName ==="books")null;//this.getAllBooks(0);
     if(viewName ==="users")this.loadUser();
   }
   get currentTitle(): string {
@@ -99,23 +99,23 @@ goToBook(id: number) {
   nextPage() {
     if (this.currentPage < this.totalPages - 1) {
       this.currentPage++;
-      this.getAllBooks(this.currentPage);
+      //this.getAllBooks(this.currentPage);
     }
   }
 
   prevPage() {
     if (this.currentPage > 0) {
       this.currentPage--;
-      this.getAllBooks(this.currentPage);
+      //this.getAllBooks(this.currentPage);
     }
   }
-  getAllBooks(page: number): void {
+  /*getAllBooks(page: number): void {
     this.myService.getAllBooks(this.currentPage, this.pageSize).subscribe((response) => {
       this.books = response.content;
       this.totalPages = response.totalPages;
       
     },error => console.error('Błąd podczas pobierania książek:', error));
-  }
+  }*/
   checkOverdues(): void {
     this.loanService.checkOverdueStatus().subscribe(() => {
       alert('Zaległości zostały sprawdzone!');

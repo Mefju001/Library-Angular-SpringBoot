@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @Entity
@@ -37,6 +36,7 @@ public class Book {
     private float price;
     @Column(name = "oldprice")
     private Float oldprice;
+
     public Book() {
     }
 

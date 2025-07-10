@@ -1,7 +1,6 @@
 package com.app.library.DTO.Response;
 
 import lombok.Builder;
-import lombok.Getter;
 
 import java.time.LocalDate;
 

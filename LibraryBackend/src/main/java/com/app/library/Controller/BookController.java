@@ -1,5 +1,6 @@
 package com.app.library.Controller;
 
+import com.app.library.DTO.Request.BookSearchCriteria;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
 import com.app.library.Entity.BookImg;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -21,248 +21,93 @@ import java.util.List;
 @Tag(name = "Book Controller", description = "Zarządzanie książkami w aplikacji")
 public class BookController {
     private final BookService bookService;
+
     @Autowired
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
+
     @GetMapping("/")
     @Operation(summary = "Zwraca ksiazki z bazy danych", description = "Zwraca dane książek z bazy danych")
-    public ResponseEntity<Page<BookResponse>>Pageofbooks(
+    public ResponseEntity<Page<BookResponse>> Pageofbooks(
             @Parameter(description = "Numer strony paginacji")
             @RequestParam(defaultValue = "0") int page,
 
             @Parameter(description = "Liczba elementów na stronie")
-            @RequestParam(defaultValue = "10") int size)
-    {
+            @RequestParam(defaultValue = "10") int size) {
 
-        Page<BookResponse>books= bookService.findall(page,size);
-        if(books.isEmpty())
-        {
+        Page<BookResponse> books = bookService.findall(page, size);
+        if (books.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(books);
     }
+
     @GetMapping("/books")
     @Operation(summary = "Zwraca ksiazki z bazy danych", description = "Zwraca dane książek z bazy danych")
-    public ResponseEntity<List<BookResponse>>listofbooks()
-    {
+    public ResponseEntity<List<BookResponse>> listofbooks() {
 
-        List<BookResponse>books= bookService.findAllList();
-        if(books.isEmpty())
-        {
+        List<BookResponse> books = bookService.findAllList();
+        if (books.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(books);
     }
+
+
+
+    @GetMapping("/bookImg/{id}")
+    @Operation(summary = "Zwraca książkę po ID", description = "Zwraca szczegóły książki na podstawie identyfikatora.")
+    public ResponseEntity<BookImg> getBookImgById(@Parameter(description = "Numer identyfikacyjny ksiazki")
+                                                  @PathVariable Integer id) {
+        BookImg bookImg = bookService.findByBookId(id);
+        return ResponseEntity.ok(bookImg);
+    }
+
+    @GetMapping("/genres")
+    @Operation(summary = "Zwraca gatunki ksiazek z bazy danych", description = "Zwraca gatunki ksiazek z bazy danych")
+    public ResponseEntity<List<GenreResponse>> listofgenres() {
+        List<GenreResponse> genreResponse = bookService.findallgenres();
+        if (genreResponse.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(genreResponse);
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Zwraca książkę po ID", description = "Zwraca szczegóły książki na podstawie identyfikatora.")
-    public ResponseEntity<BookResponse>getBookById(@Parameter(description = "Numer identyfikacyjny ksiazki")
-                                                       @PathVariable Integer id)
-    {
+    public ResponseEntity<BookResponse> getBookById(@Parameter(description = "Numer identyfikacyjny ksiazki")
+                                                    @PathVariable Integer id) {
         BookResponse bookResponse = bookService.findbyid(id);
         if (bookResponse == null) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(bookResponse);
     }
-    @GetMapping("/bookImg/{id}")
-    @Operation(summary = "Zwraca książkę po ID", description = "Zwraca szczegóły książki na podstawie identyfikatora.")
-    public ResponseEntity<BookImg>getBookImgById(@Parameter(description = "Numer identyfikacyjny ksiazki")
-                                                   @PathVariable Integer id)
-    {
-        BookImg bookImg = bookService.findByBookId(id);
-        return ResponseEntity.ok(bookImg);
-    }
-    @GetMapping("/genres")
-    @Operation(summary = "Zwraca gatunki ksiazek z bazy danych", description = "Zwraca gatunki ksiazek z bazy danych")
-    public ResponseEntity<List<GenreResponse>>listofgenres()
-    {
-        List<GenreResponse> genreResponse = bookService.findallgenres();
-        if(genreResponse.isEmpty())
-        {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(genreResponse);
-    }
-    @GetMapping("/search/title")
-    @Operation(summary = "Zwraca ksiazki o podanej nazwie.", description = "Zwraca szczegóły książek które posiadają wyszukiwany tytuł")
-    public ResponseEntity<Page<BookResponse>> listofbooksbytitle
-            (@Parameter(description = "Tytuł książki, którego szukasz")
-             @RequestParam String title,
-             @Parameter(description = "Numer strony paginacji")
-             @RequestParam(defaultValue = "0") int page,
-             @Parameter(description = "Liczba elementów na stronie")
-             @RequestParam(defaultValue = "10") int size)
-    {
-        Page<BookResponse> bookResponse = bookService.findbooksbytitle(title,page,size);
-        if (bookResponse.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(bookResponse);
-    }
-    @GetMapping("/search/genre")
-    @Operation(summary = "Zwraca książki z bazy danych na podstawie gatunku", description = "Zwraca książki z bazy danych, które pasują do podanego gatunku.")
-    public ResponseEntity<Page<BookResponse>> listofbooksbygenre(@Parameter(description = "Nazwa gatunku książki")
-                                                                 @RequestParam String genre_name,
 
-                                                                 @Parameter(description = "Numer strony paginacji")
-                                                                 @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
-
-                                                                 @Parameter(description = "Liczba elementów na stronie")
-                                                                 @RequestParam(defaultValue = "${pagination.defaultSize:10}") int size)
-    {
-        Page<BookResponse> bookResponse = bookService.findbooksbygenre(genre_name,page,size);
-        if (bookResponse.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
+    @GetMapping("/Search")
+    @Operation(summary = "",description = "")
+    public ResponseEntity<Page<BookResponse>>searchBooks(BookSearchCriteria criteria){
+        Page<BookResponse> bookResponse = bookService.searchBooks(criteria);
         return ResponseEntity.ok(bookResponse);
     }
-    @GetMapping("/search/publisher")
-    @Operation(summary = "Zwraca książki z bazy danych na podstawie wydawnictwa", description = "Zwraca książki z bazy danych, które pasują do podanego wydawnictwa.")
-    public ResponseEntity<Page<BookResponse>> listofbooksbypublisher(@Parameter(description = "Nazwa wydawnictwa książki")
-                                                                     @RequestParam String publisher_name,
-
-                                                                     @Parameter(description = "Numer strony paginacji")
-                                                                     @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
-
-                                                                     @Parameter(description = "Liczba elementów na stronie")
-                                                                     @RequestParam(defaultValue = "${pagination.defaultSize:10}") int size)
-    {
-        Page<BookResponse> bookResponse= bookService.findbooksbypublisher(publisher_name,page,size);
-        if (bookResponse.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(bookResponse);
-    }
-    @GetMapping("/search/author")
-    @Operation(summary = "Zwraca książki z bazy danych na podstawie imienia i nazwiska autora ksiazki", description = "Zwraca dane książek z bazy danych, które pasują do podanego imienia i nazwiska autora")
-    public ResponseEntity<Page<BookResponse>> listofbooksbyauthor(@Parameter(description = "Imie autora")
-                                                                    @RequestParam String name,
-                                                                  @Parameter(description = "Nazwisko autora")
-                                                                    @RequestParam String surname,
-                                                                  @Parameter(description = "Numer strony paginacji")
-                                                                    @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
-                                                                  @Parameter(description = "Liczba elementów na stronie")
-                                                                    @RequestParam(defaultValue = "${pagination.defaultSize:10}") int size)
-    {
-        Page<BookResponse> bookResponse = bookService.findbooksbyauthor(name, surname,page,size);
-        if (bookResponse.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(bookResponse);
-    }
-    @GetMapping("/search/price")
-    @Operation(summary = "Zwraca książki z bazy danych na podstawie dwóch cen minimalnej i maksymalnej", description = "Zwraca dane książek z bazy danych, które wpisują się pomidzy dwie ceny minimalna i maksymalną")
-    public ResponseEntity<Page<BookResponse>> listofbooksbyprice(@Parameter(description = "Cena minimalna")
-                                                                     @RequestParam Float price1,
-                                                                 @Parameter(description = "Cena maksymalna")
-                                                                     @RequestParam Float price2,
-                                                                 @Parameter(description = "Numer strony paginacji")
-                                                                     @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
-                                                                 @Parameter(description = "Liczba elementów na stronie")
-                                                                     @RequestParam(defaultValue = "${pagination.defaultSize:10}") int size) {
-        Page<BookResponse> bookResponse = bookService.findbooksbyprice(price1, price2,page,size);
-        if (bookResponse.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(bookResponse);
-    }
-    @GetMapping("/search/year")
-    @Operation(summary = "Zwraca książki z bazy danych w podanym okresie", description = "Zwraca dane książek z bazy danych, które wpasowują sie w dany okres")
-    public ResponseEntity<Page<BookResponse>> listofbooksbyyear(@Parameter(description = "Rok początkowy okresu")
-                                                                    @RequestParam LocalDate year1,
-                                                                @Parameter(description = "Rok końcowy okresu")
-                                                                    @RequestParam LocalDate year2,
-                                                                @Parameter(description = "Numer strony paginacji")
-                                                                    @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
-                                                                @Parameter(description = "Liczba elementów na stronie")
-                                                                    @RequestParam(defaultValue = "${pagination.defaultSize:10}") int size) {
-        Page<BookResponse> bookResponse = bookService.findbooksbyyear(year1, year2,page,size);
-        if (bookResponse.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(bookResponse);
-    }
-    @GetMapping("/sort/title")
+    @GetMapping("/Sort")
     @Operation(summary = "Sortuje ksiazki po tytule.", description = "Zwraca książki z bazy danych posortowane według ASC badz DESC.")
-    public ResponseEntity<Page<BookResponse>> listofsortbooksoftitle(@Parameter(description = "Wybór sortowania ASC czy DESC")
-                                                                         @RequestParam String name,
+    public ResponseEntity<Page<BookResponse>> sortBooks
+    (@Parameter(description = "Pole do sortowania (np. 'title', 'price', 'publicationYear')")
+    @RequestParam String sortBy,
 
-                                                                     @Parameter(description = "Numer strony paginacji")
-                                                                         @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
+    @Parameter(description = "Kierunek sortowania ('ASC' lub 'DESC')")
+    @RequestParam(defaultValue = "ASC") String direction,
 
-                                                                     @Parameter(description = "Liczba elementów na stronie")
-                                                                         @RequestParam(defaultValue = "${pagination.defaultSize:10}") int size)
-    {
-        Page<BookResponse> bookResponse= bookService.sortbooktitle(page,size,name);
-        if(bookResponse.isEmpty())
-        {
-            ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(bookResponse);
-    }
-    @GetMapping("/sort/price")
-    @Operation(summary = "Sortuje ksiazki po cenie.", description = "Zwraca książki z bazy danych posortowane według ASC badz DESC.")
-    public ResponseEntity<Page<BookResponse>> listofsortbooksofprice(@Parameter(description = "Wybór sortowania ASC czy DESC")
-                                                                         @RequestParam String name,
+    @Parameter(description = "Numer strony paginacji")
+    @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
 
-                                                                     @Parameter(description = "Numer strony paginacji")
-                                                                         @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
-
-                                                                     @Parameter(description = "Liczba elementów na stronie")
-                                                                         @RequestParam(defaultValue = "${pagination.defaultSize:10}") int size)
-    {
-        Page<BookResponse> bookResponse= bookService.sortbookprice(page,size,name);
-        if(bookResponse.isEmpty())
-        {
-            ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(bookResponse);
-    }
-    @GetMapping("/sort/year")
-    @Operation(summary = "Sortuje ksiazki po roku.", description = "Zwraca książki z bazy danych posortowane według ASC badz DESC.")
-    public ResponseEntity<Page<BookResponse>> listofsortbooksofyear(@Parameter(description = "Wybór sortowania ASC czy DESC")
-                                                                        @RequestParam String name,
-
-                                                                    @Parameter(description = "Numer strony paginacji")
-                                                                        @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
-
-                                                                    @Parameter(description = "Liczba elementów na stronie")
-                                                                        @RequestParam(defaultValue = "${pagination.defaultSize:10}") int size)
-    {
-        Page<BookResponse> bookResponse= bookService.sortbookyear(page,size,name);
-        if(bookResponse.isEmpty())
-        {
-            ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(bookResponse);
-    }
-    @GetMapping("/news")
-    @Operation(summary = "Zwraca najnowsze książki", description = "Zwraca dane książek, które wyszły tego roku.")
-    public ResponseEntity<Page<BookResponse>> listofnewbooks (@Parameter(description = "Numer strony paginacji")
-                                                                  @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
-
-                                                              @Parameter(description = "Liczba elementów na stronie")
-                                                                  @RequestParam(defaultValue = "${pagination.defaultSize:10}") int size)
-    {
-        Page<BookResponse> bookResponse= bookService.findnewbooks(page,size);
-        if(bookResponse.isEmpty())
-        {
-            ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(bookResponse);
-    }
-    @GetMapping("/foreshadowed")
-    @Operation(summary = "Zwraca zapowiedzi książkowe", description = "Zwraca dane książek, które dopiero co wyjdą")
-    public ResponseEntity<Page<BookResponse>> listofforeshadowedbooks (@Parameter(description = "Numer strony paginacji")
-                                                                           @RequestParam(defaultValue = "${pagination.defaultPage:0}") int page,
-
-                                                                       @Parameter(description = "Liczba elementów na stronie")
-                                                                           @RequestParam(defaultValue = "${pagination.defaultSize:10}") int size)
-    {
-        Page<BookResponse> bookResponse= bookService.findforeshadowedbooks(page,size);
+    @Parameter(description = "Liczba elementów na stronie")
+    @RequestParam(defaultValue = "${pagination.defaultSize:10}") int size) {
+        Page<BookResponse> bookResponse = bookService.sortBooks(page, size, sortBy,direction);
         if (bookResponse.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(bookResponse);
     }

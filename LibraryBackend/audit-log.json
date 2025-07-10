@@ -1,2 +1,84 @@
-{"action":"Delete","entity":"Book","performedBy":"Mefju","timestamp":[2025,5,10,22,10,59,630934500],"details":"Usuwanie ksiazki z bazy danych","object":{"id":19,"title":"a","author":{"id":1,"name":"J.K","surname":"Rowling"},"publicationDate":[2026,1,12],"isbn":9788324198604,"genre":{"id":1,"name":"Fantastyka"},"language":"Polski","publisher":{"id":1,"name":"Bloomsbury"},"pages":100,"price":10.0,"oldprice":10.0}}
-{"action":"Delete","entity":"Book","performedBy":"Mefju","timestamp":[2025,5,10,22,12,38,291626900],"details":"Usuwanie ksiazki z bazy danych","object":{"id":20,"title":"1","author":{"id":1,"name":"J.K","surname":"Rowling"},"publicationDate":[2026,1,12],"isbn":9788324198603,"genre":{"id":1,"name":"Fantastyka"},"language":"pOLSKI","publisher":{"id":1,"name":"Bloomsbury"},"pages":1,"price":1.0,"oldprice":1.0}}
+{
+  "action": "Delete",
+  "entity": "Book",
+  "performedBy": "Mefju",
+  "timestamp": [
+    2025,
+    5,
+    10,
+    22,
+    10,
+    59,
+    630934500
+  ],
+  "details": "Usuwanie ksiazki z bazy danych",
+  "object": {
+    "id": 19,
+    "title": "a",
+    "author": {
+      "id": 1,
+      "name": "J.K",
+      "surname": "Rowling"
+    },
+    "publicationDate": [
+      2026,
+      1,
+      12
+    ],
+    "isbn": 9788324198604,
+    "genre": {
+      "id": 1,
+      "name": "Fantastyka"
+    },
+    "language": "Polski",
+    "publisher": {
+      "id": 1,
+      "name": "Bloomsbury"
+    },
+    "pages": 100,
+    "price": 10.0,
+    "oldprice": 10.0
+  }
+}
+{
+  "action": "Delete",
+  "entity": "Book",
+  "performedBy": "Mefju",
+  "timestamp": [
+    2025,
+    5,
+    10,
+    22,
+    12,
+    38,
+    291626900
+  ],
+  "details": "Usuwanie ksiazki z bazy danych",
+  "object": {
+    "id": 20,
+    "title": "1",
+    "author": {
+      "id": 1,
+      "name": "J.K",
+      "surname": "Rowling"
+    },
+    "publicationDate": [
+      2026,
+      1,
+      12
+    ],
+    "isbn": 9788324198603,
+    "genre": {
+      "id": 1,
+      "name": "Fantastyka"
+    },
+    "language": "pOLSKI",
+    "publisher": {
+      "id": 1,
+      "name": "Bloomsbury"
+    },
+    "pages": 1,
+    "price": 1.0,
+    "oldprice": 1.0
+  }
+}

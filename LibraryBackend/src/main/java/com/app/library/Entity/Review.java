@@ -2,6 +2,7 @@ package com.app.library.Entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,7 +16,7 @@ public class Review {
 
     private int rating;
 
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -23,7 +24,7 @@ public class Review {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    public Review(String content, int rating, LocalDateTime createdAt, User user, Book book) {
+    public Review(String content, int rating, LocalDate createdAt, User user, Book book) {
         this.content = content;
         this.rating = rating;
         this.createdAt = createdAt;
@@ -32,7 +33,7 @@ public class Review {
     }
 
     public Review() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = LocalDate.now();
     }
 
     public Long getId() {
@@ -59,11 +60,11 @@ public class Review {
         this.rating = rating;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 
