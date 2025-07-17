@@ -5,10 +5,13 @@ import com.app.library.Security.DTO.Response.JwtResponse;
 import com.app.library.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletResponse;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,10 +29,13 @@ public class LoginController {
 
     @PostMapping("/login")
     @Operation(summary = "Logowanie użytkownika", description = "Autentykacja użytkownika na podstawie loginu i hasła.")
-    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody UserRequest userRequest) {
-        return ResponseEntity.ok(userService.login(userRequest));
+    public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody UserRequest userRequest,HttpServletResponse response) {
+        return ResponseEntity.ok(userService.login(userRequest,response));
     }
-
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request,HttpServletResponse response){
+        return ResponseEntity.ok(userService.refreshToken(request,response));
+    }
     @PostMapping("/register")
     @Operation(summary = "Rejestracja użytkownika", description = "Rejestracja nowego użytkownika. Wymaga podania danych użytkownika.")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest userRequest) {

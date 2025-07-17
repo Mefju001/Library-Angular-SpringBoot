@@ -19,9 +19,14 @@ import com.app.library.Security.DTO.Request.UserRequest;
 import com.app.library.Security.DTO.Response.JwtResponse;
 import com.app.library.Security.JWT.JwtUtils;
 import com.app.library.Security.Service.UserDetailsImpl;
+import com.app.library.Security.Service.UserDetailsServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,12 +53,13 @@ public class UserServiceImpl implements UserService {
     private final FavoriteBooksMapper favoriteBooksMapper;
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
 
     private final JwtUtils jwtUtils;
 
     @Autowired
-    public UserServiceImpl(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, FavoriteBooksMapper favoriteBooksMapper, UserMapper userMapper, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public UserServiceImpl(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, FavoriteBooksMapper favoriteBooksMapper, UserMapper userMapper, PasswordEncoder encoder, UserDetailsServiceImpl userDetailsServiceImpl, JwtUtils jwtUtils) {
         this.favoritebooksRepository = favoritebooksRepository;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -62,6 +68,7 @@ public class UserServiceImpl implements UserService {
         this.favoriteBooksMapper = favoriteBooksMapper;
         this.userMapper = userMapper;
         this.encoder = encoder;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.jwtUtils = jwtUtils;
     }
 
@@ -91,17 +98,76 @@ public class UserServiceImpl implements UserService {
                 .role(String.valueOf(user.getRoles()))
                 .build();
     }
+    public JwtResponse refreshToken(HttpServletRequest request,HttpServletResponse response) {
+        String RefreshToken = null;
+        if (request.getCookies() != null) {
+            for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
+                if ("refresh_token".equals(cookie.getName())) {
+                    RefreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        if (RefreshToken == null || !jwtUtils.validateJwtRefreshToken(RefreshToken)) {
+            return null;
+        }
 
+        try {
+            String username = jwtUtils.getUserNameFromJwtRefreshToken(RefreshToken);
+
+            // 4. Załaduj UserDetails (użytkownika) - Spring Security potrzebuje pełnych danych
+            UserDetailsImpl userDetails = userDetailsServiceImpl.loadUserByUsername(username);
+            // 5. Wygeneruj nowy access token
+            // Użyj istniejącej logiki generowania tokena dostępu, być może z Authentication
+            // Możesz stworzyć tymczasowy obiekt Authentication lub przekazać UserDetails
+            // Jeśli Twoja metoda generateJwtToken przyjmuje UserDetails, to będzie prościej:
+            // String newAccessToken = jwtUtils.generateJwtToken(userDetails);
+            // Jeśli przyjmuje Authentication, musisz stworzyć nowy obiekt Authentication:
+            // Uwaga: Tutaj nie ma uwierzytelniania hasłem, tylko na podstawie ważności tokena odświeżania.
+            // Poniżej uproszczony przykład, możesz potrzebować bardziej złożonej logiki.
+            String newAccessToken = jwtUtils.generateTokenFromUsername(username); // Przyjmij, że masz taką metodę w JwtUtils
+
+            // Opcjonalnie: Rotacja refresh tokena
+            // Możesz wygenerować nowy refresh token i ustawić nowe ciasteczko,
+            // aby zwiększyć bezpieczeństwo i przedłużyć sesję.
+            // String newRefreshToken = jwtUtils.generateRefreshToken(userDetails); // lub newRefreshToken(username)
+            // ResponseCookie newRefreshTokenCookie = ResponseCookie.from("refresh_token", newRefreshToken)
+            //         .httpOnly(true)
+            //         .secure(true) // Pamiętaj o HTTPS w produkcji!
+            //         .path("/")
+            //         .maxAge(jwtUtils.getJwtRefreshExpirationMs() / 1000)
+            //         .sameSite("Lax")
+            //         .build();
+            // response.addHeader(HttpHeaders.SET_COOKIE, newRefreshTokenCookie.toString());
+
+            // 6. Zwróć nowy access token w ciele odpowiedzi
+
+            return new JwtResponse(newAccessToken,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getAuthorities());
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
     @Override
-    public JwtResponse login(UserRequest loginRequest) {
+    public JwtResponse login(UserRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-
+        String RefreshToken = jwtUtils.generateRefreshToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
+        ResponseCookie refreshTokenCookie  = ResponseCookie.from("refresh_token", RefreshToken)
+                .httpOnly(true)
+                .secure(false) // Pamiętaj: true w produkcji!
+                .path("/")
+                .maxAge(jwtUtils.getJwtRefreshExpirationMs() / 1000)
+                .sameSite("Lax")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
         return new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
