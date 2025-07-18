@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from 'src/app/Service/Auth/auth.service';
 import { Router } from '@angular/router';
-import { User } from '../../Models/User.model';
+import { UserResponse } from '../../Models/Response/UserResponse';
 
 @Component({
   selector: 'app-login',
@@ -9,12 +9,10 @@ import { User } from '../../Models/User.model';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  User: User =
+  User: UserResponse =
   {
-    accessToken:'',
     id:0,
     username:'',
-    role:[]
   };
   username: string = '';
   password: string = '';
@@ -26,8 +24,6 @@ export class LoginComponent {
       (response) => {
         this.User.id=response.id;
         this.User.username=response.username;
-        this.User.accessToken=response.accessToken;
-        this.User.role=response.role;
         // Zapisz token w localStorage
         this.authService.storeToken(this.User)
         // Przekieruj na stronę główną

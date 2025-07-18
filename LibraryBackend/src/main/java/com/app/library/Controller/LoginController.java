@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -41,5 +42,10 @@ public class LoginController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest userRequest) {
         userService.registerUp(userRequest);
         return ResponseEntity.ok("Użytkownik został zarejestrowany!");
+    }
+    @GetMapping("/has-role/admin")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Boolean> hasAdminRole(HttpServletRequest request) {
+        return ResponseEntity.ok(userService.hasAdminRole(request));
     }
 }

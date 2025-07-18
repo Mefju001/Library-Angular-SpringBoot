@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, Routes } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { Book } from 'src/app/Models/book.model';
 import { DashboardStats } from 'src/app/Models/DashboardStats.model';
-import { User } from 'src/app/Models/User.model';
+import { UserResponse } from 'src/app/Models/Response/UserResponse';
 import { UserAdmin } from 'src/app/Models/UserAdmin.model';
 import { AdminService } from 'src/app/Service/AdminService';
 import { BookService } from 'src/app/Service/BookService';

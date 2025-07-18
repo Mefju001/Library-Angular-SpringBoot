@@ -1,10 +1,10 @@
 import { Book } from "./book.model";
-import { User } from "./User.model";
+import { UserResponse } from "./Response/UserResponse";
 
 export interface BorrowedBook {
     rentalId: number;
     
-    userResponse:User;
+    userResponse:UserResponse;
     bookResponse:Book;
     
     rentalStartDate: string;

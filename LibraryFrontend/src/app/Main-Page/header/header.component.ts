@@ -14,7 +14,8 @@ import { ThisReceiver } from '@angular/compiler';
 })
 export class HeaderComponent implements OnInit{
   id: number = 0;
-  items: any[] = []; // Tablica na pobrane dane
+  hasAdmin: boolean = false;
+  items: any[] = [];
   selectedItem: string = '';
   books: Book[] = [];
   username: string | null = null;
@@ -22,15 +23,22 @@ export class HeaderComponent implements OnInit{
   ngOnInit(): void {
     this.id=this.getId();
     this.username = this.getUsername();
-
+    this.hasAdminRole();
   }
-  isAdmin(): boolean {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if(user.role[0].authority ==='ROLE_ADMIN')
-      return true;
-
-    return false;
+  hasAdminRole(): void {
+    this.authService.hasRole().subscribe((isAdminValue: boolean) => {
+        this.hasAdmin = isAdminValue;
+        console.log('Czy użytkownik jest adminem (z backendu):', this.hasAdmin);
+      },
+      error => {
+        console.error('Nie udało się pobrać roli admina:', error);
+        this.hasAdmin = false;
+      }
+    );
   }
+ isAdmin(): boolean {
+  return this.hasAdmin;
+}
   gotofavorites(){
     this.router.navigate(['/likedBooks'])
   }

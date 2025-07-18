@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { AuthService } from './auth.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  private isRefreshing = false;
 
+  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   constructor(private authService: AuthService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Pobieramy token z serwisu AuthService
-    const token = this.authService.getToken();
-
-    // Jeśli mamy token, dodajemy go do nagłówków
+    const token = this.authService.getAccessToken();
     if (token) {
       const clonedRequest = req.clone({
         setHeaders: {
@@ -22,7 +21,6 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(clonedRequest);
     }
 
-    // Jeśli nie mamy tokena, wysyłamy oryginalne żądanie
     return next.handle(req);
   }
 }

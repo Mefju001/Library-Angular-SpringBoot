@@ -30,15 +30,13 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -98,6 +96,28 @@ public class UserServiceImpl implements UserService {
                 .role(String.valueOf(user.getRoles()))
                 .build();
     }
+
+    @Override
+    public Boolean hasAdminRole(HttpServletRequest request){
+        String RefreshToken = null;
+        if (request.getCookies() != null) {
+            for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
+                if ("refresh_token".equals(cookie.getName())) {
+                    RefreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        if (RefreshToken == null || !jwtUtils.validateJwtRefreshToken(RefreshToken)) {
+            return null;
+        }
+        Collection<?extends GrantedAuthority>authorities = jwtUtils.getAuthoritiesFromJwtToken(RefreshToken);
+        boolean isAdmin = authorities.stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        return isAdmin;
+    }
+
+    @Override
     public JwtResponse refreshToken(HttpServletRequest request,HttpServletResponse response) {
         String RefreshToken = null;
         if (request.getCookies() != null) {
@@ -151,6 +171,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
     }
+
     @Override
     public JwtResponse login(UserRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
@@ -160,6 +181,12 @@ public class UserServiceImpl implements UserService {
         String jwt = jwtUtils.generateJwtToken(authentication);
         String RefreshToken = jwtUtils.generateRefreshToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        ResponseCookie access_token = ResponseCookie.from("access_token",jwt)
+                .httpOnly(true)
+                .secure(false) // Pamiętaj: true w produkcji!
+                .path("/")
+                .sameSite("Lax")
+                .build();
         ResponseCookie refreshTokenCookie  = ResponseCookie.from("refresh_token", RefreshToken)
                 .httpOnly(true)
                 .secure(false) // Pamiętaj: true w produkcji!
@@ -168,6 +195,7 @@ public class UserServiceImpl implements UserService {
                 .sameSite("Lax")
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, access_token.toString());
         return new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
