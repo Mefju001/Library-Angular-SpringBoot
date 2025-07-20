@@ -136,7 +136,7 @@ export class MainMenuComponent implements OnInit {
     });
   }
   getId(): number {
-    const user = localStorage.getItem('user');
+    const user = sessionStorage.getItem('user');
     if (user) {
       try {
         const parsedUser = JSON.parse(user);

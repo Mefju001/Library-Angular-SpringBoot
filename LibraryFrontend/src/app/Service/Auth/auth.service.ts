@@ -13,7 +13,7 @@ export class AuthService {
   public currentAccessToken: string | null = null;
   constructor(
     private http: HttpClient,
-    private router: Router  // Dodaj router do konstruktora
+    private router: Router
   ) {}
 public setAccessToken(token: string): void {
     this.currentAccessToken = token;
@@ -41,8 +41,7 @@ public setAccessToken(token: string): void {
       }
       return null;
     } catch (error) {
-      this.clearAccessToken(); // Wyczyść token, jeśli odświeżenie nieudane
-      // ... reszta obsługi błędów i wylogowanie ...
+      this.clearAccessToken(); 
       return null;
     }
   }
@@ -50,12 +49,10 @@ public setAccessToken(token: string): void {
     return this.http.get<boolean>(`${this.apiUrl}/has-role/admin`,{ withCredentials: true }).pipe(
       catchError(error => {
         console.error('Błąd podczas sprawdzania roli admina z backendu:', error);
-        // W przypadku błędu (np. brak refresh_tokena, błąd serwera), załóż, że nie jest adminem
         return of(false);}))}
 
-  // Funkcja do przechowywania tokena w localStorage
   storeToken(User: UserResponse): void {
-    localStorage.setItem('user', JSON.stringify(User));
+    sessionStorage.setItem('user', JSON.stringify(User));
   }
   logout(): void {
     this.clearAccessToken();

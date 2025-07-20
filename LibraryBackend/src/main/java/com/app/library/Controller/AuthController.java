@@ -17,14 +17,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:4200")
-@Tag(name = "Login Controller", description = "Logowanie i rejestracja do aplikacji")
-public class LoginController {
+@Tag(name = "Auth Controller", description = "Logowanie i rejestracja do aplikacji")
+public class AuthController {
 
     private final UserService userService;
 
 
     @Autowired
-    public LoginController(UserService userService) {
+    public AuthController(UserService userService) {
         this.userService = userService;
     }
 

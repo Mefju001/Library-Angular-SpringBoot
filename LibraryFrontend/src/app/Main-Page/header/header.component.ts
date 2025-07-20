@@ -43,7 +43,7 @@ export class HeaderComponent implements OnInit{
     this.router.navigate(['/likedBooks'])
   }
   getId(): number{
-    const user = localStorage.getItem('user');
+    const user = sessionStorage.getItem('user');
     if (user) {
       try {
         const parsedUser = JSON.parse(user);
@@ -57,7 +57,7 @@ export class HeaderComponent implements OnInit{
   }
 
   getUsername(): string | null {
-    const user = localStorage.getItem('user');
+    const user = sessionStorage.getItem('user');
     if (user) {
       try {
         const parsedUser = JSON.parse(user);

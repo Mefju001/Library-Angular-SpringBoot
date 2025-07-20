@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
                 }
             }
         }
-        if (RefreshToken == null || !jwtUtils.validateJwtRefreshToken(RefreshToken)) {
+        if (RefreshToken == null || !jwtUtils.validateJwtToken(RefreshToken)) {
             return null;
         }
         Collection<?extends GrantedAuthority>authorities = jwtUtils.getAuthoritiesFromJwtToken(RefreshToken);
@@ -128,40 +128,26 @@ public class UserServiceImpl implements UserService {
                 }
             }
         }
-        if (RefreshToken == null || !jwtUtils.validateJwtRefreshToken(RefreshToken)) {
+        if (RefreshToken == null || !jwtUtils.validateJwtToken(RefreshToken)) {
             return null;
         }
 
         try {
             String username = jwtUtils.getUserNameFromJwtRefreshToken(RefreshToken);
-
-            // 4. Załaduj UserDetails (użytkownika) - Spring Security potrzebuje pełnych danych
             UserDetailsImpl userDetails = userDetailsServiceImpl.loadUserByUsername(username);
-            // 5. Wygeneruj nowy access token
-            // Użyj istniejącej logiki generowania tokena dostępu, być może z Authentication
-            // Możesz stworzyć tymczasowy obiekt Authentication lub przekazać UserDetails
-            // Jeśli Twoja metoda generateJwtToken przyjmuje UserDetails, to będzie prościej:
-            // String newAccessToken = jwtUtils.generateJwtToken(userDetails);
-            // Jeśli przyjmuje Authentication, musisz stworzyć nowy obiekt Authentication:
-            // Uwaga: Tutaj nie ma uwierzytelniania hasłem, tylko na podstawie ważności tokena odświeżania.
-            // Poniżej uproszczony przykład, możesz potrzebować bardziej złożonej logiki.
-            String newAccessToken = jwtUtils.generateTokenFromUsername(username); // Przyjmij, że masz taką metodę w JwtUtils
+            String newAccessToken = jwtUtils.generateTokenFromUsername(username);
+            response.addHeader(HttpHeaders.SET_COOKIE, newAccessToken);
 
-            // Opcjonalnie: Rotacja refresh tokena
-            // Możesz wygenerować nowy refresh token i ustawić nowe ciasteczko,
-            // aby zwiększyć bezpieczeństwo i przedłużyć sesję.
-            // String newRefreshToken = jwtUtils.generateRefreshToken(userDetails); // lub newRefreshToken(username)
-            // ResponseCookie newRefreshTokenCookie = ResponseCookie.from("refresh_token", newRefreshToken)
-            //         .httpOnly(true)
-            //         .secure(true) // Pamiętaj o HTTPS w produkcji!
-            //         .path("/")
-            //         .maxAge(jwtUtils.getJwtRefreshExpirationMs() / 1000)
-            //         .sameSite("Lax")
-            //         .build();
-            // response.addHeader(HttpHeaders.SET_COOKIE, newRefreshTokenCookie.toString());
 
-            // 6. Zwróć nowy access token w ciele odpowiedzi
-
+            String newRefreshToken = jwtUtils.generateRefreshToken(userDetails);
+            ResponseCookie newRefreshTokenCookie = ResponseCookie.from("refresh_token", newRefreshToken)
+                     .httpOnly(true)
+                     .secure(false)//true w produkcji
+                     .path("/")
+                     .maxAge(jwtUtils.getJwtRefreshExpirationMs() / 1000)
+                     .sameSite("Lax")
+                     .build();
+            response.addHeader(HttpHeaders.SET_COOKIE, newRefreshTokenCookie.toString());
             return new JwtResponse(newAccessToken,
                     userDetails.getId(),
                     userDetails.getUsername(),
@@ -179,8 +165,8 @@ public class UserServiceImpl implements UserService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-        String RefreshToken = jwtUtils.generateRefreshToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        String RefreshToken = jwtUtils.generateRefreshToken(userDetails);
         ResponseCookie access_token = ResponseCookie.from("access_token",jwt)
                 .httpOnly(true)
                 .secure(false) // Pamiętaj: true w produkcji!
