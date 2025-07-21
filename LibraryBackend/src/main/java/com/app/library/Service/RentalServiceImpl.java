@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +47,7 @@ public class RentalServiceImpl implements RentalService {
     @Override
     public List<LoanBookResponse> rentalList(Long UserId) {
         List<Rental> loanbooks = rentalRepository.findRentalsByUser_Id(UserId);
-        List<LoanBookResponse> rentalList = loanbooks.stream().map(loanBookMapper::toloanBookResponse).collect(Collectors.toList());
-        return rentalList;
+        return loanbooks.stream().map(loanBookMapper::toloanBookResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class RentalServiceImpl implements RentalService {
         Rental rental = new Rental();
         rental.setBook(book);
         rental.setUser(user);
-        rental.requestStartLoan();
+        rental.setStatus(RentalStatus.pending);
         rentalRepository.save(rental);
         publisher.publishEvent(new RentalCreatedEvent(rental));
     }
@@ -73,7 +73,11 @@ public class RentalServiceImpl implements RentalService {
         Optional<Rental> loanbook = rentalRepository.findRentalByBook_IdAndUser_Id(BookId, UserId);
         if (loanbook.isPresent() && loanbook.get().getStatus() == RentalStatus.pending) {
             Rental rental = loanbook.get();
-            rental.startLoan();
+            rental.setExtensionCount(0);
+            rental.setRentalEndDate(LocalDate.now().plusMonths(3));
+            rental.setRentalStartDate(LocalDate.now());
+            rental.setStatus(RentalStatus.loaned);
+            rental.setPenalty(0.0);
             rentalRepository.save(rental);
         } else {
             throw new IllegalStateException("This book is not loaned by you");
@@ -84,9 +88,9 @@ public class RentalServiceImpl implements RentalService {
     @Transactional
     public void requestReturn(Integer BookId, Long UserId) {
         Optional<Rental> loanbook = rentalRepository.findRentalByBook_IdAndUser_Id(BookId, UserId);
-        if (loanbook.isPresent() && (loanbook.get().getStatus() == RentalStatus.loaned || loanbook.get().getStatus() == RentalStatus.overdue)) {
+        if (loanbook.isPresent() && (loanbook.get().getStatus() == RentalStatus.loaned)) {
             Rental rental = loanbook.get();
-            rental.requestEndLoan();
+            rental.setStatus(RentalStatus.return_requested);
             rentalRepository.save(rental);
             publisher.publishEvent(new RentalCreatedEvent(rental));
         } else {
@@ -104,10 +108,11 @@ public class RentalServiceImpl implements RentalService {
         if (rental.getStatus() != RentalStatus.return_requested) {
             throw new IllegalStateException("To wypożyczenie nie ma zgłoszonego zwrotu");
         }
-        rental.endLoan();
+        rental.setStatus(RentalStatus.returned);
+        rental.setRentalEndDate(LocalDate.now());
         Penalty penalty = new Penalty();
-        int overdueDays = rental.getDays();
-        Double penaltyPrice = penalty.calculatePenaltyPrice(overdueDays);
+        long overdueDays = ChronoUnit.DAYS.between(rental.getRentalEndDate(), rental.getReturnRequestDate());
+        Double penaltyPrice = penalty.calculatePenaltyPrice(Math.toIntExact(overdueDays));
         rental.setPenalty(penaltyPrice);
         rentalRepository.save(rental);
     }
@@ -122,7 +127,7 @@ public class RentalServiceImpl implements RentalService {
             } else if (rentals.getStatus().equals(RentalStatus.pending)) {
                 rentals.setStatus(RentalStatus.loaned);
             } else if (rentals.getStatus().equals(RentalStatus.extend_requested)) {
-                rentals.setStatus(RentalStatus.extend);
+                rentals.setStatus(RentalStatus.loaned);
                 rentals.setRentalEndDate(rentals.getRentalEndDate().plusMonths(1));
             }
         }
@@ -137,7 +142,8 @@ public class RentalServiceImpl implements RentalService {
         if (rental.getStatus() != RentalStatus.loaned) {
             throw new IllegalStateException("Ksiazka musi być wypożyczona");
         }
-        return rental.getRemainingDays();
+        rental.getRemainingDays();
+        return null;
     }
 
     @Override
@@ -148,7 +154,8 @@ public class RentalServiceImpl implements RentalService {
         if (rental.getStatus() != RentalStatus.loaned) {
             throw new IllegalStateException("Ksiazka musi być wypożyczona");
         }
-        return rental.isOverdue();
+        rental.isOverdue();
+        return null;
     }
 
     @Override
@@ -208,7 +215,7 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public Long getActiveBorrowsCount() {
-        return rentalRepository.countByStatusIn(List.of(RentalStatus.loaned, RentalStatus.extend));
+        return rentalRepository.countByStatusIn(List.of(RentalStatus.loaned,RentalStatus.extend_requested));
     }
 
     @Override
