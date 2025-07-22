@@ -1,13 +1,13 @@
 package com.app.library.Service;
 
-import com.app.library.DTO.Response.LoanBookResponse;
+import com.app.library.DTO.Response.RentalBookResponse;
 import com.app.library.Entity.LoanDeadlineInfo;
 
 import java.util.List;
 import java.util.Map;
 
 public interface RentalService {
-    List<LoanBookResponse> rentalList(Long userId);
+    List<RentalBookResponse> rentalList(Long userId);
 
     void requestloanBook(Integer bookId, Long userId);
 
@@ -16,7 +16,6 @@ public interface RentalService {
     void requestReturn(Integer bookId, Long userId);
 
     void approveReturn(Integer rentalId);
-
 
     void approveAll();
 

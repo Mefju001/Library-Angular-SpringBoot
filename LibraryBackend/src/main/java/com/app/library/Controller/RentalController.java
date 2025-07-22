@@ -1,7 +1,7 @@
 package com.app.library.Controller;
 
-import com.app.library.DTO.Request.LoanRequest;
-import com.app.library.DTO.Response.LoanBookResponse;
+import com.app.library.DTO.Request.RentalRequest;
+import com.app.library.DTO.Response.RentalBookResponse;
 import com.app.library.Entity.LoanDeadlineInfo;
 import com.app.library.Service.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,10 +27,10 @@ public class RentalController {
 
     @GetMapping("/user/{userId}")
     @Operation(summary = "Pobiera wypożyczenia użytkownika")
-    public ResponseEntity<List<LoanBookResponse>> getUserRentals(
+    public ResponseEntity<List<RentalBookResponse>> getUserRentals(
             @Parameter(description = "ID użytkownika") @PathVariable Long userId) {
         try {
-            List<LoanBookResponse> rentalList = rentalService.rentalList(userId);
+            List<RentalBookResponse> rentalList = rentalService.rentalList(userId);
             return ResponseEntity.ok(rentalList);
         } catch (ResponseStatusException e) {
             return ResponseEntity.internalServerError().build();
@@ -39,7 +39,7 @@ public class RentalController {
 
     @PostMapping("/loan")
     @Operation(summary = "Wypożycza książkę dla użytkownika")
-    public ResponseEntity<String> loanBook(@RequestBody @Valid LoanRequest request) {
+    public ResponseEntity<String> loanBook(@RequestBody @Valid RentalRequest request) {
         rentalService.requestloanBook(request.bookId(), request.userId());
         return ResponseEntity.ok("Book request loaned successfully.");
     }
@@ -49,7 +49,7 @@ public class RentalController {
             summary = "Zgłasza chęć zwrotu książki",
             description = "Użytkownik zgłasza chęć zwrotu wypożyczonej książki. przekazując identyfikatory książki i użytkownika w treści żądania."
     )
-    public ResponseEntity<String> requestReturn(@RequestBody @Valid LoanRequest request) {
+    public ResponseEntity<String> requestReturn(@RequestBody @Valid RentalRequest request) {
         rentalService.requestReturn(request.bookId(), request.userId());
         return ResponseEntity.ok("Book return request submitted successfully.");
     }

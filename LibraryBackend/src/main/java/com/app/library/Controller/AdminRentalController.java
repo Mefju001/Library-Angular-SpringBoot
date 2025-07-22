@@ -1,6 +1,6 @@
 package com.app.library.Controller;
 
-import com.app.library.DTO.Request.LoanRequest;
+import com.app.library.DTO.Request.RentalRequest;
 import com.app.library.Service.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,10 +15,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
-public class AdminLoanController {
+public class AdminRentalController {
     private final RentalService rentalService;
 
-    public AdminLoanController(RentalService rentalService) {
+    public AdminRentalController(RentalService rentalService) {
         this.rentalService = rentalService;
     }
 
@@ -27,7 +27,7 @@ public class AdminLoanController {
             summary = "Zatwierdza wypożyczenie książki",
             description = "Zatwierdza istniejące żądanie wypożyczenia książki przez użytkownika."
     )
-    public ResponseEntity<String> approveLoan(@RequestBody @Valid LoanRequest request) {
+    public ResponseEntity<String> approveLoan(@RequestBody @Valid RentalRequest request) {
         rentalService.approveLoanBook(request.bookId(), request.userId());
         return ResponseEntity.ok("Book loaned successfully.");
     }

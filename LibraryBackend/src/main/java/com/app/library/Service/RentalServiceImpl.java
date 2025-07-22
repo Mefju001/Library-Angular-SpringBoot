@@ -1,7 +1,7 @@
 package com.app.library.Service;
 
-import com.app.library.DTO.Mapper.LoanBookMapper;
-import com.app.library.DTO.Response.LoanBookResponse;
+import com.app.library.DTO.Mapper.RentalBookMapper;
+import com.app.library.DTO.Response.RentalBookResponse;
 import com.app.library.Entity.*;
 import com.app.library.EventListener.RentalCreatedEvent;
 import com.app.library.Repository.BookRepository;
@@ -33,21 +33,21 @@ public class RentalServiceImpl implements RentalService {
     private final ApplicationEventPublisher publisher;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
-    private final LoanBookMapper loanBookMapper;
+    private final RentalBookMapper rentalBookMapper;
 
     @Autowired
-    RentalServiceImpl(ApplicationEventPublisher publisher, RentalRepository rentalRepository, BookRepository bookRepository, UserRepository userRepository, LoanBookMapper loanBookMapper) {
+    RentalServiceImpl(ApplicationEventPublisher publisher, RentalRepository rentalRepository, BookRepository bookRepository, UserRepository userRepository, RentalBookMapper rentalBookMapper) {
         this.publisher = publisher;
         this.rentalRepository = rentalRepository;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
-        this.loanBookMapper = loanBookMapper;
+        this.rentalBookMapper = rentalBookMapper;
     }
 
     @Override
-    public List<LoanBookResponse> rentalList(Long UserId) {
+    public List<RentalBookResponse> rentalList(Long UserId) {
         List<Rental> loanbooks = rentalRepository.findRentalsByUser_Id(UserId);
-        return loanbooks.stream().map(loanBookMapper::toloanBookResponse).collect(Collectors.toList());
+        return loanbooks.stream().map(rentalBookMapper::toRentalBookResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -142,26 +142,33 @@ public class RentalServiceImpl implements RentalService {
         if (rental.getStatus() != RentalStatus.loaned) {
             throw new IllegalStateException("Ksiazka musi być wypożyczona");
         }
-        rental.getRemainingDays();
-        return null;
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = rental.getRentalEndDate();
+        long daysBetween = ChronoUnit.DAYS.between(today, endDate);
+        boolean isOverdue = this.isOverdue(rentalId);
+        return new LoanDeadlineInfo(Math.abs(daysBetween), isOverdue);
     }
 
     @Override
     public Boolean isOverdue(Integer rentalId) {
         Rental rental = rentalRepository.findById(rentalId)
-                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wypożyczenia o podanym ID"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Nie znaleziono wypożyczenia o podanym ID"));
 
         if (rental.getStatus() != RentalStatus.loaned) {
             throw new IllegalStateException("Ksiazka musi być wypożyczona");
         }
-        rental.isOverdue();
-        return null;
+        if(rental.getRentalEndDate().isBefore(LocalDate.now())) {
+            rental.setStatus(RentalStatus.overdue);
+            rentalRepository.save(rental);
+            return true;
+        }
+        return false;
     }
 
     @Override
     @Transactional
     public Map<String, Object> checkOverdueRentals() {
-        List<Rental> rentalList = rentalRepository.findByStatusInAndRentalEndDateBefore(List.of(RentalStatus.loaned, RentalStatus.extend), LocalDate.now());
+        List<Rental> rentalList = rentalRepository.findByStatusInAndRentalEndDateBefore(List.of(RentalStatus.loaned), LocalDate.now());
         int updatedcount = 0;
         for (Rental listRental : rentalList) {
             listRental.setStatus(RentalStatus.overdue);
@@ -196,7 +203,8 @@ public class RentalServiceImpl implements RentalService {
         if (rental.getStatus() != RentalStatus.extend_requested) {
             throw new IllegalStateException("Ksiazka nie została wypożyczona");
         }
-        rental.extendLoan();
+        rental.setStatus(RentalStatus.loaned);
+        rental.setRentalEndDate(rental.getRentalEndDate().plusMonths(3));
         rentalRepository.save(rental);
     }
 
@@ -209,7 +217,7 @@ public class RentalServiceImpl implements RentalService {
         if (rental.getStatus() != RentalStatus.pending) {
             throw new IllegalStateException("Ksiazka musi być nie wypożyczona");
         }
-        rental.cancelLoan();
+        rental.setStatus(RentalStatus.cancelled);
         rentalRepository.save(rental);
     }
 
