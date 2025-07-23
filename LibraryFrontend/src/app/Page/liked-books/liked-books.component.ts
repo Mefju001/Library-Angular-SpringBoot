@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { likedBook } from 'src/app/Models/likedBook.model';
 import { BorrowedBook } from 'src/app/Models/loanbook.model';
 import { UserService } from 'src/app/Service/UserService';
-import { LoanService } from 'src/app/Service/LoanService';
+import { RentalService } from 'src/app/Service/RentalService';
 import { Book } from 'src/app/Models/book.model';
 import { LoanRequest } from 'src/app/Models/Request/LoanRequest';
 
@@ -27,8 +27,7 @@ export class LikedBooksComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
-    private loanService: LoanService
-
+    private rentalService: RentalService
   ) {}
 
   ngOnInit(): void {
@@ -67,7 +66,7 @@ export class LikedBooksComponent implements OnInit {
     const bookId = Number(this.route.snapshot.paramMap.get('id'));
     this.userId=this.getId();
     if (this.userId) {
-      this.loanService.getLoanBooksByUserId(this.userId).subscribe(data => {
+      this.rentalService.getLoanBooksByUserId(this.userId).subscribe(data => {
         console.log(data)
         this.Loanbooks = data;
         console.log(data);
@@ -79,7 +78,7 @@ export class LikedBooksComponent implements OnInit {
       bookId: id,
       userId: this.getId()
     }
-    this.loanService.returnLoanBookByUser(this.loanRequest).subscribe(
+    this.rentalService.returnLoanBookByUser(this.loanRequest).subscribe(
       data => {
         console.log('Zwrot wysłany', data);
       },

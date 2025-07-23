@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BookService } from '../../Service/BookService';
 import { Book } from '../../Models/book.model';
 import { UserService } from 'src/app/Service/UserService';
-import { LoanService } from 'src/app/Service/LoanService';
+import { RentalService } from 'src/app/Service/RentalService';
 import { SearchCriteria } from 'src/app/Models/SearchCriteria.DTO';
 import { LoanRequest } from 'src/app/Models/Request/LoanRequest';
 
@@ -38,7 +38,7 @@ export class MainMenuComponent implements OnInit {
       bookId: 0,
       userId: 0,
     };
-  constructor(private bookService: BookService, private userService: UserService, private loanService: LoanService) { }
+  constructor(private bookService: BookService, private userService: UserService, private rentalService: RentalService) { }
 
   ngOnInit(): void {
     this.getBooks(0);
@@ -122,10 +122,10 @@ export class MainMenuComponent implements OnInit {
       this.getBooks(page)
     }
   }
-  loanbook(id: number): void {
+  rentalbook(id: number): void {
     this.loanRequest.bookId=id;
     this.loanRequest.userId=this.getId();
-    this.loanService.loanBookByUser(this.loanRequest).subscribe({
+    this.rentalService.rentalBookByUser(this.loanRequest).subscribe({
       next: () => {
         alert('Książka została wypożyczona!');
       },

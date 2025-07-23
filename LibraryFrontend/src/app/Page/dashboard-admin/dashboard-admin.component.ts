@@ -7,7 +7,7 @@ import { UserResponse } from 'src/app/Models/Response/UserResponse';
 import { UserAdmin } from 'src/app/Models/UserAdmin.model';
 import { AdminService } from 'src/app/Service/AdminService';
 import { BookService } from 'src/app/Service/BookService';
-import { LoanService } from 'src/app/Service/LoanService';
+import { RentalService } from 'src/app/Service/RentalService';
 import { UserService } from 'src/app/Service/UserService';
 
 @Component({
@@ -16,7 +16,7 @@ import { UserService } from 'src/app/Service/UserService';
   styleUrls: ['./dashboard-admin.component.css']
 })
 export class DashboardAdminComponent {
-  constructor(private userService:UserService, private router: Router,private myService: BookService,private adminService: AdminService,private loanService: LoanService) { }
+  constructor(private userService:UserService, private router: Router,private myService: BookService,private adminService: AdminService,private rentalService: RentalService) { }
   view:string ='dashboard';
   viewTitles:{[key:string]:string} = {
       dashboard: 'Dashboard',
@@ -116,14 +116,14 @@ goToBook(id: number) {
       
     },error => console.error('Błąd podczas pobierania książek:', error));
   }*/
-  checkOverdues(): void {
-    this.loanService.checkOverdueStatus().subscribe(() => {
+  /*checkOverdues(): void {
+    this.rentalService.checkOverdueStatus().subscribe(() => {
       alert('Zaległości zostały sprawdzone!');
     }, error => console.error('Błąd przy sprawdzaniu zaległości:', error));
   }
   checkRequests(): void {
-    this.loanService.checkRequestStatus().subscribe(() => {
+    this.rentalService.checkRequestStatus().subscribe(() => {
       alert('Requesty zostały sprawdzone i zaaktualizowane!');
     }, error => console.error('Błąd przy sprawdzaniu requestów:', error));
-  }
+  }*/
 }

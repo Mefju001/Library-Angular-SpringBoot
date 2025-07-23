@@ -8,14 +8,16 @@ import com.app.library.Entity.LibraryBook;
 import com.app.library.Service.LibraryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-@RequestMapping("/api/admin/library")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
+@RestController
+@RequestMapping("/api/admin/library")
+@Tag(name = "Admin library Controller", description = "Udostępnia funkcję dla administratora w adminPanelu")
 public class AdminLibraryController {
     private final LibraryService libraryService;
 

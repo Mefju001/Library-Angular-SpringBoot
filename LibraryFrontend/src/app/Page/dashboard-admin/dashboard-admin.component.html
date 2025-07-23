@@ -13,8 +13,8 @@
       <header >
         <h1>{{ currentTitle }}</h1>
         <span>Witaj, Admin!</span>
-        <button (click)="checkRequests()" class="check-btn">Zatwierdź wszystko</button>
-        <button (click)="checkOverdues()" class="check-btn">🔄 Sprawdź zaległości</button>
+        <button  class="check-btn">Zatwierdź wszystko</button>(click)="checkRequests()"
+        <button class="check-btn">🔄 Sprawdź zaległości</button>(click)="checkOverdues()" 
       </header>
       <section class="cards" *ngIf="view === 'dashboard'">
         <div class="card">

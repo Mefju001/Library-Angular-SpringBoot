@@ -4,17 +4,19 @@ import com.app.library.DTO.Request.RentalRequest;
 import com.app.library.Service.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
+@PreAuthorize("hasRole('ROLE_ADMIN')")
+@RestController
+@RequestMapping("/api/admin/rental")
+@Tag(name = "Admin rental Controller", description = "Udostępnia funkcję dla administratora w adminPanelu")
 public class AdminRentalController {
     private final RentalService rentalService;
 
@@ -22,7 +24,7 @@ public class AdminRentalController {
         this.rentalService = rentalService;
     }
 
-    @PutMapping("/loan/confirm")
+    @PutMapping("/confirm")
     @Operation(
             summary = "Zatwierdza wypożyczenie książki",
             description = "Zatwierdza istniejące żądanie wypożyczenia książki przez użytkownika."
@@ -44,7 +46,7 @@ public class AdminRentalController {
     }
 
     //Do edycji
-    @PutMapping("/loan/extend/confirm/{bookId}")
+    @PutMapping("/extend/confirm/{bookId}")
     @Operation(summary = "Potwierdzenie przez administratora przedłużenia wypożyczenia książki przez użytkownika")
     public ResponseEntity<String> approveExtendLoan(
             @Parameter(description = "ID książki")
@@ -68,7 +70,7 @@ public class AdminRentalController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/loans/requests/check-request")
+    @PostMapping("/requests/check-request")
     @Operation(
             summary = "Zatwierdza wszystkie oczekujące prośby o wypożyczenie",
             description = "Administrator masowo zatwierdza wszystkie nierozpatrzone prośby o wypożyczenie książek."

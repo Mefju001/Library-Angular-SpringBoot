@@ -37,14 +37,14 @@ public class RentalController {
         }
     }
 
-    @PostMapping("/loan")
+    @PostMapping("/")
     @Operation(summary = "Wypożycza książkę dla użytkownika")
     public ResponseEntity<String> loanBook(@RequestBody @Valid RentalRequest request) {
         rentalService.requestloanBook(request.bookId(), request.userId());
         return ResponseEntity.ok("Book request loaned successfully.");
     }
 
-    @PutMapping("/loan/return-request")
+    @PutMapping("/return-request")
     @Operation(
             summary = "Zgłasza chęć zwrotu książki",
             description = "Użytkownik zgłasza chęć zwrotu wypożyczonej książki. przekazując identyfikatory książki i użytkownika w treści żądania."
@@ -54,7 +54,7 @@ public class RentalController {
         return ResponseEntity.ok("Book return request submitted successfully.");
     }
 
-    @GetMapping("/loan/{bookId}/days-left")
+    @GetMapping("/book/{bookId}/days-left")
     @Operation(summary = "Sprawdza ile dni pozostało do końca wypożyczenia książki")
     public ResponseEntity<LoanDeadlineInfo> howManyDaysLeft(
             @Parameter(description = "ID książki")
@@ -64,7 +64,7 @@ public class RentalController {
     }
 
     //do edycji
-    @PutMapping("/loan/extend/request/{userId}/{bookId}")
+    @PutMapping("/extend/request/{userId}/{bookId}")
     @Operation(summary = "Zgłasza prośbę o przedłużenie wypożyczenia książki dla użytkownika")
     public ResponseEntity<String> requestExtendLoan(
             @Parameter(description = "ID użytkownika")
