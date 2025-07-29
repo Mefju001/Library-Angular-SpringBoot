@@ -1,4 +1,4 @@
-export interface LoanRequest{
+export interface RentalRequest{
     userId:number;
     bookId:number;
 }

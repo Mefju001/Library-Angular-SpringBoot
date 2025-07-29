@@ -19,21 +19,24 @@ import com.app.library.Security.DTO.Request.UserRequest;
 import com.app.library.Security.DTO.Response.JwtResponse;
 import com.app.library.Security.JWT.JwtUtils;
 import com.app.library.Security.Service.UserDetailsImpl;
+import com.app.library.Security.Service.UserDetailsServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -48,12 +51,13 @@ public class UserServiceImpl implements UserService {
     private final FavoriteBooksMapper favoriteBooksMapper;
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
 
     private final JwtUtils jwtUtils;
 
     @Autowired
-    public UserServiceImpl(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, FavoriteBooksMapper favoriteBooksMapper, UserMapper userMapper, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public UserServiceImpl(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, FavoriteBooksMapper favoriteBooksMapper, UserMapper userMapper, PasswordEncoder encoder, UserDetailsServiceImpl userDetailsServiceImpl, JwtUtils jwtUtils) {
         this.favoritebooksRepository = favoritebooksRepository;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -62,6 +66,7 @@ public class UserServiceImpl implements UserService {
         this.favoriteBooksMapper = favoriteBooksMapper;
         this.userMapper = userMapper;
         this.encoder = encoder;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.jwtUtils = jwtUtils;
     }
 
@@ -93,16 +98,74 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public JwtResponse login(UserRequest loginRequest) {
+    public Boolean hasAdminRole(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null||authentication.getName().equals("anonymousUser")||!authentication.isAuthenticated())
+        {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        Collection<?extends GrantedAuthority>roles = authentication.getAuthorities();
+        boolean isAdmin = roles.stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+        return isAdmin;
+    }
+
+    @Override
+    public JwtResponse refreshToken(HttpServletRequest request,HttpServletResponse response) {
+        String RefreshToken = null;
+        if (request.getCookies() != null) {
+            for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
+                if ("refresh_token".equals(cookie.getName())) {
+                    RefreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        if (RefreshToken == null || !jwtUtils.validateJwtToken(RefreshToken)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or missing refresh token.");
+        }
+        try {
+            String username = jwtUtils.getUserNameFromJwtRefreshToken(RefreshToken);
+            UserDetailsImpl userDetails = userDetailsServiceImpl.loadUserByUsername(username);
+            String newAccessToken = jwtUtils.generateTokenFromUsername(username,userDetails.getAuthorities());
+            String newRefreshToken = jwtUtils.generateRefreshToken(userDetails);
+            ResponseCookie newRefreshTokenCookie = ResponseCookie.from("refresh_token", newRefreshToken)
+                     .httpOnly(true)
+                     .secure(false)//true w produkcji
+                     .path("/")
+                     .maxAge(jwtUtils.getJwtRefreshExpirationMs() / 1000)
+                     .sameSite("Lax")
+                     .build();
+            response.addHeader(HttpHeaders.SET_COOKIE, newRefreshTokenCookie.toString());
+            return new JwtResponse(newAccessToken,
+                    newRefreshToken,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    userDetails.getAuthorities());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public JwtResponse login(UserRequest loginRequest, HttpServletResponse response) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
+        String RefreshToken = jwtUtils.generateRefreshToken(userDetails);
+        ResponseCookie refreshTokenCookie  = ResponseCookie.from("refresh_token", RefreshToken)
+                .httpOnly(true)
+                .secure(false) // Pamiętaj: true w produkcji!
+                .path("/")
+                .maxAge(jwtUtils.getJwtRefreshExpirationMs() / 1000)
+                .sameSite("Lax")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
         return new JwtResponse(jwt,
+                RefreshToken,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getAuthorities());

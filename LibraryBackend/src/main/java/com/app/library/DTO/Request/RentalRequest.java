@@ -2,7 +2,7 @@ package com.app.library.DTO.Request;
 
 import jakarta.validation.constraints.NotNull;
 
-public record LoanRequest(
+public record RentalRequest(
         @NotNull Long userId,
         @NotNull Integer bookId
 ) {

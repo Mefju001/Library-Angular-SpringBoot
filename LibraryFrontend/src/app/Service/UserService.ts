@@ -31,7 +31,10 @@ export class UserService {
     return this.http.delete(`${this.apiUrl}/delete/${id}`);
   }
   addLikedBook(bookId: number,userId:number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/add?bookId=${bookId}&userId=${userId}`,null);
+    let params = new HttpParams();
+    params = params.set('bookId',bookId)
+    params = params.set('userId',userId)
+    return this.http.post(`${this.apiUrl}/add`,null,{params:params});
   }
   getLikedBook(userId:number): Observable<any> {
     return this.http.get(`${this.apiUrl}/?userId=${userId}`);
