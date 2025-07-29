@@ -1,6 +1,7 @@
 <div class="books-container">
         <ng-container *ngIf="type === 'liked'">
-          <div *ngFor="let book of likedBooks" class="book" [routerLink]="['/book', book.id]" >
+          <div *ngFor="let book of likedBooks" class="book"  >
+            <div [routerLink]="['/book', book.id]">
             <h2>{{ book.book.title }}</h2>
             <p><strong>Autor:</strong> {{ book.book.authorName }} {{ book.book.authorSurname }}</p>
             <p><strong>Gatunek:</strong> {{ book.book.genreName }}</p>
@@ -10,6 +11,7 @@
             <p><strong>Język:</strong> {{ book.book.language }}</p>
             <p><strong>Cena:</strong> {{ book.book.price }} zł</p>
             <p><strong>Liczba stron:</strong> {{ book.book.pages }}</p>
+            </div>
             <form (submit)="deletelikedBook(book.id)">
                 <button type="submit">Usuń książkę z polubionych</button>
             </form>
@@ -37,7 +39,7 @@
         </ng-container>
       
         <ng-container *ngIf="type === 'loaned'">
-          <div *ngFor="let rental of Loanbooks" class="book">
+          <div *ngFor="let rental of Rentalbooks" class="book">
             <h2>{{ rental.bookResponse.title }}</h2>
             <p><strong>Autor:</strong> {{ rental.bookResponse.authorName }} {{ rental.bookResponse.authorSurname }}</p>
             <p><strong>Gatunek:</strong> {{ rental.bookResponse.genreName }}</p>
@@ -50,11 +52,13 @@
             <p><strong>Status:</strong> {{ rental.status }}</p>
             <p><strong>Data wypożyczenia:</strong> {{ rental.rentalStartDate}}</p>
             <p><strong>Data zwrotu:</strong> {{ rental.rentalEndDate}}</p>
+            <div *ngIf="rental.status === 'loaned'">
             <p *ngIf="rental.overdue"><strong>Opóźnione!</strong></p>
-            <div *ngIf="Loanbooks.length === 0">
+            </div>
+            <div *ngIf="Rentalbooks.length === 0">
                 <p>Brak książek w bazie danych.</p>
             </div>
-            <button (click)="returnLoanedBooks(rental.bookResponse.id)" *ngIf="rental.status === 'loaned'|| rental.status ==='overdue'">Zwróć</button>
+            <button (click)="returnRentalBook(rental.bookResponse.id)" *ngIf="rental.status === 'loaned'|| rental.status ==='overdue'">Zwróć</button>
         </div>
         </ng-container>
     </div>

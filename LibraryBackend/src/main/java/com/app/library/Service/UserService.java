@@ -7,6 +7,8 @@ import com.app.library.DTO.Response.UserResponse;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Security.DTO.Request.UserRequest;
 import com.app.library.Security.DTO.Response.JwtResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
@@ -16,9 +18,9 @@ public interface UserService {
     List<UserResponse> findAll();
 
     UserResponse findbyid(Long id);
-
-    JwtResponse login(UserRequest loginRequest);
-
+    JwtResponse refreshToken(HttpServletRequest request, HttpServletResponse response);
+    JwtResponse login(UserRequest loginRequest, HttpServletResponse response);
+    Boolean hasAdminRole();
     void changedetails(Long id, UserDetailsRequest userRequest);
 
     void changepassword(Long id, UserPasswordRequest userPasswordRequest);

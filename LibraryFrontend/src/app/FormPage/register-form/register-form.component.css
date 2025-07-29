@@ -1,25 +1,25 @@
 /* Styling for the whole page/background */
-.login-page {
+.register-page {
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center;     /* Center vertically */
   min-height: 100vh;       /* Full viewport height */
   background: linear-gradient(to right, #6a11cb, #2575fc); /* Modern gradient background */
   font-family: 'Arial', sans-serif;
-  padding: 20px; /* Add some padding in case of smaller screens */
-  box-sizing: border-box; /* Include padding in element's total width and height */
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-/* Styling for the login form container */
-.login-container {
+/* Styling for the registration form container */
+.register-container {
   background-color: #ffffff;
   padding: 40px;
-  border-radius: 12px; /* Softer rounded corners */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Deeper shadow for 3D effect */
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 400px; /* Max width for larger screens */
+  max-width: 450px; /* Slightly wider for more fields */
   text-align: center;
-  animation: fadeIn 0.8s ease-out; /* Simple fade-in animation */
+  animation: fadeIn 0.8s ease-out;
 }
 
 @keyframes fadeIn {
@@ -37,11 +37,11 @@ h2 {
 /* Form group styling (label + input) */
 .form-group {
   margin-bottom: 20px;
-  text-align: left; /* Align labels and inputs to the left */
+  text-align: left;
 }
 
 label {
-  display: block; /* Make label take full width */
+  display: block;
   margin-bottom: 8px;
   color: #555555;
   font-weight: 500;
@@ -49,27 +49,29 @@ label {
 }
 
 input[type="text"],
+input[type="email"],
 input[type="password"] {
-  width: 100%; /* Make input take full width of its container */
+  width: 100%;
   padding: 12px 15px;
   border: 1px solid #cccccc;
-  border-radius: 8px; /* Slightly more rounded inputs */
+  border-radius: 8px;
   font-size: 1em;
   color: #333333;
-  box-sizing: border-box; /* Crucial for padding not to add to width */
+  box-sizing: border-box;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 input[type="text"]:focus,
+input[type="email"]:focus,
 input[type="password"]:focus {
-  border-color: #2575fc; /* Highlight border on focus */
-  box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.2); /* Soft glow on focus */
-  outline: none; /* Remove default outline */
+  border-color: #2575fc;
+  box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.2);
+  outline: none;
 }
 
 /* Validation feedback */
 input.is-invalid {
-  border-color: #dc3545; /* Red border for invalid fields */
+  border-color: #dc3545;
 }
 
 .validation-feedback {
@@ -79,7 +81,7 @@ input.is-invalid {
   text-align: left;
 }
 
-/* Error message from backend */
+/* Error and success messages */
 .error-message {
   color: #dc3545;
   background-color: #f8d7da;
@@ -90,62 +92,73 @@ input.is-invalid {
   font-size: 0.95em;
 }
 
+.success-message {
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 20px;
+  font-size: 0.95em;
+}
+
+
 /* Button styling */
 .form-actions {
   display: flex;
-  flex-direction: column; /* Stack buttons vertically */
-  gap: 15px; /* Space between buttons */
+  flex-direction: column;
+  gap: 15px;
   margin-top: 30px;
 }
 
 .btn {
-  display: block; /* Make buttons take full width */
+  display: block;
   width: 100%;
   padding: 12px 20px;
   font-size: 1.1em;
   font-weight: 600;
   border: none;
-  border-radius: 8px; /* Consistent border-radius */
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-  text-decoration: none; /* For the anchor tag acting as a button */
+  text-decoration: none;
   text-align: center;
 }
 
 .primary-btn {
-  background-color: #2575fc; /* Primary action color */
+  background-color: #2575fc;
   color: #ffffff;
 }
 
 .primary-btn:hover {
-  background-color: #1a5ac9; /* Darker on hover */
-  transform: translateY(-2px); /* Slight lift effect */
+  background-color: #1a5ac9;
+  transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(37, 117, 252, 0.3);
 }
 
 .primary-btn:disabled {
-  background-color: #a0c2ed; /* Lighter color when disabled */
+  background-color: #a0c2ed;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
 .secondary-btn {
-  background-color: #6a11cb; /* Secondary action color */
+  background-color: #6a11cb;
   color: #ffffff;
 }
 
 .secondary-btn:hover {
-  background-color: #500a9e; /* Darker on hover */
+  background-color: #500a9e;
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(106, 17, 203, 0.3);
 }
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-  .login-container {
+  .register-container {
     padding: 25px;
-    margin: 10px; /* Smaller margin on very small screens */
+    margin: 10px;
   }
 
   h2 {

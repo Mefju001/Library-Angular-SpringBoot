@@ -89,7 +89,7 @@
               <p>Cena: {{ book.price }} zł</p>
             </div>
             <button>Kup</button>
-            <button (click)="loanbook(book.id)">Wypozycz</button>
+            <button (click)="rentalbook(book.id)">Wypozycz</button>
           </div>
           
           <div *ngIf="books.length === 0">

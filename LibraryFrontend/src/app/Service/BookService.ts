@@ -24,7 +24,6 @@ getBooksByCriteria(page: number, size: number, criteria:SearchCriteria): Observa
     let params = new HttpParams()
     .set('page', page)
     .set('size', size);
-
   Object.entries(criteria).forEach(([key, value]) => {
     if (value !== null && value !== undefined && value !== '') {
       params = params.set(key, value.toString());

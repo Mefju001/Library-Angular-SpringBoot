@@ -10,7 +10,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 })
 export class LibraryComponent {
   Libraries: Library[] = [];
-  safeMaps: { [id: number]: SafeResourceUrl } = {}; // mapa id -> bezpieczny URL
+  safeMaps: { [id: number]: SafeResourceUrl } = {};
   library={
     id: 0,
     location: "",
@@ -19,15 +19,11 @@ export class LibraryComponent {
   };
   constructor(private Libraryservice: LibraryService,private sanitizer:DomSanitizer) { }
   ngOnInit(): void {
-    // Początkowe wywołanie, żeby pobrać książki (jeśli jakieś filtry byłyby ustawione)
+
     this.getLibraries();
   }
   isAdmin(): boolean {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if(user.role[0].authority ==='ROLE_ADMIN')
-      return true;
-
-    return false;
+    this.
   }
   getLibraries(): void {
     // Wywołaj metodę serwisu, aby pobrać książki

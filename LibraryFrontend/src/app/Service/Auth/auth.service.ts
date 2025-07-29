@@ -1,63 +1,75 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Router } from '@angular/router';  // Dodaj import Router
-import { Observable, tap } from 'rxjs';
-import { User } from '../../Models/User.model';
+import { Router } from '@angular/router';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
+import { UserResponse } from '../../Models/Response/UserResponse';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-
-  private apiUrl = 'http://localhost:8080/api/auth'; // URL backendu do logowania
-
+  private apiUrl = 'http://localhost:8080/api/auth';
+  public currentAccessToken: string | null = null;
   constructor(
     private http: HttpClient,
-    private router: Router  // Dodaj router do konstruktora
+    private router: Router
   ) {}
-
-  // Funkcja logowania, która otrzymuje token JWT po pomyślnym zalogowaniu
+  public setAccessToken(token: string): void {
+    this.currentAccessToken = token;
+    this.storeAccessToken(this.currentAccessToken);
+  }
+  public getAccessToken(): string | null {
+    return this.currentAccessToken;
+  }
+  public clearAccessToken(): void {
+    this.currentAccessToken = null;
+  }
+  
   login(username: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/login`, { username, password });
+    return this.http.post<any>(`${this.apiUrl}/login`, { username, password },{
+       withCredentials: true}).pipe(tap(respone=>{this.setAccessToken(respone.accessToken)}))
   }
+    
+   public handleTokenRefresh(): Observable<string | null> {
+    console.log('Attempting to refresh token...');
+    return this.http.post<any>(`${this.apiUrl}/refresh-token`, {}, {
+      withCredentials: true
+    }).pipe(
+      tap(response => {
+        console.log('Refresh token response:', response);
+        if (response && response.accessToken) {
+          this.setAccessToken(response.accessToken);
+          console.log('New access token obtained and set.');
+        } else {
+          this.clearAccessToken();
+          console.warn('No new access token received from refresh endpoint. Clearing current token.');
+        }
+      }),
+      map(response => (response && response.accessToken) ? response.accessToken : null),
+      catchError(error => {
+        console.error('Error during token refresh:', error);
+        this.clearAccessToken();
+        return throwError(() => error);
+      })
+    );
+  }
+  hasRole(): Observable<any> {
+    return this.http.get<boolean>(`${this.apiUrl}/has-role/admin`,{ withCredentials: true }).pipe(
+      catchError(error => {
+        console.error('Błąd podczas sprawdzania roli admina z backendu:', error);
+        return of(false);}))}
 
-  // Funkcja do przechowywania tokena w localStorage
-  storeToken(User: User): void {
-    localStorage.setItem('user', JSON.stringify(User));
+  storeUser(User: UserResponse): void {
+    sessionStorage.setItem('user', JSON.stringify(User));
   }
-  // Funkcja do pobierania tokena z localStorage
-  getToken(): string | null {
-    const user = localStorage.getItem('user');
-    if (user) {
-      const parsedUser = JSON.parse(user);
-      return parsedUser.accessToken; // Zwróć tylko token
-    }
-    return null;
+  storeAccessToken(AccessToken:string):void{
+    sessionStorage.setItem('accessToken',AccessToken)
   }
-
-  // Funkcja do usuwania tokena (np. podczas wylogowania)
-  removeToken(): void {
-    localStorage.removeItem('user');
-  }
-
-  // Sprawdzenie, czy użytkownik jest zalogowany (ma token)
-  isAuthenticated(): boolean {
-    return this.getToken() !== null;
-  }
-
-  // Funkcja, która dodaje token JWT do nagłówków żądań
-  createAuthHeaders(): HttpHeaders {
-    const token = this.getToken();
-    let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-    return headers;
-  }
-
-  // Funkcja do wylogowania użytkownika
   logout(): void {
-    this.removeToken();  // Usuwamy token
-    this.router.navigate(['/login']);  // Przekierowanie do strony logowania
+    this.clearAccessToken();
+    this.router.navigate(['/login']);
+  }
+  isAuthenticated(): boolean {
+    return this.getAccessToken() !== null;
   }
 }

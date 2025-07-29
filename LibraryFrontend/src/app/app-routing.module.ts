@@ -11,6 +11,7 @@ import { FormdetailsComponent } from './FormPage/formdetails/formdetails.compone
 import { FormpasswordComponent } from './FormPage/formpassword/formpassword.component';
 import { LikedBooksComponent } from './Page/liked-books/liked-books.component';
 import { DashboardAdminComponent } from './Page/dashboard-admin/dashboard-admin.component';
+import { RegisterFormComponent } from './FormPage/register-form/register-form.component';
 
 
 const routes: Routes = [
@@ -24,7 +25,7 @@ const routes: Routes = [
   { path: 'addbook/:id', component: AddBookComponent },
 
   { path: 'likedBooks/:type', component: LikedBooksComponent },
-
+  { path: 'register', component: RegisterFormComponent },
   { path: 'addlibrary', component: AddLibraryComponent },
   { path: 'addlibrary/:id', component: AddLibraryComponent },
   { path: 'library', component: LibraryComponent },

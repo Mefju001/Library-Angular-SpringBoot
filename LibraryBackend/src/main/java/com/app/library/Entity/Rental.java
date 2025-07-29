@@ -33,6 +33,8 @@ public class Rental {
     private RentalStatus status;
     @Column(name = "penalty")
     private Double penalty;
+    @Column(name = "extensionCount")
+    private Integer extensionCount;
 
     public Rental(Integer rentalId, User userId, Book bookId, LocalDate rentalStartDate, LocalDate rentalEndDate) {
         this.rentalId = rentalId;
@@ -46,63 +48,12 @@ public class Rental {
 
     }
 
-    public void requestStartLoan() {
-        this.status = pending;
-
+    public Integer getExtensionCount() {
+        return extensionCount;
     }
 
-    public void startLoan() {
-        this.status = loaned;
-        this.rentalStartDate = LocalDate.now();
-        this.rentalEndDate = this.rentalStartDate.plusMonths(3);
-    }
-
-    public void requestEndLoan() {
-        if (this.status != loaned&&this.status != overdue) {
-            throw new IllegalStateException("Return can only be requested for loaned books");
-        }
-        this.status = RentalStatus.return_requested;
-        this.returnRequestDate = LocalDate.now();
-
-    }
-
-    public void endLoan() {
-        this.status = RentalStatus.returned;
-    }
-
-    public void extendLoan() {
-        this.status = RentalStatus.extend;
-        this.rentalEndDate = this.rentalEndDate.plusMonths(1);
-    }
-
-    public boolean isOverdue() {
-        LocalDate today = LocalDate.now();
-        if (this.status == loaned && rentalEndDate.isBefore(today)) {
-            this.status = RentalStatus.overdue;
-            return true;
-        }
-        return false;
-    }
-
-    public LoanDeadlineInfo getRemainingDays() {
-        long daysBetween = ChronoUnit.DAYS.between(LocalDate.now(), this.rentalEndDate);
-        boolean isOverdue = daysBetween < 0;
-        return new LoanDeadlineInfo(Math.abs(daysBetween), isOverdue);
-    }
-
-    public Integer getDays() {
-        if (this.returnRequestDate != null && this.rentalEndDate != null) {
-            // Liczymy dni od daty zakończenia wypożyczenia do daty zwrotu
-            return Math.toIntExact(ChronoUnit.DAYS.between(this.rentalEndDate, this.returnRequestDate));
-        }
-        return 0; // Jeśli nie ma dat, zwracamy 0 dni (lub można rzucić wyjątek)
-    }
-
-    public void cancelLoan() {
-        if (this.status != pending) {
-            throw new IllegalStateException("Only active loans can be cancelled.");
-        }
-        this.status = RentalStatus.cancelled;
+    public void setExtensionCount(Integer extensionCount) {
+        this.extensionCount = extensionCount;
     }
 
     public Integer getRentalId() {

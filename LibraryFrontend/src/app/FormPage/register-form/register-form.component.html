@@ -1,0 +1,61 @@
+<div class="register-page">
+  <div class="register-container">
+    <h2>Rejestracja</h2>
+    <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+      <div class="form-group">
+        <label for="username">Nazwa użytkownika:</label>
+        <input type="text" id="username" name="username" [(ngModel)]="username" required minlength="3" #usernameInput="ngModel"
+               [class.is-invalid]="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)">
+        <div *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)" class="validation-feedback">
+          <div *ngIf="usernameInput.errors?.['required']">Nazwa użytkownika jest wymagana.</div>
+          <div *ngIf="usernameInput.errors?.['minlength']">Nazwa użytkownika musi mieć co najmniej 3 znaki.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" [(ngModel)]="email" required email #emailInput="ngModel"
+               [class.is-invalid]="emailInput.invalid && (emailInput.dirty || emailInput.touched)">
+        <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="validation-feedback">
+          <div *ngIf="emailInput.errors?.['required']">Email jest wymagany.</div>
+          <div *ngIf="emailInput.errors?.['email']">Wprowadź prawidłowy adres email.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Hasło:</label>
+        <input type="password" id="password" name="password" [(ngModel)]="password" required minlength="6" #passwordInput="ngModel"
+               [class.is-invalid]="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)">
+        <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="validation-feedback">
+          <div *ngIf="passwordInput.errors?.['required']">Hasło jest wymagane.</div>
+          <div *ngIf="passwordInput.errors?.['minlength']">Hasło musi mieć co najmniej 6 znaków.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Potwierdź hasło:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="confirmPassword" required #confirmPasswordInput="ngModel"
+               [class.is-invalid]="confirmPasswordInput.invalid && (confirmPasswordInput.dirty || confirmPasswordInput.touched)">
+        <div *ngIf="confirmPasswordInput.invalid && (confirmPasswordInput.dirty || confirmPasswordInput.touched)" class="validation-feedback">
+          <div *ngIf="confirmPasswordInput.errors?.['required']">Potwierdzenie hasła jest wymagane.</div>
+        </div>
+        <div *ngIf="password !== confirmPassword && confirmPasswordInput.dirty && confirmPasswordInput.touched" class="validation-feedback">
+          Hasła nie pasują.
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="registerForm.invalid || password !== confirmPassword" class="btn primary-btn">Zarejestruj</button>
+        <a routerLink="/login" class="btn secondary-btn">Mam już konto</a>
+      </div>
+    </form>
+  </div>
+</div>

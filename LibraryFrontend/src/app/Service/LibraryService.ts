@@ -22,7 +22,9 @@ export class LibraryService {
       return this.http.get<Library>(`${this.apiUrl}/${id}`, {
         params: new HttpParams().set('id', id)
     });}
-  saveLibrary(library: Library): Observable<any> {
+  
+  //AdminLibraryservice
+    saveLibrary(library: Library): Observable<any> {
     return this.http.post(`${this.apiUrl}/addlibrary`, library);
   }
   updateLibrary(id: number, library: Library): Observable<any> {

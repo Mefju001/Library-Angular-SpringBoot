@@ -1,8 +1,6 @@
 package com.app.library.DTO.Response;
 
-import java.time.LocalDate;
-
-public record LoanBookResponse(
+public record RentalBookResponse(
         Integer rentalId,
         UserResponse userResponse,
         BookResponse bookResponse,
@@ -10,8 +8,7 @@ public record LoanBookResponse(
         String rentalEndDate,
         String returnRequestDate,
         String status,
-        Integer penalty,
-        Integer days,
-        Long remainingDays,
-        Boolean overdue) {
+        Double penalty,
+        Integer extensionCount
+        ) {
 }

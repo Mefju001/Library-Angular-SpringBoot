@@ -8,5 +8,4 @@ import lombok.Data;
 public class LoanDeadlineInfo {
     private Long days;
     private boolean isOverdue;
-
 }

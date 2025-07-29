@@ -11,6 +11,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -65,7 +66,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
@@ -73,14 +74,15 @@ public class WebConfig implements WebMvcConfigurer {
                                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")
                                 .permitAll()
                                 .requestMatchers("/Img/**").permitAll()
-                                .requestMatchers("/api/adminPanel/**").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll()
+                                /*.requestMatchers("/api/adminPanel/**").permitAll()
                                 .requestMatchers("/api/reviews/**").permitAll()
                                 .requestMatchers("/api/rentals/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/books/**").permitAll()    //hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/library/**").permitAll()       //hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/user/**").permitAll()  //hasAnyRole("ADMIN", "USER")
-                                .anyRequest().authenticated()
+                                */.anyRequest().authenticated()
                 );
         http.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration config = new CorsConfiguration();

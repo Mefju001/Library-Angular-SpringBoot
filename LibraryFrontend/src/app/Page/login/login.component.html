@@ -1,25 +1,33 @@
-<body>
-    <div class="container">
-        <h2>Logowanie</h2>
-        <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-            <div class="form-group">
-                <label for="username">Nazwa użytkownika:</label>
-                <input type="text" id="username" name="username" [(ngModel)]="username" required #usernameInput="ngModel">
-            </div>
-            <div class="form-group">
-                <label for="password">Hasło:</label>
-                <input type="password" id="password" name="password" [(ngModel)]="password" required #passwordInput="ngModel">
-            </div>
-            <div class="form-group">
-                <button type="submit" [disabled]="loginForm.invalid"class="btn btn-primary mt-3">Zaloguj</button>
-            </div>
-            <div *ngIf="errorMessage" class="form-group">
-                <p class="error-message">{{ errorMessage }}</p>
-            </div>
-            <div class="form-group">
-                <a routerLink="/register" class="btn btn-primary mt-3">Rejestracja</a>
-            </div>
-        </form>
-    </div>
-</body>
+<div class="login-page">
+  <div class="login-container">
+    <h2>Logowanie</h2>
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="username">Nazwa użytkownika:</label>
+        <input type="text" id="username" name="username" [(ngModel)]="username" required #usernameInput="ngModel"
+               [class.is-invalid]="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)">
+        <div *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)" class="validation-feedback">
+          Nazwa użytkownika jest wymagana.
+        </div>
+      </div>
 
+      <div class="form-group">
+        <label for="password">Hasło:</label>
+        <input type="password" id="password" name="password" [(ngModel)]="password" required #passwordInput="ngModel"
+               [class.is-invalid]="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)">
+        <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="validation-feedback">
+          Hasło jest wymagane.
+        </div>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="loginForm.invalid" class="btn primary-btn">Zaloguj</button>
+        <a routerLink="/register" class="btn secondary-btn" [routerLink]="['/register']">Rejestracja</a>
+      </div>
+    </form>
+  </div>
+</div>
