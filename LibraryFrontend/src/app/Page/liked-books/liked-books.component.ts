@@ -5,7 +5,7 @@ import { BorrowedBook } from 'src/app/Models/loanbook.model';
 import { UserService } from 'src/app/Service/UserService';
 import { RentalService } from 'src/app/Service/RentalService';
 import { Book } from 'src/app/Models/book.model';
-import { LoanRequest } from 'src/app/Models/Request/LoanRequest';
+import { RentalRequest } from 'src/app/Models/Request/RentalRequest';
 
 
 @Component({
@@ -17,8 +17,8 @@ export class LikedBooksComponent implements OnInit {
   selectedTab:'liked'|'loaned'='liked';
   likedBooks: likedBook[] =[];
   RecommedationBooks: Book[]=[];
-  Loanbooks: BorrowedBook[]=[];
-  loanRequest: LoanRequest = {
+  Rentalbooks: BorrowedBook[]=[];
+  loanRequest: RentalRequest = {
     bookId:0,
     userId:0
   };
@@ -36,7 +36,7 @@ export class LikedBooksComponent implements OnInit {
       if (this.type === 'liked') {
         this.LikedBooks();
       } else if (this.type === 'loaned') {
-        this.LoanedBook();
+        this.RentalBook();
       } else if(this.type === 'recommendation'){
         this.recommedationBooks();
       }
@@ -62,23 +62,23 @@ export class LikedBooksComponent implements OnInit {
       });
     }
   }
-  LoanedBook():void{
+  RentalBook():void{
     const bookId = Number(this.route.snapshot.paramMap.get('id'));
     this.userId=this.getId();
     if (this.userId) {
-      this.rentalService.getLoanBooksByUserId(this.userId).subscribe(data => {
+      this.rentalService.getRentalBooksByUserId(this.userId).subscribe(data => {
         console.log(data)
-        this.Loanbooks = data;
+        this.Rentalbooks = data;
         console.log(data);
       });
     }
   }
-  returnLoanedBooks(id:number):void {
+  returnRentalBook(id:number):void {
     this.loanRequest={
       bookId: id,
       userId: this.getId()
     }
-    this.rentalService.returnLoanBookByUser(this.loanRequest).subscribe(
+    this.rentalService.returnRentalBookByUser(this.loanRequest).subscribe(
       data => {
         console.log('Zwrot wysłany', data);
       },
@@ -109,5 +109,6 @@ export class LikedBooksComponent implements OnInit {
         console.error('Błąd podczas usuwania książki:', error);
       }
     );
+    this.LikedBooks();
   }
 }

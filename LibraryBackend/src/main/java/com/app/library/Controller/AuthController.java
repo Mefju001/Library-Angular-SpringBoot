@@ -22,7 +22,6 @@ public class AuthController {
 
     private final UserService userService;
 
-
     @Autowired
     public AuthController(UserService userService) {
         this.userService = userService;
@@ -45,7 +44,7 @@ public class AuthController {
     }
     @GetMapping("/has-role/admin")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Boolean> hasAdminRole(HttpServletRequest request) {
-        return ResponseEntity.ok(userService.hasAdminRole(request));
+    public ResponseEntity<Boolean> hasAdminRole() {
+        return ResponseEntity.ok(userService.hasAdminRole());
     }
 }

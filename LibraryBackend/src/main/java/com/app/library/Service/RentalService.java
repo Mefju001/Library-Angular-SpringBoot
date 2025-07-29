@@ -19,17 +19,17 @@ public interface RentalService {
 
     void approveAll();
 
-    LoanDeadlineInfo howManyDaysLeft(Integer rentalId);
+    LoanDeadlineInfo howManyDaysLeft(Integer bookId, Long userId);
 
     Boolean isOverdue(Integer rentalId);
 
-    Map<String, Object> checkOverdueRentals();
+    Map<String, Object > checkOverdueRentals();
 
-    void requestExtendLoan(Integer rentalId);
+    void requestExtendLoan(Integer bookId, Long userId);
 
     void approveExtendLoan(Integer rentalId);
 
-    void cancelLoanBook(Integer rentalId);
+    void cancelLoanBook(Integer bookId, Long userId);
 
     Long getActiveBorrowsCount();
 

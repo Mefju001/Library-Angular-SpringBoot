@@ -24,9 +24,7 @@ export class LoginComponent {
       (response) => {
         this.User.id=response.id;
         this.User.username=response.username;
-        // Zapisz token w localStorage
-        this.authService.storeToken(this.User)
-        // Przekieruj na stronę główną
+        this.authService.storeUser(this.User)
         this.router.navigate(['MainMenu']);
       },
       error => {

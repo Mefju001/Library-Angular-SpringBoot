@@ -23,11 +23,7 @@ export class LibraryComponent {
     this.getLibraries();
   }
   isAdmin(): boolean {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if(user.role[0].authority ==='ROLE_ADMIN')
-      return true;
-
-    return false;
+    this.
   }
   getLibraries(): void {
     // Wywołaj metodę serwisu, aby pobrać książki

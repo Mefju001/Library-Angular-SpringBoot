@@ -4,7 +4,7 @@ import { Book } from '../../Models/book.model';
 import { UserService } from 'src/app/Service/UserService';
 import { RentalService } from 'src/app/Service/RentalService';
 import { SearchCriteria } from 'src/app/Models/SearchCriteria.DTO';
-import { LoanRequest } from 'src/app/Models/Request/LoanRequest';
+import { RentalRequest } from 'src/app/Models/Request/RentalRequest';
 
 
 @Component({
@@ -34,7 +34,7 @@ export class MainMenuComponent implements OnInit {
     startYear: undefined,
     endYear: undefined
   };
-  loanRequest: LoanRequest = {
+  loanRequest: RentalRequest = {
       bookId: 0,
       userId: 0,
     };

@@ -95,7 +95,7 @@ export class BookDetailsComponent implements OnInit {
     }
   }
   getId(): number{
-    const user = localStorage.getItem('user');
+    const user = sessionStorage.getItem('user');
     if (user) {
       try {
         const parsedUser = JSON.parse(user);
@@ -109,10 +109,6 @@ export class BookDetailsComponent implements OnInit {
   }
   likedBook(bookId: number,userId:number) {
     this.userService.addLikedBook(bookId,userId).subscribe(
-      data => {
-        console.log('Książka została dodana do polubionych:', data);
-        ;
-      },
       error => {
         console.error('Błąd podczas dodawania książki:', error);
       }

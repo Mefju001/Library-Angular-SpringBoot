@@ -98,21 +98,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean hasAdminRole(HttpServletRequest request){
-        String RefreshToken = null;
-        if (request.getCookies() != null) {
-            for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
-                if ("refresh_token".equals(cookie.getName())) {
-                    RefreshToken = cookie.getValue();
-                    break;
-                }
-            }
+    public Boolean hasAdminRole(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication == null||authentication.getName().equals("anonymousUser")||!authentication.isAuthenticated())
+        {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        if (RefreshToken == null || !jwtUtils.validateJwtToken(RefreshToken)) {
-            return null;
-        }
-        Collection<?extends GrantedAuthority>authorities = jwtUtils.getAuthoritiesFromJwtToken(RefreshToken);
-        boolean isAdmin = authorities.stream()
+        Collection<?extends GrantedAuthority>roles = authentication.getAuthorities();
+        boolean isAdmin = roles.stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
         return isAdmin;
     }
@@ -129,16 +122,12 @@ public class UserServiceImpl implements UserService {
             }
         }
         if (RefreshToken == null || !jwtUtils.validateJwtToken(RefreshToken)) {
-            return null;
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or missing refresh token.");
         }
-
         try {
             String username = jwtUtils.getUserNameFromJwtRefreshToken(RefreshToken);
             UserDetailsImpl userDetails = userDetailsServiceImpl.loadUserByUsername(username);
-            String newAccessToken = jwtUtils.generateTokenFromUsername(username);
-            response.addHeader(HttpHeaders.SET_COOKIE, newAccessToken);
-
-
+            String newAccessToken = jwtUtils.generateTokenFromUsername(username,userDetails.getAuthorities());
             String newRefreshToken = jwtUtils.generateRefreshToken(userDetails);
             ResponseCookie newRefreshTokenCookie = ResponseCookie.from("refresh_token", newRefreshToken)
                      .httpOnly(true)
@@ -149,10 +138,10 @@ public class UserServiceImpl implements UserService {
                      .build();
             response.addHeader(HttpHeaders.SET_COOKIE, newRefreshTokenCookie.toString());
             return new JwtResponse(newAccessToken,
+                    newRefreshToken,
                     userDetails.getId(),
                     userDetails.getUsername(),
                     userDetails.getAuthorities());
-
         } catch (Exception e) {
             return null;
         }
@@ -167,12 +156,6 @@ public class UserServiceImpl implements UserService {
         String jwt = jwtUtils.generateJwtToken(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         String RefreshToken = jwtUtils.generateRefreshToken(userDetails);
-        ResponseCookie access_token = ResponseCookie.from("access_token",jwt)
-                .httpOnly(true)
-                .secure(false) // Pamiętaj: true w produkcji!
-                .path("/")
-                .sameSite("Lax")
-                .build();
         ResponseCookie refreshTokenCookie  = ResponseCookie.from("refresh_token", RefreshToken)
                 .httpOnly(true)
                 .secure(false) // Pamiętaj: true w produkcji!
@@ -181,8 +164,8 @@ public class UserServiceImpl implements UserService {
                 .sameSite("Lax")
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, access_token.toString());
         return new JwtResponse(jwt,
+                RefreshToken,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getAuthorities());

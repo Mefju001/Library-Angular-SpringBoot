@@ -135,20 +135,19 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public LoanDeadlineInfo howManyDaysLeft(Integer rentalId) {
-        Rental rental = rentalRepository.findById(rentalId)
+    public LoanDeadlineInfo howManyDaysLeft(Integer bookId, Long userId) {
+        Rental rental = rentalRepository.findRentalByBook_IdAndUser_Id(bookId,userId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wypożyczenia o podanym ID"));
 
-        if (rental.getStatus() != RentalStatus.loaned) {
+        if (rental.getStatus() != RentalStatus.loaned&&rental.getStatus() != RentalStatus.overdue&&rental.getStatus() != RentalStatus.extend_requested) {
             throw new IllegalStateException("Ksiazka musi być wypożyczona");
         }
         LocalDate today = LocalDate.now();
         LocalDate endDate = rental.getRentalEndDate();
         long daysBetween = ChronoUnit.DAYS.between(today, endDate);
-        boolean isOverdue = this.isOverdue(rentalId);
+        boolean isOverdue = daysBetween < 0;
         return new LoanDeadlineInfo(Math.abs(daysBetween), isOverdue);
     }
-
     @Override
     public Boolean isOverdue(Integer rentalId) {
         Rental rental = rentalRepository.findById(rentalId)
@@ -182,8 +181,8 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     @Transactional
-    public void requestExtendLoan(Integer rentalId) {
-        Rental rental = rentalRepository.findById(rentalId)
+    public void requestExtendLoan(Integer bookId, Long userId) {
+        Rental rental = rentalRepository.findRentalByBook_IdAndUser_Id(bookId,userId)
                 .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wypożyczenia o podanym ID"));
 
         if (rental.getStatus() != RentalStatus.loaned) {
@@ -210,9 +209,9 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     @Transactional
-    public void cancelLoanBook(Integer rentalId) {
-        Rental rental = rentalRepository.findById(rentalId)
-                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wypożyczenia o podanym ID"));
+    public void cancelLoanBook(Integer bookId, Long userId) {
+        Rental rental = rentalRepository.findRentalByBook_IdAndUser_Id(bookId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono wypożyczenia o podanych ID"));
 
         if (rental.getStatus() != RentalStatus.pending) {
             throw new IllegalStateException("Ksiazka musi być nie wypożyczona");

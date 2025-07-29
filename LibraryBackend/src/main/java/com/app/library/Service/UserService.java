@@ -20,7 +20,7 @@ public interface UserService {
     UserResponse findbyid(Long id);
     JwtResponse refreshToken(HttpServletRequest request, HttpServletResponse response);
     JwtResponse login(UserRequest loginRequest, HttpServletResponse response);
-    Boolean hasAdminRole(HttpServletRequest request);
+    Boolean hasAdminRole();
     void changedetails(Long id, UserDetailsRequest userRequest);
 
     void changepassword(Long id, UserPasswordRequest userPasswordRequest);

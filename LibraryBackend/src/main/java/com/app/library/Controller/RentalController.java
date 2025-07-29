@@ -54,12 +54,14 @@ public class RentalController {
         return ResponseEntity.ok("Book return request submitted successfully.");
     }
 
-    @GetMapping("/book/{bookId}/days-left")
+    @GetMapping("/book/{bookId}/user/{userId}/days-left")
     @Operation(summary = "Sprawdza ile dni pozostało do końca wypożyczenia książki")
     public ResponseEntity<LoanDeadlineInfo> howManyDaysLeft(
+            @Parameter(description = "ID użytkownika")
+            @PathVariable Long userId,
             @Parameter(description = "ID książki")
             @PathVariable Integer bookId) {
-        LoanDeadlineInfo data = rentalService.howManyDaysLeft(bookId);
+        LoanDeadlineInfo data = rentalService.howManyDaysLeft(bookId,userId);
         return ResponseEntity.ok(data);
     }
 
@@ -72,23 +74,25 @@ public class RentalController {
             @Parameter(description = "ID książki")
             @PathVariable Integer bookId) {
         try {
-            rentalService.requestExtendLoan(bookId);
+            rentalService.requestExtendLoan(bookId,userId);
             return ResponseEntity.ok("Loan extension request submitted successfully.");
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
         }
     }
 
-    @PutMapping("/cancel/requestforloan/{bookId}")
+    @PutMapping("/cancel/{bookId}/{userId}")
     @Operation(
             summary = "Anuluje prośbę o wypożyczenie książki",
             description = "Administrator anuluje oczekującą prośbę o wypożyczenie książki przez użytkownika na podstawie ID książki."
     )
     public ResponseEntity<String> cancelLoanBook(
-            @Parameter(description = "ID książki, dla której anulowana zostaje prośba o wypożyczenie")
+            @Parameter(description = "ID użytkownika")
+            @PathVariable Long userId,
+            @Parameter(description = "ID książki")
             @PathVariable Integer bookId) {
         try {
-            rentalService.cancelLoanBook(bookId);
+            rentalService.cancelLoanBook(bookId,userId);
             return ResponseEntity.ok("Loan request canceled successfully.");
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
