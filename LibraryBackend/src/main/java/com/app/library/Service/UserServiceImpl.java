@@ -89,12 +89,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse findbyid(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-        return UserResponse.builder()
-                .id(user.getId())
-                .username(user.getName())
-                .password(user.getPassword())
-                .role(String.valueOf(user.getRoles()))
-                .build();
+        return new UserResponse(user.getId(), user.getName(), user.getPassword(),String.valueOf(user.getRoles()));
     }
 
     @Override
@@ -262,12 +257,11 @@ public class UserServiceImpl implements UserService {
 
         Favoritebooks favoritebooks = new Favoritebooks(book, user);
         favoritebooksRepository.save(favoritebooks);
+        var bookResponse = new BookResponse(favoritebooks.getBook().getId(), favoritebooks.getBook().getTitle(), favoritebooks.getBook().getAuthor().getName(), favoritebooks.getBook().getAuthor().getSurname(), favoritebooks.getBook().getpublicationDate(),
+                favoritebooks.getBook().getIsbn(), favoritebooks.getBook().getGenre().getName(), favoritebooks.getBook().getLanguage(), favoritebooks.getBook().getPublisher().getName(), favoritebooks.getBook().getPages(), favoritebooks.getBook().getPrice());
+        var userResponse = new UserResponse(favoritebooks.getUser().getId(),favoritebooks.getUser().getUsername(),favoritebooks.getUser().getPassword(),favoritebooks.getUser().getRoles().toString());
+        return new FavoriteBooksResponse(favoritebooks.getId(),bookResponse,userResponse);
 
-        return FavoriteBooksResponse.builder()
-                .id(favoritebooks.getId())
-                .book(new BookResponse(favoritebooks.getBook().getId(), favoritebooks.getBook().getTitle(), favoritebooks.getBook().getAuthor().getName(), favoritebooks.getBook().getAuthor().getSurname(), favoritebooks.getBook().getpublicationDate(),
-                        favoritebooks.getBook().getIsbn(), favoritebooks.getBook().getGenre().getName(), favoritebooks.getBook().getLanguage(), favoritebooks.getBook().getPublisher().getName(), favoritebooks.getBook().getPages(), favoritebooks.getBook().getPrice()))
-                .build();
     }
 
     @Override
