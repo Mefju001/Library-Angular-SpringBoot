@@ -7,6 +7,7 @@ import com.app.library.Entity.Promotions;
 import com.app.library.Repository.BookPromotionRepository;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.PromotionRepository;
+import com.app.library.Service.Interfaces.PromotionService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

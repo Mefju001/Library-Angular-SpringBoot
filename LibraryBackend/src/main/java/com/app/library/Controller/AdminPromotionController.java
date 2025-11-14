@@ -1,6 +1,6 @@
 package com.app.library.Controller;
 
-import com.app.library.Service.PromotionService;
+import com.app.library.Service.Interfaces.PromotionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

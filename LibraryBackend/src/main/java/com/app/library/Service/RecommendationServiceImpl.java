@@ -8,6 +8,7 @@ import com.app.library.Entity.Rental;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.FavoritebooksRepository;
 import com.app.library.Repository.RentalRepository;
+import com.app.library.Service.Interfaces.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

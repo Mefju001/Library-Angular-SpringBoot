@@ -20,6 +20,7 @@ import com.app.library.Security.DTO.Response.JwtResponse;
 import com.app.library.Security.JWT.JwtUtils;
 import com.app.library.Security.Service.UserDetailsImpl;
 import com.app.library.Security.Service.UserDetailsServiceImpl;
+import com.app.library.Service.Interfaces.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;

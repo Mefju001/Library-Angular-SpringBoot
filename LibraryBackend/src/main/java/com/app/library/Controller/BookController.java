@@ -4,7 +4,7 @@ import com.app.library.DTO.Request.BookSearchCriteria;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
 import com.app.library.Entity.BookImg;
-import com.app.library.Service.BookService;
+import com.app.library.Service.Interfaces.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

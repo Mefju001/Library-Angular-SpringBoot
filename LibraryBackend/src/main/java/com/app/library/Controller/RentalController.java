@@ -3,7 +3,7 @@ package com.app.library.Controller;
 import com.app.library.DTO.Request.RentalRequest;
 import com.app.library.DTO.Response.RentalBookResponse;
 import com.app.library.Entity.LoanDeadlineInfo;
-import com.app.library.Service.RentalService;
+import com.app.library.Service.Interfaces.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

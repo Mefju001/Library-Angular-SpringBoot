@@ -3,7 +3,7 @@ package com.app.library.Controller;
 import com.app.library.DTO.Request.ReviewRequest;
 import com.app.library.DTO.Response.ReviewAvrResponse;
 import com.app.library.DTO.Response.ReviewResponse;
-import com.app.library.Service.ReviewService;
+import com.app.library.Service.Interfaces.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

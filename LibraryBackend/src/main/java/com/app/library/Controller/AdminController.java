@@ -2,7 +2,7 @@ package com.app.library.Controller;
 
 import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.DashboardStatsResponse;
-import com.app.library.Service.*;
+import com.app.library.Service.Interfaces.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

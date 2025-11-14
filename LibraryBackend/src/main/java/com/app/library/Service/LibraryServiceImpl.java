@@ -11,6 +11,7 @@ import com.app.library.Entity.LibraryBook;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.LibraryBookRepository;
 import com.app.library.Repository.LibraryRepository;
+import com.app.library.Service.Interfaces.LibraryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

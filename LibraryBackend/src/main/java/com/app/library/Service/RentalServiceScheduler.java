@@ -1,5 +1,6 @@
 package com.app.library.Service;
 
+import com.app.library.Service.Interfaces.RentalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;

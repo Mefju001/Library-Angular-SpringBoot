@@ -1,4 +1,4 @@
-package com.app.library.Service;
+package com.app.library.Service.Interfaces;
 
 import com.app.library.DTO.Request.LibraryBookRequest;
 import com.app.library.DTO.Request.LibraryRequest;

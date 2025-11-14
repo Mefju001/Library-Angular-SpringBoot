@@ -2,7 +2,7 @@ package com.app.library.DTO.Request;
 
 import java.time.LocalDate;
 
-public record BookSearchCriteria (
+public record BookCriteria (
         String Title,
         String genre_name,
         String publisher_name,
@@ -12,5 +12,8 @@ public record BookSearchCriteria (
         Float maxPrice,
         LocalDate startYear,
         LocalDate endYear,
+
+        String sortByField,
+        String direction,
         int page,
         int size){ }

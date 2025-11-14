@@ -1,6 +1,7 @@
 package com.app.library.Service;
 
 import com.app.library.DTO.Request.AuditRequest;
+import com.app.library.Service.Interfaces.AuditService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,7 @@ package com.app.library.EventListener;
 
 import com.app.library.Entity.Rental;
 import com.app.library.Entity.RentalStatus;
-import com.app.library.Service.RentalService;
+import com.app.library.Service.Interfaces.RentalService;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 

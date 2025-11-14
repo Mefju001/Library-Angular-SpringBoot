@@ -1,29 +1,26 @@
-package com.app.library.Service;
+package com.app.library.Service.Interfaces;
 
+import com.app.library.DTO.Request.BookCriteria;
 import com.app.library.DTO.Request.BookRequest;
-import com.app.library.DTO.Request.BookSearchCriteria;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
 import com.app.library.Entity.BookImg;
 import org.springframework.data.domain.Page;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface BookService {
-    Page<BookResponse> findall(int page, int size);
+    Page<BookResponse> findAll(int page, int size);
 
     List<BookResponse> findAllList();
 
-    BookResponse findbyid(Integer id);
+    BookResponse findById(Integer id);
 
-    BookImg findByBookId(Integer id);
+    BookImg findBookImgById(Integer id);
 
     List<GenreResponse> findallgenres();
 
     Long getNewBooksCount();
-
-    Page<BookResponse>sortBooks(int page, int size, String sortBy, String direction);
 
     BookRequest addbook(BookRequest bookRequest);
 
@@ -31,5 +28,5 @@ public interface BookService {
 
     void deletebook(Integer id);
 
-    Page<BookResponse> searchBooks(BookSearchCriteria criteria);
+    Page<BookResponse> searchOrSortBooksByCriteria(BookCriteria criteria);
 }

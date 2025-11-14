@@ -1,4 +1,4 @@
-package com.app.library.Service;
+package com.app.library.Service.Interfaces;
 
 import com.app.library.DTO.Request.ReviewRequest;
 import com.app.library.DTO.Response.ReviewAvrResponse;
