@@ -1,11 +1,9 @@
 package com.app.library.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 import java.time.LocalDate;
 
-@Data
 @Entity
 @Table(name = "Books")
 public class Book {
@@ -38,6 +36,25 @@ public class Book {
     private Float oldprice;
 
     public Book() {
+    }
+    public Book(String title,Long isbn,Float price)
+    {
+        this.title=title;
+        this.isbn=isbn;
+        this.price=price;
+    }
+    public Book(Author author, String title, Publisher publisher, LocalDate publicationDate, float price, int pages, Float oldprice, String language, long isbn, Integer id, Genre genre) {
+        this.author = author;
+        this.title = title;
+        this.publisher = publisher;
+        this.publicationDate = publicationDate;
+        this.price = price;
+        this.pages = pages;
+        this.oldprice = oldprice;
+        this.language = language;
+        this.isbn = isbn;
+        this.id = id;
+        this.genre = genre;
     }
 
     public Integer getId() {

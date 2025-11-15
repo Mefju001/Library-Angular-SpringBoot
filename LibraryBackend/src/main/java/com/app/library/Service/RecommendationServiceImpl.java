@@ -63,7 +63,7 @@ public class RecommendationServiceImpl implements RecommendationService {
     private BookResponse mapBookToBookResponse(Book book) {
         // Zaimplementuj tutaj swoją logikę mapowania
         // Przykład:
-        return bookMapper.toDto(book);
+        return bookMapper.ToBookResponse(book);
     }
     private double computeScore(Book book, List<Favoritebooks> favs, List<Rental> rents) {
         double score = 0.0;

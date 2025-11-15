@@ -1,4 +1,5 @@
 package com.app.library.Service;
+import com.app.library.Builder.BookBuilder;
 import com.app.library.DTO.Mapper.BookMapper;
 import com.app.library.DTO.Mapper.GenreMapper;
 import com.app.library.DTO.Request.BookCriteria;
@@ -28,6 +29,8 @@ import java.util.Optional;
 @Service
 public class BookServiceImpl implements BookService {
     private static final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
+    private final BookBuilder  bookBuilder;
+    private final BookMapper bookMapper;
     private final BookRepository bookRepository;
     private final BookQueryServices bookQueryServices;
     //Mediator zamiast dostępu    private final AuditService auditService;
@@ -35,39 +38,38 @@ public class BookServiceImpl implements BookService {
     private final GenreRepository genreRepository;
     private final PublisherRepository publisherRepository;
     private final AuthorRepository authorRepository;
-    private final BookMapper bookMapper;
     private final GenreMapper genreMapper;
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository, BookQueryServices bookQueryService, BookImgRepository bookImgRepository, GenreRepository genreRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository, BookMapper bookMapper, GenreMapper genreMapper, BookQueryServices bookQueryServices) {
+    public BookServiceImpl(BookRepository bookRepository, BookImgRepository bookImgRepository, GenreRepository genreRepository, PublisherRepository publisherRepository, AuthorRepository authorRepository, GenreMapper genreMapper, BookQueryServices bookQueryServices, BookBuilder bookBuilder, BookMapper bookMapper) {
         this.bookRepository = bookRepository;
-        bookQueryServices = bookQueryService;
         //this.auditService = auditService;
         this.bookImgRepository = bookImgRepository;
         this.genreRepository = genreRepository;
         this.publisherRepository = publisherRepository;
         this.authorRepository = authorRepository;
-        this.bookMapper = bookMapper;
         this.genreMapper = genreMapper;
         this.bookQueryServices = bookQueryServices;
+        this.bookBuilder = bookBuilder;
+        this.bookMapper = bookMapper;
     }
 
     @Override
     public Page<BookResponse> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findAll(pageable);
-        return books.map(BookMapper::ToBookResponse);
+        return books.map(bookMapper::ToBookResponse);
     }
 
     @Override
     public List<BookResponse> findAllList() {
         List<Book> books = bookRepository.findAll();
-        return books.stream().map(BookMapper::ToBookResponse).toList();
+        return books.stream().map(bookMapper::ToBookResponse).toList();
     }
 
     @Override
     public BookResponse findById(Integer id) {
         Optional<Book> books = bookRepository.findById(id);
-        return books.map(BookMapper::ToBookResponse).orElseThrow(()->new EntityNotFoundException("The book with ID "+ id + " was not found."));
+        return books.map(bookMapper::ToBookResponse).orElseThrow(()->new EntityNotFoundException("The book with ID "+ id + " was not found."));
     }
 
     @Override
@@ -88,20 +90,6 @@ public class BookServiceImpl implements BookService {
         return bookRepository.countBooksByPublicationDateAfter(LocalDate.now().minusMonths(1));
     }
 
-    private void setbook(Book book, BookRequest bookRequest) {
-        book.setTitle(bookRequest.title());
-        book.setpublicationDate(bookRequest.publicationDate());
-        book.setIsbn(bookRequest.isbn());
-        book.setLanguage(bookRequest.language());
-        book.setPages(bookRequest.pages());
-        book.setPrice(bookRequest.price());
-        book.setOldprice(bookRequest.price());
-        book.setGenre(getOrCreateGenre(bookRequest.genreName()));
-        book.setAuthor(getOrCreateAuthor(bookRequest.authorName(), bookRequest.authorSurname()));
-        book.setPublisher(getOrCreatePublisher(bookRequest.publisherName()));
-        bookRepository.save(book);
-    }
-
     private Genre getOrCreateGenre(String name) {
         return genreRepository.findGenreByName(name)
                 .orElseGet(() -> genreRepository.save(new Genre(name)));
@@ -116,28 +104,38 @@ public class BookServiceImpl implements BookService {
         return publisherRepository.findPublisherByName(name)
                 .orElseGet(() -> publisherRepository.save(new Publisher(name)));
     }
-
+    private Book mapRequestToBook(BookRequest bookRequest) {
+        return bookBuilder
+                .CreateNewBook(bookRequest.title(),bookRequest.isbn(),bookRequest.price())
+                .WithDetails(bookRequest.publicationDate(),bookRequest.language(),bookRequest.pages())
+                .WithAuthor(getOrCreateAuthor(bookRequest.authorName(),bookRequest.authorSurname()))
+                .WithGenre(getOrCreateGenre(bookRequest.genreName()))
+                .WithPublisher(getOrCreatePublisher(bookRequest.publisherName()))
+                .build();
+    }
     @Override
     @Transactional
-    public BookRequest addbook(BookRequest bookRequest) {
-        if (bookRepository.findBookByIsbnIs(bookRequest.isbn()) != null) {
-            System.out.println("Książka z tym ISBN już istnieje");
+    public BookResponse addbook(BookRequest bookRequest) {
+        if (bookRepository.existsBooksByIsbn(bookRequest.isbn())) {
             logger.info("Książka z tym ISBN już istnieje");
+            throw new IllegalArgumentException();
         }
-        Book newBook = new Book();
-        setbook(newBook, bookRequest);
-        String user = SecurityContextHolder.getContext().getAuthentication().getName();
+        var newBook = mapRequestToBook(bookRequest);
+        bookRepository.save(newBook);
+        //String user = SecurityContextHolder.getContext().getAuthentication().getName();
         //auditService.log("Post", "Book", user, "Dodawanie ksiazki do bazy danych", newBook);
-        return bookRequest;
+        return bookMapper.ToBookResponse(newBook);
     }
 
     @Override
     @Transactional
     public BookRequest updateBook(Integer id, BookRequest bookRequest) {
-        Book Book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Książka nie znaleziona"));
-        Book Book2 = new Book();
-        BeanUtils.copyProperties(Book, Book2);
-        setbook(Book, bookRequest);
+        var book = bookRepository.findById(id).orElseThrow(() -> new RuntimeException("Książka nie znaleziona"));
+        bookMapper.updateTheBook(book,bookRequest,
+                getOrCreateGenre(bookRequest.genreName()),
+                getOrCreatePublisher(bookRequest.publisherName()),
+                getOrCreateAuthor(bookRequest.authorName(), bookRequest.authorSurname()));
+        bookRepository.save(book);
         String user = SecurityContextHolder.getContext().getAuthentication().getName();
         //auditService.logUpdate("Update", "Book", user, Book2, Book);
         return bookRequest;
@@ -146,10 +144,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void deletebook(Integer id) {
-        if (!bookRepository.existsById(id)) {
-            throw new EntityNotFoundException("Book not found with id like" + id);
-        }
-        Book deletedBook = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Book not found with id " + id));
+        bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Book not found with id " + id));
         bookRepository.deleteById(id);
         String user = SecurityContextHolder.getContext().getAuthentication().getName();
         //auditService.log("Delete", "Book", user, "Usuwanie ksiazki z bazy danych", deletedBook);

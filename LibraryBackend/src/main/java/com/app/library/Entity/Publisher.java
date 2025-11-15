@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 
 @Entity
 
-@Table(name = "Publishers")
+@Table(name = "Publishers",uniqueConstraints = {
+        @UniqueConstraint(columnNames = "Publisher_name")
+})
 public class Publisher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

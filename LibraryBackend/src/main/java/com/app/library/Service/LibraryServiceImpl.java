@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @Service
 public class LibraryServiceImpl implements LibraryService {
-    final BookRepository bookRepository;
+    private final BookRepository bookRepository;
     private final LibraryRepository libraryRepository;
     private final LibraryBookRepository libraryBookRepository;
     private final LibraryMapper libraryMapper;
@@ -85,11 +85,12 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     LibraryBook setLibraryBook(LibraryBookRequest request) {
-        var book = bookRepository.findBookByIsbnIs(request.book().isbn());
+        var book = bookRepository.existsBooksByIsbn(request.book().isbn());
         var library = libraryRepository.findLibraryByLocationContainingIgnoreCaseAndAddressContainsIgnoreCase(request.library().location(), request.library().address());
-        if (book == null || library == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "not found");
+        if (!book || library == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "not found");
+        var existBook = bookRepository.findBookByIsbn(request.book().isbn());
         LibraryBook libraryBook = new LibraryBook();
-        libraryBook.setBook(book);
+        libraryBook.setBook(existBook);
         libraryBook.setLibrary(library);
         return libraryBook;
     }

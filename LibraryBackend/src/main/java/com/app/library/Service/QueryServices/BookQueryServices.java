@@ -18,13 +18,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookQueryServices
 {
-    private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final BookRepository bookRepository;
+
 
     @Autowired
-    public BookQueryServices(BookRepository bookRepository, BookMapper bookMapper) {
-        this.bookRepository = bookRepository;
+    public BookQueryServices(BookMapper bookMapper, BookRepository bookRepository) {
         this.bookMapper = bookMapper;
+        this.bookRepository = bookRepository;
+
 
     }
     public Page<BookResponse>FindBooksByCriteria(BookCriteria criteria)
@@ -44,6 +46,6 @@ public class BookQueryServices
             }
             }
         Page<Book> books = bookRepository.findAll(spec, pageable);
-        return books.map(bookMapper::toDto);
+        return books.map(bookMapper::ToBookResponse);
     }
 }

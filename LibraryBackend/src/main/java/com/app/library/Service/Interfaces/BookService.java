@@ -22,7 +22,7 @@ public interface BookService {
 
     Long getNewBooksCount();
 
-    BookRequest addbook(BookRequest bookRequest);
+    BookResponse addbook(BookRequest bookRequest);
 
     BookRequest updateBook(Integer id, BookRequest bookRequest);
 
