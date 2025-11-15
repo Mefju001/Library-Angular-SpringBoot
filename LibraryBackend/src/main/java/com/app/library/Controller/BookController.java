@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -67,11 +68,11 @@ public class BookController {
     @GetMapping("/genres")
     @Operation(summary = "Zwraca gatunki ksiazek z bazy danych", description = "Zwraca gatunki ksiazek z bazy danych")
     public ResponseEntity<List<GenreResponse>> listofgenres() {
-        List<GenreResponse> genreResponse = bookService.findallgenres();
-        if (genreResponse.isEmpty()) {
+        //List<GenreResponse> genreResponse = ge.fin();
+        /*if (genreResponse.isEmpty()) {
             return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(genreResponse);
+        }*/
+        return ResponseEntity.ok(new ArrayList<>());
     }
 
     @GetMapping("/{id}")

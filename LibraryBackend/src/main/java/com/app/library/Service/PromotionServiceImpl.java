@@ -18,6 +18,7 @@ import java.util.Optional;
 
 @Service
 public class PromotionServiceImpl implements PromotionService {
+    /// nie powinno być book repo
     private final PromotionRepository promotionRepository;
 
     private final BookRepository bookRepository;

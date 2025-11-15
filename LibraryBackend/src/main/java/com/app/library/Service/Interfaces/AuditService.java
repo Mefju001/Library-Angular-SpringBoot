@@ -3,7 +3,7 @@ package com.app.library.Service.Interfaces;
 import com.app.library.DTO.Request.AuditRequest;
 
 public interface AuditService {
-    void log(String action, String entity, String user, String details, Object object);
+    void log(AuditRequest auditRequest);
 
     void logUpdate(String action, String entity, String user, Object oldObject, Object newObject);
 

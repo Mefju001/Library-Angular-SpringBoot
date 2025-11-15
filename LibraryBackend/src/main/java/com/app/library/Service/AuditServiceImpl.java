@@ -18,9 +18,9 @@ public class AuditServiceImpl implements AuditService {
     private static final String FILE_PATH = "audit-log.json";
 
     @Override
-    public void log(String action, String entity, String user, String details, Object object) {
-        AuditRequest event = new AuditRequest(action, entity, user, LocalDateTime.now(), details, object);
-        writeToFile(event);
+    public void log(AuditRequest auditRequest) {
+        if (Objects.isNull(auditRequest)) {throw new IllegalArgumentException("AuditRequest is null");}
+        writeToFile(auditRequest);
     }
 
     @Override

@@ -18,8 +18,6 @@ public interface BookService {
 
     BookImg findBookImgById(Integer id);
 
-    List<GenreResponse> findallgenres();
-
     Long getNewBooksCount();
 
     BookResponse addbook(BookRequest bookRequest);

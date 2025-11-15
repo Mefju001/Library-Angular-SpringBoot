@@ -24,6 +24,7 @@ public class BookBuilder implements IBookBuilder {
         book.setLanguage(language);
         book.setPages(pages);
         book.setpublicationDate(publicationDate);
+        book.setOldprice(book.getPrice());
         return this;
     }
 

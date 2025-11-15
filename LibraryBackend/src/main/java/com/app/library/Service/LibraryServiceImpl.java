@@ -24,6 +24,7 @@ import java.util.Optional;
 
 @Service
 public class LibraryServiceImpl implements LibraryService {
+    /// Zmienic encje bo jest kompletnie bez sensu
     private final BookRepository bookRepository;
     private final LibraryRepository libraryRepository;
     private final LibraryBookRepository libraryBookRepository;
