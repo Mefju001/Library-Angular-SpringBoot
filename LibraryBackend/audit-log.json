@@ -82,3 +82,5 @@
     "oldprice": 1.0
   }
 }
+{"action":"Post","entity":"Book","performedBy":"Admin","timestamp":[2025,11,16,20,9,22,233260500],"details":"Dodawanie ksiazki do bazy danych","object":{"id":26,"title":"Conan Barbarzyńca","author":{"id":24,"name":"Robert E.","surname":"Howard"},"publicationDate":[1932,12,1],"isbn":9788377312130,"genre":{"id":15,"name":"Fantasy / Sword and Sorcery"},"language":"Polski","publisher":{"id":21,"name":"Rebis"},"pages":300,"price":39.9,"oldprice":39.9}}
+{"action":"Post","entity":"Book","performedBy":"Admin","timestamp":[2025,11,16,20,11,56,565989000],"details":"Dodawanie ksiazki do bazy danych","object":{"id":27,"title":"Conan Barbarzyńca","author":{"id":24,"name":"Robert E.","surname":"Howard"},"publicationDate":[1932,12,1],"isbn":9788377312131,"genre":{"id":15,"name":"Fantasy / Sword and Sorcery"},"language":"Polski","publisher":{"id":21,"name":"Rebis"},"pages":300,"price":39.9,"oldprice":39.9}}
