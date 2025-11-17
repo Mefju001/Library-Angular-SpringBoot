@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer>, JpaSpecificationExecutor<Book> {
@@ -19,7 +20,7 @@ public interface BookRepository extends JpaRepository<Book, Integer>, JpaSpecifi
     List<Book> findAll();
 
     Page<Book> findBooksByTitleContaining(String title, Pageable pageable);
-    Book findBookByIsbn(long isbn);
+    Optional<Book> findBookByIsbn(long isbn);
     boolean existsBooksByIsbn(Long isbn);
     Page<Book> findBooksByAuthor_NameAndAuthor_Surname(String name, String Surname, Pageable pageable);
     Page<Book> findBooksByAuthor_NameOrAuthor_Surname(String name, String Surname, Pageable pageable);

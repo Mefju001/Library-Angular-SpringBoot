@@ -1,12 +1,12 @@
 package com.app.library.Service;
 import com.app.library.Builder.BookBuilder;
 import com.app.library.DTO.Mapper.BookMapper;
-import com.app.library.DTO.Request.AuditRequest;
+import com.app.library.DTO.MediatorRequest.AuditRequest;
 import com.app.library.DTO.Request.BookCriteria;
 import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.Entity.*;
-import com.app.library.Mediator.IMediator;
+import com.app.library.Mediator.Mediator;
 import com.app.library.Repository.*;
 import com.app.library.Service.Interfaces.BookService;
 import com.app.library.Service.Interfaces.GenreService;
@@ -32,7 +32,7 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
     /// musze stworzyć mediator aby rozdzielić odpowiedzialnosc dla auditService,genrerep,authorRep,publisherRep usunac genreMapper
     private static final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
-    private final IMediator  mediator;
+    private final Mediator mediator;
     private final BookBuilder  bookBuilder;
     private final BookMapper bookMapper;
     private final BookRepository bookRepository;
@@ -42,7 +42,7 @@ public class BookServiceImpl implements BookService {
     private final RelationalEntityService relationalEntityService;
 
     @Autowired
-    public BookServiceImpl(IMediator mediator, BookRepository bookRepository, BookImgRepository bookImgRepository, BookQueryServices bookQueryServices, BookBuilder bookBuilder, BookMapper bookMapper, GenreService genreService, RelationalEntityService relationalEntityService) {
+    public BookServiceImpl(Mediator mediator, BookRepository bookRepository, BookImgRepository bookImgRepository, BookQueryServices bookQueryServices, BookBuilder bookBuilder, BookMapper bookMapper, GenreService genreService, RelationalEntityService relationalEntityService) {
         this.mediator = mediator;
         this.bookRepository = bookRepository;
         this.bookImgRepository = bookImgRepository;
@@ -52,7 +52,11 @@ public class BookServiceImpl implements BookService {
         this.genreService = genreService;
         this.relationalEntityService = relationalEntityService;
     }
-
+    @Override
+    public Book findByIsbn(Long isbn) {
+        Optional<Book> book = bookRepository.findBookByIsbn(isbn);
+        return  book.orElseThrow(()->new EntityNotFoundException("Book not found"));
+    }
     @Override
     public Page<BookResponse> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -115,6 +119,7 @@ public class BookServiceImpl implements BookService {
                 relationalEntityService.getOrCreateAuthor(bookRequest.authorName(), bookRequest.authorSurname()));
         bookRepository.save(book);
         String user = SecurityContextHolder.getContext().getAuthentication().getName();
+        //mediator.send(new AuditRequest());
         //auditService.logUpdate("Update", "Book", user, Book2, Book);
         return bookRequest;
     }

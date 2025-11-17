@@ -20,13 +20,10 @@ import java.util.Optional;
 public class PromotionServiceImpl implements PromotionService {
     /// nie powinno być book repo
     private final PromotionRepository promotionRepository;
-
-    private final BookRepository bookRepository;
     private final BookPromotionRepository bookPromotionRepository;
 
     public PromotionServiceImpl(PromotionRepository promotionRepository, BookRepository bookRepository, BookPromotionRepository bookPromotionRepository) {
         this.promotionRepository = promotionRepository;
-        this.bookRepository = bookRepository;
         this.bookPromotionRepository = bookPromotionRepository;
     }
 

@@ -1,6 +1,6 @@
 package com.app.library.Service.Interfaces;
 
-import com.app.library.DTO.Request.AuditRequest;
+import com.app.library.DTO.MediatorRequest.AuditRequest;
 
 public interface AuditService {
     void log(AuditRequest auditRequest);

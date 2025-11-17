@@ -14,17 +14,9 @@ public interface LibraryService {
 
     List<LibraryResponse> findlibrarybylocation(String location);
 
-    List<LibraryBookResponse> findallbookandlibrary();
-
-    List<LibraryBookResponse> findbookinlibraries(String title);
-
     LibraryResponse addlibrary(LibraryRequest library);
 
-    LibraryBookResponse addbooktolibrary(LibraryBookRequest request);
-
     LibraryResponse updatelibrary(Integer id, LibraryRequest library);
-
-    LibraryBookResponse updatebookandlibrary(int id, LibraryBookRequest libraryBookRequest);
 
     void deletelibrary(Integer id);
 
