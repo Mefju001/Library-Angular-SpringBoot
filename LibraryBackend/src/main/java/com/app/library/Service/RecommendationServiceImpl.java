@@ -61,7 +61,7 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .collect(Collectors.toSet());
     }
     private BookResponse mapBookToBookResponse(Book book) {
-        return bookMapper.ToBookResponse(book);
+        return bookMapper.ToDto(book);
     }
     private double computeScore(Book book, List<Favoritebooks> favs, List<Rental> rents) {
         double score = 0.0;

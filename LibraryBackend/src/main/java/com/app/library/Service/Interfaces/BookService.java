@@ -13,20 +13,12 @@ import java.util.List;
 public interface BookService {
     Book findByIsbn(Long isbn);
     Page<BookResponse> findAll(int page, int size);
-
     List<BookResponse> findAllList();
-
     BookResponse findById(Integer id);
-
     BookImg findBookImgById(Integer id);
-
     Long getNewBooksCount();
-
     BookResponse addbook(BookRequest bookRequest);
-
     BookRequest updateBook(Integer id, BookRequest bookRequest);
-
     void deletebook(Integer id);
-
     Page<BookResponse> searchOrSortBooksByCriteria(BookCriteria criteria);
 }

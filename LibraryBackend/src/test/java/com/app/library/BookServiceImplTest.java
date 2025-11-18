@@ -2,7 +2,6 @@ package com.app.library;
 
 import com.app.library.Builder.BookBuilder;
 import com.app.library.DTO.Mapper.BookMapper;
-import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.Entity.Author;
 import com.app.library.Entity.Book;
@@ -10,7 +9,6 @@ import com.app.library.Entity.Genre;
 import com.app.library.Entity.Publisher;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Service.BookServiceImpl;
-import com.app.library.Service.Interfaces.BookService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -55,7 +53,7 @@ class BookServiceImplTest {
                 id,book.getTitle(),"null","null",LocalDate.now(),
                 0L,"null","null","null",9,0f);
         when(bookRepository.findById(anyInt())).thenReturn(Optional.of(book));
-        when(bookMapper.ToBookResponse(book)).thenReturn(bookResponse);
+        when(bookMapper.ToDto(book)).thenReturn(bookResponse);
         BookResponse actualResponse = bookService.findById(id);
         verify(bookRepository, times(1)).findById(id);
 

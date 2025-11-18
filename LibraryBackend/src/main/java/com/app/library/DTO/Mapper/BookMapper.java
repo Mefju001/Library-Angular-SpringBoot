@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BookMapper {
-    public BookResponse ToBookResponse(Book book) {
+    public BookResponse ToDto(Book book) {
        return new  BookResponse(
                book.getId(),
                book.getTitle(),

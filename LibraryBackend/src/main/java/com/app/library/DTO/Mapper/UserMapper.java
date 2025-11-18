@@ -10,13 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-@Mapper(componentModel = "Spring")
-public interface UserMapper {
-    @Mapping(target = "role", expression = "java(mapRole(user.getRoles()))")
+public class UserMapper {
     UserResponse toDto(User user);
 
-    default String mapRole(Set<Role> roles) {
-        if (roles == null || roles.isEmpty()) return null;
-        return roles.iterator().next().getRola();
-    }
 }

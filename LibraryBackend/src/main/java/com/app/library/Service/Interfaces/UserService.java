@@ -5,6 +5,7 @@ import com.app.library.DTO.Request.UserPasswordRequest;
 import com.app.library.DTO.Response.FavoriteBooksResponse;
 import com.app.library.DTO.Response.UserResponse;
 import com.app.library.Entity.Favoritebooks;
+import com.app.library.Entity.User;
 import com.app.library.Security.DTO.Request.UserRequest;
 import com.app.library.Security.DTO.Response.JwtResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ public interface UserService {
     List<FavoriteBooksResponse> findAllLikedBooks(Long userId);
 
     List<UserResponse> findAll();
-
+    User findByUsername(String name);
     UserResponse findbyid(Long id);
     JwtResponse refreshToken(HttpServletRequest request, HttpServletResponse response);
     JwtResponse login(UserRequest loginRequest, HttpServletResponse response);

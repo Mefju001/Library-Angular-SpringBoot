@@ -32,8 +32,6 @@ public class RentalServiceImpl implements RentalService {
     private static final Logger logger = LoggerFactory.getLogger(RentalServiceImpl.class);
     private final RentalRepository rentalRepository;
     private final ApplicationEventPublisher publisher;
-    private final BookRepository bookRepository;
-    private final UserRepository userRepository;
     private final RentalBookMapper rentalBookMapper;
 
     @Autowired

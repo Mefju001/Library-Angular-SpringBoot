@@ -1,4 +1,4 @@
-package com.app.library.Service;
+package com.app.library.Service.Scheduler;
 
 import com.app.library.Service.Interfaces.RentalService;
 import org.springframework.beans.factory.annotation.Autowired;

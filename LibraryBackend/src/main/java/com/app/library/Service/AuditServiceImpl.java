@@ -7,10 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -21,34 +17,6 @@ public class AuditServiceImpl implements AuditService {
     public void log(AuditRequest auditRequest) {
         if (Objects.isNull(auditRequest)) {throw new IllegalArgumentException("AuditRequest is null");}
         writeToFile(auditRequest);
-    }
-
-    @Override
-    public void logUpdate(String action, String entity, String user, Object oldObject, Object newObject) {
-        Map<String, Object> changes = findDifferences(oldObject, newObject);
-        String details = "Zmodyfikowane pola: " + changes;
-
-        AuditRequest audit = new AuditRequest("Update", entity, user, LocalDateTime.now(), details, newObject);
-        writeToFile(audit);
-    }
-
-    private Map<String, Object> findDifferences(Object oldObject, Object newObject) {
-        Map<String, Object> differences = new HashMap<>();
-        try {
-            Class<?> clazz = oldObject.getClass();
-
-            for (Field field : clazz.getDeclaredFields()) {
-                field.setAccessible(true);
-                Object oldValue = field.get(oldObject);
-                Object newValue = field.get(newObject);
-                if (!Objects.equals(oldValue, newValue)) {
-                    differences.put(field.getName(), "Zmieniono z '" + oldValue + "' na '" + newValue + "'");
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return differences;
     }
 
     @Override

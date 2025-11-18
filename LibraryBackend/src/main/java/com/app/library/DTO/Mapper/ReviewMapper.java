@@ -6,8 +6,7 @@ import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 @Component
-@Mapper(componentModel = "Spring", uses = {UserMapper.class, BookMapper.class})
-public interface ReviewMapper {
+public class ReviewMapper {
     ReviewResponse toDto(Review review);
 
 }

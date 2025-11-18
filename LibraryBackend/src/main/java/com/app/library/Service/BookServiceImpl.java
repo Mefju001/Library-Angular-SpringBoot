@@ -30,7 +30,6 @@ import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService {
-    /// musze stworzyć mediator aby rozdzielić odpowiedzialnosc dla auditService,genrerep,authorRep,publisherRep usunac genreMapper
     private static final Logger logger = LoggerFactory.getLogger(BookServiceImpl.class);
     private final Mediator mediator;
     private final BookBuilder  bookBuilder;
@@ -52,28 +51,30 @@ public class BookServiceImpl implements BookService {
         this.genreService = genreService;
         this.relationalEntityService = relationalEntityService;
     }
+    private String currentUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
     @Override
     public Book findByIsbn(Long isbn) {
-        Optional<Book> book = bookRepository.findBookByIsbn(isbn);
-        return  book.orElseThrow(()->new EntityNotFoundException("Book not found"));
+        return bookRepository.findBookByIsbn(isbn).orElseThrow(EntityNotFoundException::new);
     }
     @Override
     public Page<BookResponse> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Book> books = bookRepository.findAll(pageable);
-        return books.map(bookMapper::ToBookResponse);
+        return books.map(bookMapper::ToDto);
     }
 
     @Override
     public List<BookResponse> findAllList() {
         List<Book> books = bookRepository.findAll();
-        return books.stream().map(bookMapper::ToBookResponse).toList();
+        return books.stream().map(bookMapper::ToDto).toList();
     }
 
     @Override
     public BookResponse findById(Integer id) {
         Optional<Book> books = bookRepository.findById(id);
-        return books.map(bookMapper::ToBookResponse).orElseThrow(()->new EntityNotFoundException("The book with ID "+ id + " was not found."));
+        return books.map(bookMapper::ToDto).orElseThrow(()->new EntityNotFoundException("The book with ID "+ id + " was not found."));
     }
 
     @Override
@@ -102,11 +103,9 @@ public class BookServiceImpl implements BookService {
             throw new IllegalArgumentException();
         }
         var newBook = mapRequestToBook(bookRequest);
-        bookRepository.save(newBook);
-        String user = SecurityContextHolder.getContext().getAuthentication().getName();
-        mediator.send(new AuditRequest("Post", "Book", user, LocalDateTime.now(), "Dodawanie ksiazki do bazy danych", newBook));
-        //auditService.log("Post", "Book", user, "Dodawanie ksiazki do bazy danych", newBook);
-        return bookMapper.ToBookResponse(newBook);
+        newBook = bookRepository.save(newBook);
+        mediator.send(new AuditRequest("Post", "Book", currentUser(), LocalDateTime.now(), "Dodawanie ksiazki do bazy danych", newBook));
+        return bookMapper.ToDto(newBook);
     }
 
     @Override
@@ -118,19 +117,16 @@ public class BookServiceImpl implements BookService {
                 relationalEntityService.getOrCreatePublisher(bookRequest.publisherName()),
                 relationalEntityService.getOrCreateAuthor(bookRequest.authorName(), bookRequest.authorSurname()));
         bookRepository.save(book);
-        String user = SecurityContextHolder.getContext().getAuthentication().getName();
-        //mediator.send(new AuditRequest());
-        //auditService.logUpdate("Update", "Book", user, Book2, Book);
+        mediator.send(new AuditRequest("Update", "Book", currentUser(), LocalDateTime.now(), "Aktualizacja istniejącego elementu w bazie danych", book));
         return bookRequest;
     }
 
     @Override
     @Transactional
     public void deletebook(Integer id) {
-        bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Book not found with id " + id));
-        bookRepository.deleteById(id);
-        String user = SecurityContextHolder.getContext().getAuthentication().getName();
-        //auditService.log("Delete", "Book", user, "Usuwanie ksiazki z bazy danych", deletedBook);
+        var deletedBook = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Book not found with id " + id));
+        bookRepository.delete(deletedBook);
+        mediator.send(new AuditRequest("Delete", "Book", currentUser(), LocalDateTime.now(), "Usuwanie ksiazki z bazy danych", deletedBook));
     }
 
     @Override

@@ -1,19 +1,20 @@
 package com.app.library.Service;
 
-import com.app.library.DTO.Mapper.LibraryBookMapper;
 import com.app.library.DTO.Mapper.LibraryMapper;
+import com.app.library.DTO.MediatorRequest.AuditRequest;
 import com.app.library.DTO.Request.LibraryRequest;
 import com.app.library.DTO.Response.LibraryResponse;
 import com.app.library.Entity.Library;
 import com.app.library.Mediator.Mediator;
-import com.app.library.Repository.LibraryBookRepository;
 import com.app.library.Repository.LibraryRepository;
 import com.app.library.Service.Interfaces.LibraryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +25,14 @@ public class LibraryServiceImpl implements LibraryService {
     private final LibraryMapper libraryMapper;
 
     @Autowired
-    public LibraryServiceImpl(LibraryRepository libraryRepository, LibraryBookRepository libraryBookRepository, LibraryMapper libraryMapper, LibraryBookMapper libraryBookMapper, Mediator mediator) {
+    public LibraryServiceImpl(LibraryRepository libraryRepository, LibraryMapper libraryMapper, Mediator mediator) {
         this.libraryRepository = libraryRepository;
         this.libraryMapper = libraryMapper;
         this.mediator = mediator;
     }
-
+    private String currentUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
     @Override
     public List<LibraryResponse> findall() {
         List<Library> libraries = libraryRepository.findAll();
@@ -40,10 +43,19 @@ public class LibraryServiceImpl implements LibraryService {
     public LibraryResponse findbyid(Integer id) {
         Optional<Library> Optlibrary = libraryRepository.findById(id);
         if (Optlibrary.isPresent()) {
-            return Optlibrary.map(libraryMapper::toDto).orElseThrow();
+            return Optlibrary.map(libraryMapper::toDto).orElseThrow(()-> new EntityNotFoundException("Library not found"));
         } else {
-            throw new EntityNotFoundException("not found");
+            throw new EntityNotFoundException("Library not found");
         }
+    }
+
+    @Override
+    public Library findByAddress(String address) {
+        var library = libraryRepository.findLibraryByAddressContainingIgnoreCase(address);
+        if(library==null){
+            throw new EntityNotFoundException("Library not found");
+        }
+        return library;
     }
 
     @Override
@@ -55,37 +67,30 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     @Transactional
     public LibraryResponse addlibrary(LibraryRequest library) {
-        Library savedLibrary = new Library();
-        savedLibrary.setAddress(library.address());
-        savedLibrary.setMap(library.map());
-        libraryRepository.save(savedLibrary);
-        return new LibraryResponse(savedLibrary.getId(), savedLibrary.getAddress(), savedLibrary.getMap());
+        var newLibrary = new Library(library.address(),library.map());
+        newLibrary = libraryRepository.save(newLibrary);
+        mediator.send(new AuditRequest("Post","Library",currentUser(), LocalDateTime.now(), "Dodawanie biblioteki do bazy danych", newLibrary));
+        return libraryMapper.toDto(newLibrary);
     }
-
 
     @Override
     @Transactional
     public LibraryResponse updatelibrary(Integer id, LibraryRequest library) {
         Optional<Library> existinglibrary = libraryRepository.findById(id);
-        if (existinglibrary.isPresent()) {
-            Library updatedlibrary = existinglibrary.get();
-            updatedlibrary.setAddress(library.address());
-            updatedlibrary.setMap(library.map());
-            Library saved = libraryRepository.save(updatedlibrary);
-            LibraryResponse response = libraryMapper.toDto(saved);
-            return response;
-        } else {
-            throw new EntityNotFoundException("not found");
-        }
+        Library updatedlibrary = existinglibrary.orElseThrow(()-> new EntityNotFoundException("Library not found"));
+        libraryMapper.updateTheLibrary(updatedlibrary, library);
+        updatedlibrary = libraryRepository.save(updatedlibrary);
+        mediator.send(new AuditRequest("Update","Library",currentUser(),LocalDateTime.now(),"Edycja istniejącej biblioteki w bazie danych",updatedlibrary));
+        return libraryMapper.toDto(updatedlibrary);
     }
 
     @Override
     @Transactional
     public void deletelibrary(Integer id) {
-        if (!libraryRepository.existsById(id)) {
-            throw new EntityNotFoundException("Library not found with id: " + id);
-        }
-        libraryRepository.deleteById(id);
+        var optLibrary = libraryRepository.findById(id);
+        var deletedLibrary = optLibrary.orElseThrow(()-> new EntityNotFoundException("Library not found"));
+        libraryRepository.delete(deletedLibrary);
+        mediator.send(new AuditRequest("Delete", "Library",currentUser(),LocalDateTime.now(),"Usuwanie biblioteki z bazy danych",deletedLibrary));
     }
 
 }

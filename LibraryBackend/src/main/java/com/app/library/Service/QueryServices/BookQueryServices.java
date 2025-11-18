@@ -46,6 +46,6 @@ public class BookQueryServices
             }
             }
         Page<Book> books = bookRepository.findAll(spec, pageable);
-        return books.map(bookMapper::ToBookResponse);
+        return books.map(bookMapper::ToDto);
     }
 }

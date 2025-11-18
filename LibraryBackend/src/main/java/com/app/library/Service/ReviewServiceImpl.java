@@ -22,14 +22,10 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
-    private final BookRepository bookRepository;
-    private final UserRepository userRepository;
     private final ReviewMapper reviewMapper;
     @Autowired
     public ReviewServiceImpl(ReviewRepository reviewRepository, BookRepository bookRepository, UserRepository userRepository, ReviewMapper reviewMapper) {
         this.reviewRepository = reviewRepository;
-        this.bookRepository = bookRepository;
-        this.userRepository = userRepository;
         this.reviewMapper = reviewMapper;
     }
 

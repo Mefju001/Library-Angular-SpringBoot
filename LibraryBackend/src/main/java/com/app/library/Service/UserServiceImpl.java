@@ -42,30 +42,19 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
     /// tu też zmiany
-    private final FavoritebooksRepository favoritebooksRepository;
-
     private final AuthenticationManager authenticationManager;
-
-
     private final UserRepository userRepository;
-    private final BookRepository bookRepository;
     private final RoleRepository roleRepository;
-    private final FavoriteBooksMapper favoriteBooksMapper;
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
-
-
     private final JwtUtils jwtUtils;
 
     @Autowired
     public UserServiceImpl(FavoritebooksRepository favoritebooksRepository, AuthenticationManager authenticationManager, UserRepository userRepository, BookRepository bookRepository, RoleRepository roleRepository, FavoriteBooksMapper favoriteBooksMapper, UserMapper userMapper, PasswordEncoder encoder, UserDetailsServiceImpl userDetailsServiceImpl, JwtUtils jwtUtils) {
-        this.favoritebooksRepository = favoritebooksRepository;
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
-        this.bookRepository = bookRepository;
         this.roleRepository = roleRepository;
-        this.favoriteBooksMapper = favoriteBooksMapper;
         this.userMapper = userMapper;
         this.encoder = encoder;
         this.userDetailsServiceImpl = userDetailsServiceImpl;
@@ -87,7 +76,10 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::toDto)
                 .toList();
     }
-
+    @Override
+    public User findByUsername(String name) {
+        return userRepository.findByUsername(name).orElseThrow(() -> new RuntimeException("User not found with name: " + name));
+    }
     @Override
     public UserResponse findbyid(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
