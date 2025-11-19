@@ -1,5 +1,5 @@
 package com.app.library.Service;
-import com.app.library.Builder.BookBuilder;
+import com.app.library.Builder.Book.BookBuilder;
 import com.app.library.DTO.Mapper.BookMapper;
 import com.app.library.DTO.MediatorRequest.AuditRequest;
 import com.app.library.DTO.Request.BookCriteria;

@@ -7,6 +7,23 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ReviewMapper {
-    ReviewResponse toDto(Review review);
+    private final UserMapper userMapper;
+    private final BookMapper bookMapper;
+
+    public ReviewMapper(UserMapper userMapper, BookMapper bookMapper) {
+        this.userMapper = userMapper;
+        this.bookMapper = bookMapper;
+    }
+
+    ReviewResponse toDto(Review review)
+    {
+        return new ReviewResponse(
+                review.getContent(),
+                review.getRating(),
+                review.getCreatedAt(),
+                userMapper.toDto(review.getUser()),
+                bookMapper.ToDto(review.getBook())
+        );
+    }
 
 }

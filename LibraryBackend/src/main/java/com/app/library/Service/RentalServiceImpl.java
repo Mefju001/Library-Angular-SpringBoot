@@ -4,6 +4,8 @@ import com.app.library.DTO.Mapper.RentalBookMapper;
 import com.app.library.DTO.Response.RentalBookResponse;
 import com.app.library.Entity.*;
 import com.app.library.EventListener.RentalCreatedEvent;
+import com.app.library.Facade.Rental.RequestRent.RentalProcessingFacade;
+import com.app.library.Facade.Rental.RequestReturn.Service.ReturnRentalPersistenceService;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.RentalRepository;
 import com.app.library.Repository.UserRepository;
@@ -24,78 +26,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @EnableScheduling
 public class RentalServiceImpl implements RentalService {
     private static final Logger logger = LoggerFactory.getLogger(RentalServiceImpl.class);
     private final RentalRepository rentalRepository;
-    private final ApplicationEventPublisher publisher;
+    private final ReturnRentalPersistenceService returnRentalPersistenceService;
     private final RentalBookMapper rentalBookMapper;
+    private final RentalProcessingFacade rentalProcessingFacade;
 
     @Autowired
-    RentalServiceImpl(ApplicationEventPublisher publisher, RentalRepository rentalRepository, BookRepository bookRepository, UserRepository userRepository, RentalBookMapper rentalBookMapper) {
+    RentalServiceImpl(ApplicationEventPublisher publisher, RentalRepository rentalRepository, BookRepository bookRepository, UserRepository userRepository, ReturnRentalPersistenceService returnRentalPersistenceService, RentalBookMapper rentalBookMapper, RentalProcessingFacade rentalProcessingFacade) {
+        this.returnRentalPersistenceService = returnRentalPersistenceService;
         this.publisher = publisher;
         this.rentalRepository = rentalRepository;
-        this.bookRepository = bookRepository;
-        this.userRepository = userRepository;
         this.rentalBookMapper = rentalBookMapper;
+        this.rentalProcessingFacade = rentalProcessingFacade;
     }
 
     @Override
     public List<RentalBookResponse> rentalList(Long UserId) {
-        List<Rental> loanbooks = rentalRepository.findRentalsByUser_Id(UserId);
-        return loanbooks.stream().map(rentalBookMapper::toRentalBookResponse).collect(Collectors.toList());
+        return rentalRepository.findRentalsByUser_Id(UserId).stream().map(rentalBookMapper::toDto).toList();
     }
 
     @Override
     @Transactional
-    public void requestloanBook(Integer BookId, Long UserId) {
-        List<Rental> rentalList = rentalRepository.findRentalsByUser_IdAndStatusIs(UserId, RentalStatus.loaned);
-        if (rentalList.size() >= 5) {
-            throw new IllegalStateException("Cannot loan more than 5 books.");
-        }
-        Book book = bookRepository.findById(BookId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        User user = userRepository.findById(UserId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        Rental rental = new Rental();
-        rental.setBook(book);
-        rental.setUser(user);
-        rental.setStatus(RentalStatus.pending);
-        rentalRepository.save(rental);
-        publisher.publishEvent(new RentalCreatedEvent(rental));
-    }
-
-    @Override
-    @Transactional
-    public void approveLoanBook(Integer BookId, Long UserId) {
-        Optional<Rental> loanbook = rentalRepository.findRentalByBook_IdAndUser_Id(BookId, UserId);
-        if (loanbook.isPresent() && loanbook.get().getStatus() == RentalStatus.pending) {
-            Rental rental = loanbook.get();
-            rental.setExtensionCount(0);
-            rental.setRentalEndDate(LocalDate.now().plusMonths(3));
-            rental.setRentalStartDate(LocalDate.now());
-            rental.setStatus(RentalStatus.loaned);
-            rental.setPenalty(0.0);
-            rentalRepository.save(rental);
-        } else {
-            throw new IllegalStateException("This book is not loaned by you");
-        }
+    public void requestRentABook(Integer BookId, Long UserId) {
+        rentalProcessingFacade.requestForRentABook(BookId, UserId);
     }
 
     @Override
     @Transactional
     public void requestReturn(Integer BookId, Long UserId) {
-        Optional<Rental> loanbook = rentalRepository.findRentalByBook_IdAndUser_Id(BookId, UserId);
-        if (loanbook.isPresent() && (loanbook.get().getStatus() == RentalStatus.loaned)) {
-            Rental rental = loanbook.get();
-            rental.setStatus(RentalStatus.return_requested);
-            rentalRepository.save(rental);
-            publisher.publishEvent(new RentalCreatedEvent(rental));
-        } else {
-            throw new IllegalStateException("This book is not loaned by you");
-
-        }
+        returnRentalPersistenceService.requestForReturnABook(BookId, UserId);
     }
 
     @Override

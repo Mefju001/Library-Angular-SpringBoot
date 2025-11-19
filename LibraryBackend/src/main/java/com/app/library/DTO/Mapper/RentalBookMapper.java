@@ -2,21 +2,29 @@ package com.app.library.DTO.Mapper;
 
 import com.app.library.DTO.Response.RentalBookResponse;
 import com.app.library.Entity.Rental;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
 
 @Component
 public class RentalBookMapper {
+    private final UserMapper userMapper;
+    private final BookMapper bookMapper;
 
-    RentalBookResponse toRentalBookResponse(Rental rental)
+    public RentalBookMapper(UserMapper userMapper, BookMapper bookMapper) {
+        this.userMapper = userMapper;
+        this.bookMapper = bookMapper;
+    }
+
+    public RentalBookResponse toDto(Rental rental)
     {
         return new RentalBookResponse(
-                rental,
-
-        );
+                userMapper.toDto(rental.getUser()),
+                bookMapper.ToDto(rental.getBook()),
+                rental.getRentalStartDate().toString(),
+                rental.getRentalEndDate().toString(),
+                rental.getReturnRequestDate().toString(),
+                rental.getStatus().toString(),
+                rental.getPenalty(),
+                rental.getExtensionCount());
     }
 
 }

@@ -1,6 +1,6 @@
 package com.app.library;
 
-import com.app.library.Builder.BookBuilder;
+import com.app.library.Builder.Book.BookBuilder;
 import com.app.library.DTO.Mapper.BookMapper;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.Entity.Author;
