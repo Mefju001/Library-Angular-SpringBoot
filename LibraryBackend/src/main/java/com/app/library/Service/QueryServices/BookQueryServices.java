@@ -33,7 +33,7 @@ public class BookQueryServices
     {
         Pageable pageable = PageRequest.of(criteria.page(),criteria.size());
         Specification<Book>spec = BookSpecification.buildSpecification(criteria);
-        if(criteria.sortByField() != null&&criteria.direction()!=null)
+        if(criteria.sortByField() != null)
         {
             Sort.Direction direction = criteria.direction().equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
             String sortField = SortFields.findFieldInMap(criteria.sortByField());
@@ -41,11 +41,8 @@ public class BookQueryServices
                 Sort sort = Sort.by(direction, sortField);
                 pageable = PageRequest.of(criteria.page(), criteria.size(), sort);
             }
-            else {
-                throw new IllegalArgumentException("Unknown sort field: " + criteria.sortByField());
-            }
-            }
-        Page<Book> books = bookRepository.findAll(spec, pageable);
+        }
+        Page<Book> books = bookRepository.findAll(spec,pageable);
         return books.map(bookMapper::ToDto);
     }
 }

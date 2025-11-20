@@ -34,7 +34,7 @@ class BookServiceImplTest {
     private BookServiceImpl bookService;
     @Test
     void findBookById() {
-        var id = 1;
+        var isbn = 1234567890L;
         Book book = new Book(
                 new Author(),
                 "Władca Pierścieni",
@@ -50,15 +50,15 @@ class BookServiceImplTest {
         );
 
         BookResponse bookResponse = new BookResponse(
-                id,book.getTitle(),"null","null",LocalDate.now(),
+                book.getTitle(),"null","null",LocalDate.now(),
                 0L,"null","null","null",9,0f);
         when(bookRepository.findById(anyInt())).thenReturn(Optional.of(book));
         when(bookMapper.ToDto(book)).thenReturn(bookResponse);
-        BookResponse actualResponse = bookService.findById(id);
-        verify(bookRepository, times(1)).findById(id);
+        var actualResponse = bookService.findByIsbn(isbn);
+        verify(bookRepository, times(1)).findBookByIsbn(isbn);
 
         assertNotNull(actualResponse);
-        assertEquals(id, actualResponse.id());
-        assertEquals("Władca Pierścieni", actualResponse.title());
+        assertEquals(isbn, actualResponse.getIsbn());
+        assertEquals("Władca Pierścieni", actualResponse.getTitle());
     }
 }

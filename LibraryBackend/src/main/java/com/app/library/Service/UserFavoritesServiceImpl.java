@@ -46,7 +46,7 @@ public class UserFavoritesServiceImpl implements UserFavoritesService {
         }
         Favoritebooks favoritebooks = new Favoritebooks(book, user);
         favoritebooksRepository.save(favoritebooks);
-        var bookResponse = new BookResponse(favoritebooks.getBook().getId(), favoritebooks.getBook().getTitle(), favoritebooks.getBook().getAuthor().getName(), favoritebooks.getBook().getAuthor().getSurname(), favoritebooks.getBook().getpublicationDate(),
+        var bookResponse = new BookResponse(favoritebooks.getBook().getTitle(), favoritebooks.getBook().getAuthor().getName(), favoritebooks.getBook().getAuthor().getSurname(), favoritebooks.getBook().getpublicationDate(),
                 favoritebooks.getBook().getIsbn(), favoritebooks.getBook().getGenre().getName(), favoritebooks.getBook().getLanguage(), favoritebooks.getBook().getPublisher().getName(), favoritebooks.getBook().getPages(), favoritebooks.getBook().getPrice());
         var userResponse = new UserResponse(favoritebooks.getUser().getUsername(),favoritebooks.getUser().getRoles().toString());
         return new FavoriteBooksResponse(bookResponse,userResponse);

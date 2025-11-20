@@ -100,9 +100,9 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.5.0</version> <!-- Upewnij się, że masz aktualną, pasującą do Twojej wersji Spring Boot -->
+            <version>2.5.0</version>
         </dependency>
-        <!-- 2. (OPCJONALNIE) Jeśli używasz walidacji (np. @Valid), to jest pomocna -->
+
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>

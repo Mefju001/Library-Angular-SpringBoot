@@ -3,6 +3,7 @@ package com.app.library.Repository;
 import com.app.library.Entity.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -18,7 +19,6 @@ public interface BookRepository extends JpaRepository<Book, Integer>, JpaSpecifi
     Page<Book> findAll(Pageable pageable);
 
     List<Book> findAll();
-
     Page<Book> findBooksByTitleContaining(String title, Pageable pageable);
     Optional<Book> findBookByIsbn(long isbn);
     boolean existsBooksByIsbn(Long isbn);

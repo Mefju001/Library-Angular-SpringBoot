@@ -5,6 +5,7 @@ import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.GenreResponse;
 import com.app.library.Entity.BookImg;
 import com.app.library.Service.Interfaces.BookService;
+import com.app.library.Service.Interfaces.GenreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,10 +23,12 @@ import java.util.List;
 @Tag(name = "Book Controller", description = "Zarządzanie książkami w aplikacji")
 public class BookController {
     private final BookService bookService;
+    private final GenreService genreService;
 
     @Autowired
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, GenreService genreService) {
         this.bookService = bookService;
+        this.genreService = genreService;
     }
 
     @GetMapping("/")
@@ -68,11 +71,11 @@ public class BookController {
     @GetMapping("/genres")
     @Operation(summary = "Zwraca gatunki ksiazek z bazy danych", description = "Zwraca gatunki ksiazek z bazy danych")
     public ResponseEntity<List<GenreResponse>> listofgenres() {
-        //List<GenreResponse> genreResponse = ge.fin();
-        /*if (genreResponse.isEmpty()) {
+        List<GenreResponse> genreResponse = List.of(); //= genreService.();
+        if (genreResponse.isEmpty()) {
             return ResponseEntity.noContent().build();
-        }*/
-        return ResponseEntity.ok(new ArrayList<>());
+        }
+        return ResponseEntity.ok(new ArrayList<>());//to do
     }
 
     @GetMapping("/{id}")
