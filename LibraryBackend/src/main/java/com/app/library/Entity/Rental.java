@@ -66,6 +66,9 @@ public class Rental {
         this.setRentalEndDate(LocalDate.now());
         this.setPenalty(penaltyPrice);
     }
+    public void approveExtendLoan(double penaltyPrice) {
+
+    }
     public Integer getExtensionCount() {
         return extensionCount;
     }

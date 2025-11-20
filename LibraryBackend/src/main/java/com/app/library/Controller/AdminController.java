@@ -24,7 +24,7 @@ public class AdminController {
     private final RentalService rentalService;
 
     @Autowired
-    public AdminController(BookService bookService, UserService userService, PromotionService promotionService, LibraryService libraryService, RentalService rentalService) {
+    public AdminController(BookService bookService, UserService userService, RentalService rentalService) {
         this.bookService = bookService;
         this.userService = userService;
         this.rentalService = rentalService;

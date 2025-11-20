@@ -1,11 +1,10 @@
-package com.app.library.Facade.Recommendation.Services;
+package com.app.library.Facade.Services.Recommedation;
 
 import com.app.library.DTO.Mapper.BookMapper;
 import com.app.library.DTO.Response.BookResponse;
 import com.app.library.Entity.Book;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Entity.Rental;
-import com.app.library.Service.Interfaces.RecommendationService;
 import org.springframework.stereotype.Service;
 
 import java.util.AbstractMap;

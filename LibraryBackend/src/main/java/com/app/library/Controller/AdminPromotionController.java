@@ -27,7 +27,7 @@ public class AdminPromotionController {
                                           @RequestParam Integer bookId,
                                           @Parameter(description = "ID promocji, którą przypisujemy do książki")
                                           @RequestParam long promotionId) {
-        promotionService.setpromotion(bookId, promotionId);
+        promotionService.setPromotion(bookId, promotionId);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

@@ -2,7 +2,8 @@ package com.app.library.EventListener;
 
 import com.app.library.Entity.Rental;
 import com.app.library.Entity.RentalStatus;
-import com.app.library.Facade.Rental.RequestRent.RentalProcessingFacade;
+import com.app.library.Facade.RentalProcessingFacade;
+import com.app.library.Facade.ReturnProcessingFacade;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -10,9 +11,11 @@ import org.springframework.stereotype.Component;
 public class RentalEventListener {
 
     private final RentalProcessingFacade rentalProcessingFacade;
+    private final ReturnProcessingFacade  returnProcessingFacade;
 
-    public RentalEventListener(RentalProcessingFacade rentalProcessingFacade) {
+    public RentalEventListener(RentalProcessingFacade rentalProcessingFacade, ReturnProcessingFacade   returnProcessingFacade) {
         this.rentalProcessingFacade = rentalProcessingFacade;
+        this.returnProcessingFacade = returnProcessingFacade;
     }
 
     @EventListener
@@ -27,7 +30,7 @@ public class RentalEventListener {
     public void onRentalReturned(RentalReturnEvent event) {
         Rental rental = event.getRental();
         if (RentalStatus.return_requested.equals(rental.getStatus())) {
-            //rentalService.approveReturn(rental.getRentalId());
+            returnProcessingFacade.approveReturnBook(rental.getBook().getId(),rental.getUser().getId());
         }
     }
 }

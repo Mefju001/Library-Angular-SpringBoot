@@ -1,4 +1,4 @@
-package com.app.library.Facade.Rental.RequestReturn.Service;
+package com.app.library.Facade.Services.Rental;
 
 import com.app.library.Entity.Rental;
 import com.app.library.Entity.RentalStatus;
@@ -16,7 +16,6 @@ public class ReturnRentalPersistenceService {
     public ReturnRentalPersistenceService(RentalRepository rentalRepository) {
         this.rentalRepository = rentalRepository;
     }
-
     @Transactional
     public Rental requestForReturnABook(Integer BookId, Long UserId)
     {
@@ -32,5 +31,26 @@ public class ReturnRentalPersistenceService {
         {
             throw new IllegalStateException("This book is not loaned by you");
         }
+    }
+    @Transactional
+    public void approveReturnABook(double penaltyPrice, Integer BookId, Long UserId)
+    {
+        var request = rentalRepository.findRentalByBook_IdAndUser_Id(BookId,UserId).orElseThrow(EntityNotFoundException::new);
+        if (request.getStatus() != RentalStatus.return_requested) {
+            throw new IllegalStateException("To wypożyczenie nie ma zgłoszonego zwrotu");
+        }
+        request.approveReturn(penaltyPrice);
+        rentalRepository.save(request);
+    }
+    @Transactional
+    public void cancelLoanABook(Integer BookId, Long UserId)
+    {
+        var request = rentalRepository.findRentalByBook_IdAndUser_Id(BookId,UserId).orElseThrow(EntityNotFoundException::new);
+
+        if (request.getStatus() != RentalStatus.pending) {
+            throw new IllegalStateException("Ksiazka musi być nie wypożyczona");
+        }
+        request.setStatus(RentalStatus.cancelled);
+        rentalRepository.save(request);
     }
 }

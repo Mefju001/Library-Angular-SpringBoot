@@ -54,6 +54,12 @@ public class BookServiceImpl implements BookService {
     private String currentUser() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
+
+    @Override
+    public Book getInternalBookEntity(Integer id) {
+        return bookRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
     @Override
     public Book findByIsbn(Long isbn) {
         return bookRepository.findBookByIsbn(isbn).orElseThrow(EntityNotFoundException::new);

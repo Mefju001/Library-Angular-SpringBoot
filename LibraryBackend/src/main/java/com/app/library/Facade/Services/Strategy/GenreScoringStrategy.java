@@ -1,4 +1,4 @@
-package com.app.library.Facade.Recommendation.Services.Strategy;
+package com.app.library.Facade.Services.Strategy;
 
 import com.app.library.Entity.Book;
 import com.app.library.Entity.Favoritebooks;

@@ -5,6 +5,7 @@ import com.app.library.DTO.Request.LibraryRequest;
 import com.app.library.DTO.Response.LibraryBookResponse;
 import com.app.library.DTO.Response.LibraryResponse;
 import com.app.library.Entity.LibraryBook;
+import com.app.library.Service.Interfaces.LibraryInventoryService;
 import com.app.library.Service.Interfaces.LibraryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,9 +21,11 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Admin library Controller", description = "Udostępnia funkcję dla administratora w adminPanelu")
 public class AdminLibraryController {
     private final LibraryService libraryService;
+    private final LibraryInventoryService libraryInventoryService;
 
-    public AdminLibraryController(LibraryService libraryService) {
+    public AdminLibraryController(LibraryService libraryService, LibraryInventoryService libraryInventoryService) {
         this.libraryService = libraryService;
+        this.libraryInventoryService = libraryInventoryService;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -82,8 +85,8 @@ public class AdminLibraryController {
     )
     public ResponseEntity<LibraryBookResponse> addBookToLibrary(
             @Parameter(description = "Dane książki i biblioteki do powiązania")
-            @RequestBody @Valid LibraryBookRequest request) {
-        return ResponseEntity.ok(libraryService.addbooktolibrary(request));
+            @RequestBody @Valid LibraryBookRequest request,Integer stock) {
+        return ResponseEntity.ok(libraryInventoryService.Add(request, stock));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -95,8 +98,8 @@ public class AdminLibraryController {
     public ResponseEntity<LibraryBookResponse> updateBookInLibrary(
             @Parameter(description = "Dane do aktualizacji książki w bibliotece")
             @RequestBody @Valid LibraryBookRequest request,
-            @PathVariable int id) {
-        LibraryBookResponse updatedLibraryBook = libraryService.updatebookandlibrary(id, request);
+            @PathVariable int id, Integer stock) {
+        LibraryBookResponse updatedLibraryBook = libraryInventoryService.Update(id, request, stock);
         if (updatedLibraryBook == null) {
             return ResponseEntity.notFound().build();
         }
@@ -113,7 +116,7 @@ public class AdminLibraryController {
             @Parameter(description = "ID powiązania książki z biblioteką")
             @PathVariable Integer id) {
         try {
-            libraryService.deletebookandlibrary(id);
+            libraryInventoryService.Delete(id);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();

@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface BookService {
+    Book getInternalBookEntity(Integer id);
     Book findByIsbn(Long isbn);
     Page<BookResponse> findAll(int page, int size);
     List<BookResponse> findAllList();

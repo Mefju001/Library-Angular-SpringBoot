@@ -1,13 +1,11 @@
-package com.app.library.Facade.Promotion.Services;
+package com.app.library.Facade.Services.Promotion;
 
 import com.app.library.Entity.Book;
 import com.app.library.Entity.BookPromotion;
 import com.app.library.Entity.Promotions;
-import com.app.library.Mediator.Mediator;
 import com.app.library.Repository.BookPromotionRepository;
 import com.app.library.Repository.BookRepository;
 import com.app.library.Repository.PromotionRepository;
-import com.app.library.Service.Interfaces.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 

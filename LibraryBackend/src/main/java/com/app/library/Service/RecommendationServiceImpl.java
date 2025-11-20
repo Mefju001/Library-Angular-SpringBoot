@@ -1,7 +1,7 @@
 package com.app.library.Service;
 
 import com.app.library.DTO.Response.BookResponse;
-import com.app.library.Facade.Recommendation.RecommendationApplicationFacade;
+import com.app.library.Facade.RecommendationApplicationFacade;
 import com.app.library.Service.Interfaces.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

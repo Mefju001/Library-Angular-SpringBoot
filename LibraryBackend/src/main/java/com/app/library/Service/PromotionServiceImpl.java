@@ -1,7 +1,7 @@
 package com.app.library.Service;
 
 import com.app.library.Entity.Promotions;
-import com.app.library.Facade.Promotion.PromotionApplicationFacade;
+import com.app.library.Facade.PromotionApplicationFacade;
 import com.app.library.Repository.PromotionRepository;
 import com.app.library.Service.Interfaces.PromotionService;
 import jakarta.transaction.Transactional;

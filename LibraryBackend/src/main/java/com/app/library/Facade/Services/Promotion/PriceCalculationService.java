@@ -1,4 +1,4 @@
-package com.app.library.Facade.Promotion.Services;
+package com.app.library.Facade.Services.Promotion;
 
 import com.app.library.Entity.Book;
 import com.app.library.Entity.DiscountType;

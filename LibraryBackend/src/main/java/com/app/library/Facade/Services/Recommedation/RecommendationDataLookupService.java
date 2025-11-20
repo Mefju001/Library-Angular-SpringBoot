@@ -1,4 +1,4 @@
-package com.app.library.Facade.Recommendation.Services;
+package com.app.library.Facade.Services.Recommedation;
 
 import com.app.library.DTO.Mapper.DataReturn;
 import com.app.library.Entity.Book;
@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class DataLookupService {
+public class RecommendationDataLookupService {
     private final FavoritebooksRepository favoritebooksRepository;
     private final RentalRepository rentalRepository;
     private final BookRepository bookRepository;
 
     @Autowired
-    public DataLookupService(FavoritebooksRepository favoritebooksRepository, RentalRepository rentalRepository, BookRepository bookRepository) {
+    public RecommendationDataLookupService(FavoritebooksRepository favoritebooksRepository, RentalRepository rentalRepository, BookRepository bookRepository) {
         this.favoritebooksRepository = favoritebooksRepository;
         this.rentalRepository = rentalRepository;
         this.bookRepository = bookRepository;

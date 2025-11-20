@@ -1,11 +1,11 @@
-package com.app.library.Facade.Promotion;
+package com.app.library.Facade;
 
 import com.app.library.Entity.Book;
 import com.app.library.Entity.BookPromotion;
 import com.app.library.Entity.Promotions;
-import com.app.library.Facade.Promotion.Services.DataLookupService;
-import com.app.library.Facade.Promotion.Services.PersistenceService;
-import com.app.library.Facade.Promotion.Services.PriceCalculationService;
+import com.app.library.Facade.Services.Promotion.DataLookupService;
+import com.app.library.Facade.Services.Promotion.PersistenceService;
+import com.app.library.Facade.Services.Promotion.PriceCalculationService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,7 @@
 package com.app.library.Controller;
 
 import com.app.library.DTO.Request.RentalRequest;
+import com.app.library.Service.Batch.RentalBatchService;
 import com.app.library.Service.Interfaces.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,22 +20,24 @@ import java.util.Map;
 @Tag(name = "Admin rental Controller", description = "Udostępnia funkcję dla administratora w adminPanelu")
 public class AdminRentalController {
     private final RentalService rentalService;
+    private final RentalBatchService rentalBatchService;
 
-    public AdminRentalController(RentalService rentalService) {
+    public AdminRentalController(RentalService rentalService, RentalBatchService rentalBatchService) {
         this.rentalService = rentalService;
+        this.rentalBatchService = rentalBatchService;
     }
 
-    @PutMapping("/confirm")
+    /*@PutMapping("/confirm")
     @Operation(
             summary = "Zatwierdza wypożyczenie książki",
             description = "Zatwierdza istniejące żądanie wypożyczenia książki przez użytkownika."
     )
     public ResponseEntity<String> approveLoan(@RequestBody @Valid RentalRequest request) {
-        rentalService.approveLoanBook(request.bookId(), request.userId());
+        rentalService.(request.bookId(), request.userId());
         return ResponseEntity.ok("Book loaned successfully.");
-    }
+    }*/
 
-    @PutMapping("/return/confirm/{bookId}")
+    /*@PutMapping("/return/confirm/{bookId}")
     @Operation(
             summary = "Potwierdzenie zwrotu książki przez administratora",
             description = "Administrator potwierdza zwrot książki o podanym ID.")
@@ -43,7 +46,7 @@ public class AdminRentalController {
             @PathVariable Integer bookId) {
         rentalService.approveReturn(bookId);
         return ResponseEntity.ok("Book returned successfully.");
-    }
+    }*/
 
     //Do edycji
     @PutMapping("/extend/confirm/{bookId}")
@@ -65,8 +68,8 @@ public class AdminRentalController {
             summary = "Sprawdza zaległe wypożyczenia",
             description = "Zwraca listę wypożyczeń, których termin zwrotu już minął."
     )
-    public ResponseEntity<Map<String, Object>> checkOverdueRentals() {
-        return ResponseEntity.ok(rentalService.checkOverdueRentals());
+    public ResponseEntity<Map<String, Integer>> checkOverdueRentals() {
+        return ResponseEntity.ok(rentalBatchService.checkOverdueRentals());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -76,7 +79,7 @@ public class AdminRentalController {
             description = "Administrator masowo zatwierdza wszystkie nierozpatrzone prośby o wypożyczenie książek."
     )
     public ResponseEntity<String> checkRequestForRentals() {
-        rentalService.approveAll();
+        rentalBatchService.approveAll();
         return ResponseEntity.ok("All pending loan requests approved.");
     }
 }

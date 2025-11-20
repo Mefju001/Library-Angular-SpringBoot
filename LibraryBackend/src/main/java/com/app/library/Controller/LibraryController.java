@@ -2,6 +2,7 @@ package com.app.library.Controller;
 
 import com.app.library.DTO.Response.LibraryBookResponse;
 import com.app.library.DTO.Response.LibraryResponse;
+import com.app.library.Service.Interfaces.LibraryInventoryService;
 import com.app.library.Service.Interfaces.LibraryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,10 +21,12 @@ import java.util.List;
 @Tag(name = "Library Controller", description = "Zarządzanie bibliotekami w aplikacji")
 public class LibraryController {
     private final LibraryService libraryService;
+    private final LibraryInventoryService libraryInventoryService;
 
     @Autowired
-    public LibraryController(LibraryService libraryService) {
+    public LibraryController(LibraryService libraryService, LibraryInventoryService libraryInventoryService) {
         this.libraryService = libraryService;
+        this.libraryInventoryService = libraryInventoryService;
     }
 
     @GetMapping("/")
@@ -62,7 +65,7 @@ public class LibraryController {
     @Operation(summary = "Zwraca dostepnosc ksiazki o podanej nazwie", description = "Zwraca informacje o bibliotekach gdzie ksiazka jest dostepna")
     public ResponseEntity<List<LibraryBookResponse>> listofbookinlibraries(@Parameter(description = "Nazwa ksiazki")
                                                                            @PathVariable String title) {
-        List<LibraryBookResponse> libraryBookResponses = libraryService.findbookinlibraries(title);
+        List<LibraryBookResponse> libraryBookResponses = libraryInventoryService.findbookByTitleInLibraries(title);
         if (libraryBookResponses.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -72,7 +75,7 @@ public class LibraryController {
     @GetMapping("/booksinlibrary")
     @Operation(summary = "Zwraca ksiazki dostepne w bibliotekach", description = "Zwraca ksiazki dostepne w bibliotekach z bazy danych")
     public ResponseEntity<List<LibraryBookResponse>> listofbooksinlibraries() {
-        List<LibraryBookResponse> libraryBookResponses = libraryService.findallbookandlibrary();
+        List<LibraryBookResponse> libraryBookResponses = libraryInventoryService.findallbookandlibrary();
         if (libraryBookResponses.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

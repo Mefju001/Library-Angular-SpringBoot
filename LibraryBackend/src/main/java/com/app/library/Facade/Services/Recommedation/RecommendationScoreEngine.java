@@ -1,9 +1,9 @@
-package com.app.library.Facade.Recommendation.Services;
+package com.app.library.Facade.Services.Recommedation;
 
 import com.app.library.Entity.Book;
 import com.app.library.Entity.Favoritebooks;
 import com.app.library.Entity.Rental;
-import com.app.library.Facade.Recommendation.Services.Strategy.ScoringStrategies;
+import com.app.library.Facade.Services.Strategy.ScoringStrategies;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

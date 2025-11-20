@@ -15,7 +15,7 @@ public class ReviewMapper {
         this.bookMapper = bookMapper;
     }
 
-    ReviewResponse toDto(Review review)
+    public ReviewResponse toDto(Review review)
     {
         return new ReviewResponse(
                 review.getContent(),
