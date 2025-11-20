@@ -50,17 +50,6 @@ public class LibraryController {
         return ResponseEntity.ok(libraryResponse);
     }
 
-    @GetMapping("/search/name{name}")
-    @Operation(summary = "Zwraca biblioteke o podanej nazwie", description = "Zwraca informacje o bibliotece o podanej nazwie z bazy danych")
-    public ResponseEntity<List<LibraryResponse>> listoflibrariesbyname(@Parameter(description = "Nazwa biblioteki")
-                                                                       @PathVariable String name) {
-        List<LibraryResponse> libraryResponses = libraryService.findlibrarybylocation(name);
-        if (libraryResponses.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(libraryResponses);
-    }
-
     @GetMapping("/searchby/{title}")
     @Operation(summary = "Zwraca dostepnosc ksiazki o podanej nazwie", description = "Zwraca informacje o bibliotekach gdzie ksiazka jest dostepna")
     public ResponseEntity<List<LibraryBookResponse>> listofbookinlibraries(@Parameter(description = "Nazwa ksiazki")

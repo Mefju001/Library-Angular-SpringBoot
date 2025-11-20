@@ -8,10 +8,7 @@ import jakarta.transaction.Transactional;
 
 public interface AuthenticationService {
     JwtResponse login(UserRequest loginRequest, HttpServletResponse response);
-
-    @Transactional
     void registerUp(UserRequest signUpRequest);
-
     JwtResponse refreshToken(HttpServletRequest request, HttpServletResponse response);
 
     Boolean hasAdminRole();

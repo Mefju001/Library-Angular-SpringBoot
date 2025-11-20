@@ -4,6 +4,5 @@ import com.app.library.DTO.MediatorRequest.AuditRequest;
 
 public interface AuditService {
     void log(AuditRequest auditRequest);
-
     void writeToFile(AuditRequest event);
 }

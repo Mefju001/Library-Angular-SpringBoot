@@ -59,12 +59,6 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public List<LibraryResponse> findlibrarybylocation(String location) {
-        List<Library> libraries = libraryRepository.findLibraryByLocation(location);
-        return libraries.stream().map(libraryMapper::toDto).toList();
-    }
-
-    @Override
     @Transactional
     public LibraryResponse addlibrary(LibraryRequest library) {
         var newLibrary = new Library(library.address(),library.map());

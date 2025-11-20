@@ -10,7 +10,6 @@ public interface LibraryService {
     List<LibraryResponse> findall();
     LibraryResponse findbyid(Integer id);
     Library findByAddress(String id);
-    List<LibraryResponse> findlibrarybylocation(String location);
     LibraryResponse addlibrary(LibraryRequest library);
     LibraryResponse updatelibrary(Integer id, LibraryRequest library);
     void deletelibrary(Integer id);
