@@ -11,7 +11,6 @@ import com.app.library.Service.Interfaces.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
-@Slf4j
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
@@ -82,7 +80,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Set<Role> roles = new HashSet<>();
         roles.add(roleService.findRoleByName("ROLE_USER"));
         var results = userService.createUser(signUpRequest, roles);
-        log.info("User {} has been registered successfully", results.username());
     }
     @Override
     public JwtResponse refreshToken(HttpServletRequest request, HttpServletResponse response) {

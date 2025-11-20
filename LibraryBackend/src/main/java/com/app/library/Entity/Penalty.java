@@ -1,8 +1,5 @@
 package com.app.library.Entity;
 
-import lombok.Data;
-
-@Data
 public class Penalty {
     Integer days;
     Double price;

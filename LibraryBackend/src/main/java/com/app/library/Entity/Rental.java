@@ -1,11 +1,9 @@
 package com.app.library.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 import java.time.LocalDate;
 
-@Data
 @Entity
 @Table(name = "Rental")
 public class Rental {
