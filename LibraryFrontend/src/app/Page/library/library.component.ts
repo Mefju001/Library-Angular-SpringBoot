@@ -23,7 +23,7 @@ export class LibraryComponent {
     this.getLibraries();
   }
   isAdmin(): boolean {
-    this.
+    return true;
   }
   getLibraries(): void {
     // Wywołaj metodę serwisu, aby pobrać książki

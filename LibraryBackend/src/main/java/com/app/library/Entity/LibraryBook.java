@@ -15,7 +15,18 @@ public class LibraryBook {
     @ManyToOne
     @JoinColumn(name = "library_id", nullable = false)
     private Library library;
-    int Stock;
+    private int Stock;
+
+    public LibraryBook(Book book, Library library, int stock) {
+        this.book = book;
+        this.library = library;
+        Stock = stock;
+    }
+
+    public LibraryBook(Library library, Book book) {
+        this.library = library;
+        this.book = book;
+    }
 
     public int getStock() {
         return Stock;

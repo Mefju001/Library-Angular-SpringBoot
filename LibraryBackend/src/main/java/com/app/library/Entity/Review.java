@@ -24,16 +24,18 @@ public class Review {
     @JoinColumn(name = "book_id")
     private Book book;
 
-    public Review(String content, int rating, LocalDate createdAt, User user, Book book) {
+    public Review(String content, int rating, User user, Book book) {
         this.content = content;
         this.rating = rating;
-        this.createdAt = createdAt;
         this.user = user;
         this.book = book;
     }
-
-    public Review() {
+    @PrePersist
+    public void onCreate() {
         this.createdAt = LocalDate.now();
+    }
+    public Review() {
+
     }
 
     public Long getId() {

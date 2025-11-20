@@ -3,12 +3,14 @@ package com.app.library.Controller;
 import com.app.library.DTO.Request.RentalRequest;
 import com.app.library.DTO.Response.RentalBookResponse;
 import com.app.library.Entity.LoanDeadlineInfo;
-import com.app.library.Service.RentalService;
+import com.app.library.Security.Service.UserDetailsImpl;
+import com.app.library.Service.Interfaces.RentalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,12 +27,11 @@ public class RentalController {
         this.rentalService = rentalService;
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
     @Operation(summary = "Pobiera wypożyczenia użytkownika")
-    public ResponseEntity<List<RentalBookResponse>> getUserRentals(
-            @Parameter(description = "ID użytkownika") @PathVariable Long userId) {
+    public ResponseEntity<List<RentalBookResponse>> getUserRentals(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            List<RentalBookResponse> rentalList = rentalService.rentalList(userId);
+            List<RentalBookResponse> rentalList = rentalService.rentalList(userDetails.getId());
             return ResponseEntity.ok(rentalList);
         } catch (ResponseStatusException e) {
             return ResponseEntity.internalServerError().build();
@@ -39,8 +40,8 @@ public class RentalController {
 
     @PostMapping("/")
     @Operation(summary = "Wypożycza książkę dla użytkownika")
-    public ResponseEntity<String> loanBook(@RequestBody @Valid RentalRequest request) {
-        rentalService.requestloanBook(request.bookId(), request.userId());
+    public ResponseEntity<String> loanBook(@RequestBody @Valid RentalRequest request,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        rentalService.requestRentABook(request.bookId(), userDetails.getId());
         return ResponseEntity.ok("Book request loaned successfully.");
     }
 
@@ -54,45 +55,39 @@ public class RentalController {
         return ResponseEntity.ok("Book return request submitted successfully.");
     }
 
-    @GetMapping("/book/{bookId}/user/{userId}/days-left")
+    @GetMapping("/book/{bookId}/days-left")
     @Operation(summary = "Sprawdza ile dni pozostało do końca wypożyczenia książki")
-    public ResponseEntity<LoanDeadlineInfo> howManyDaysLeft(
-            @Parameter(description = "ID użytkownika")
-            @PathVariable Long userId,
+    public ResponseEntity<LoanDeadlineInfo> howManyDaysLeft(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "ID książki")
             @PathVariable Integer bookId) {
-        LoanDeadlineInfo data = rentalService.howManyDaysLeft(bookId,userId);
+        LoanDeadlineInfo data = rentalService.howManyDaysLeft(bookId,userDetails.getId());
         return ResponseEntity.ok(data);
     }
 
     //do edycji
-    @PutMapping("/extend/request/{userId}/{bookId}")
+    @PutMapping("/extend/request/{bookId}")
     @Operation(summary = "Zgłasza prośbę o przedłużenie wypożyczenia książki dla użytkownika")
-    public ResponseEntity<String> requestExtendLoan(
-            @Parameter(description = "ID użytkownika")
-            @PathVariable Long userId,
+    public ResponseEntity<String> requestExtendLoan(@AuthenticationPrincipal UserDetailsImpl userDetails,
             @Parameter(description = "ID książki")
             @PathVariable Integer bookId) {
         try {
-            rentalService.requestExtendLoan(bookId,userId);
+            rentalService.requestExtendLoan(bookId,userDetails.getId());
             return ResponseEntity.ok("Loan extension request submitted successfully.");
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
         }
     }
 
-    @PutMapping("/cancel/{bookId}/{userId}")
+    @PutMapping("/cancel/{bookId}")
     @Operation(
             summary = "Anuluje prośbę o wypożyczenie książki",
             description = "Administrator anuluje oczekującą prośbę o wypożyczenie książki przez użytkownika na podstawie ID książki."
     )
-    public ResponseEntity<String> cancelLoanBook(
-            @Parameter(description = "ID użytkownika")
-            @PathVariable Long userId,
+    public ResponseEntity<String> cancelLoanBook(@AuthenticationPrincipal  UserDetailsImpl userDetails,
             @Parameter(description = "ID książki")
             @PathVariable Integer bookId) {
         try {
-            rentalService.cancelLoanBook(bookId,userId);
+            rentalService.cancelLoanBook(bookId,userDetails.getId());
             return ResponseEntity.ok("Loan request canceled successfully.");
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getReason());

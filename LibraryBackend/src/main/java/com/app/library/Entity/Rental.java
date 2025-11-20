@@ -1,14 +1,9 @@
 package com.app.library.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
-import static com.app.library.Entity.RentalStatus.*;
-
-@Data
 @Entity
 @Table(name = "Rental")
 public class Rental {
@@ -43,11 +38,35 @@ public class Rental {
         this.rentalStartDate = rentalStartDate;
         this.rentalEndDate = rentalEndDate;
     }
-
+    public Rental(Book book, User user, RentalStatus status) {
+        this.book = book;
+        this.user = user;
+        this.status = status;
+    }
     public Rental() {
 
     }
+    public void approveLoan() {
+        if (!RentalStatus.pending.equals(this.getStatus())) {
+            throw new IllegalStateException("Wypożyczenie musi mieć status 'pending' do zatwierdzenia.");
+        }
+        this.setExtensionCount(0);
+        this.setRentalEndDate(LocalDate.now().plusMonths(3));
+        this.setRentalStartDate(LocalDate.now());
+        this.setStatus(RentalStatus.loaned);
+        this.setPenalty(0.0);
+    }
+    public void approveReturn(double penaltyPrice) {
+        if (!RentalStatus.return_requested.equals(this.getStatus())) {
+            throw new IllegalStateException("Should have status 'return_requested' to approve.");
+        }
+        this.setStatus(RentalStatus.returned);
+        this.setRentalEndDate(LocalDate.now());
+        this.setPenalty(penaltyPrice);
+    }
+    public void approveExtendLoan(double penaltyPrice) {
 
+    }
     public Integer getExtensionCount() {
         return extensionCount;
     }

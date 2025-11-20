@@ -14,11 +14,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findReviewsByUser_Id(Long id);
     @Query("SELECT NEW com.app.library.DTO.Response.ReviewAvrResponse(r.book.id, r.book.title, AVG(r.rating)) " +
             "FROM Review r GROUP BY r.book.id, r.book.title")
-    List<ReviewAvrResponse>getAvarageForBooks();
+    List<ReviewAvrResponse>getAverageForBooks();
 
     List<Review> getReviewsByBook_Title(String bookTitle);
 
     @Query("SELECT NEW com.app.library.DTO.Response.ReviewAvrResponse(r.book.id, r.book.title, AVG(r.rating)) " +
             "FROM Review r WHERE r.book.title = :bookTitle GROUP BY r.book.id, r.book.title ")
     ReviewAvrResponse getAvgForBook(@Param("bookTitle") String bookTitle);
+
+    boolean existsByUser_IdAndBook_Id(Long userId, Integer bookId);
 }

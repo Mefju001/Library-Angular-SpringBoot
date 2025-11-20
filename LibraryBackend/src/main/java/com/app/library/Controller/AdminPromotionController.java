@@ -1,6 +1,6 @@
 package com.app.library.Controller;
 
-import com.app.library.Service.PromotionService;
+import com.app.library.Service.Interfaces.PromotionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +27,7 @@ public class AdminPromotionController {
                                           @RequestParam Integer bookId,
                                           @Parameter(description = "ID promocji, którą przypisujemy do książki")
                                           @RequestParam long promotionId) {
-        promotionService.setpromotion(bookId, promotionId);
+        promotionService.setPromotion(bookId, promotionId);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

@@ -3,12 +3,15 @@ package com.app.library.Controller;
 import com.app.library.DTO.Request.ReviewRequest;
 import com.app.library.DTO.Response.ReviewAvrResponse;
 import com.app.library.DTO.Response.ReviewResponse;
-import com.app.library.Service.ReviewService;
+import com.app.library.Security.Service.UserDetailsImpl;
+import com.app.library.Service.Interfaces.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,29 +35,29 @@ public class ReviewController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/user/{userid}")
+    @GetMapping("/user/{username}")
     @Operation(summary = "", description = "")
-    public ResponseEntity<List<ReviewResponse>> getReviewListByUser(@PathVariable long userid) {
-        List<ReviewResponse> response = reviewService.listOfReviewForUser(userid);
+    public ResponseEntity<List<ReviewResponse>> getReviewListByUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<ReviewResponse> response = reviewService.listOfReviewForUser(userDetails.getId());
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/Avg")
     @Operation(summary = "", description = "")
     public ResponseEntity<List<ReviewAvrResponse>> getAvarageReviewsForBooks() {
-        List<ReviewAvrResponse> response = reviewService.listReviewsAvrForBooks();
+        List<ReviewAvrResponse> response = reviewService.listAvgRatingsForBooks();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @GetMapping("/Avg/title/{BookTitle}")
     @Operation(summary = "", description = "")
     public ResponseEntity<ReviewAvrResponse> getAvgForTitle(@PathVariable String BookTitle) {
-        ReviewAvrResponse response = reviewService.AvgForBook(BookTitle);
+        ReviewAvrResponse response = reviewService.avgRatingForBook(BookTitle);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     @GetMapping("/title/{title}")
     @Operation(summary = "", description = "")
-    public ResponseEntity<List<ReviewResponse>> getReviewsForBooks(@PathVariable String title) {
-        List<ReviewResponse> response = reviewService.listReviewsForBooks(title);
+    public ResponseEntity<List<ReviewResponse>> getReviewsForBook(@PathVariable String title) {
+        List<ReviewResponse> response = reviewService.listReviewsForBook(title);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

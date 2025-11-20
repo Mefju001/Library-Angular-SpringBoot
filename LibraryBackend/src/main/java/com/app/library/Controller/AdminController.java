@@ -1,8 +1,9 @@
 package com.app.library.Controller;
 
 import com.app.library.DTO.Request.BookRequest;
+import com.app.library.DTO.Response.BookResponse;
 import com.app.library.DTO.Response.DashboardStatsResponse;
-import com.app.library.Service.*;
+import com.app.library.Service.Interfaces.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +24,7 @@ public class AdminController {
     private final RentalService rentalService;
 
     @Autowired
-    public AdminController(BookService bookService, UserService userService, PromotionService promotionService, LibraryService libraryService, RentalService rentalService) {
+    public AdminController(BookService bookService, UserService userService, RentalService rentalService) {
         this.bookService = bookService;
         this.userService = userService;
         this.rentalService = rentalService;
@@ -49,9 +50,9 @@ public class AdminController {
                     Endpoint dostępny wyłącznie dla administratorów (ROLE_ADMIN).
                     """)
 
-    public ResponseEntity<BookRequest> addBook(@Parameter(description = "Obiekt zawierający dane książki, które mają zostać dodane do bazy danych")
+    public ResponseEntity<BookResponse> addBook(@Parameter(description = "Obiekt zawierający dane książki, które mają zostać dodane do bazy danych")
                                                @RequestBody @Valid BookRequest bookRequest) {
-        BookRequest addedbook = bookService.addbook(bookRequest);
+        var addedbook = bookService.addbook(bookRequest);
         return ResponseEntity.ok(addedbook);
     }
 

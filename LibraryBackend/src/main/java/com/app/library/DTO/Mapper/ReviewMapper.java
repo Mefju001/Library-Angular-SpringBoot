@@ -2,12 +2,27 @@ package com.app.library.DTO.Mapper;
 
 import com.app.library.DTO.Response.ReviewResponse;
 import com.app.library.Entity.Review;
-import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 @Component
-@Mapper(componentModel = "Spring", uses = {UserMapper.class, BookMapper.class})
-public interface ReviewMapper {
-    ReviewResponse toDto(Review review);
+public class ReviewMapper {
+    private final UserMapper userMapper;
+    private final BookMapper bookMapper;
+
+    public ReviewMapper(UserMapper userMapper, BookMapper bookMapper) {
+        this.userMapper = userMapper;
+        this.bookMapper = bookMapper;
+    }
+
+    public ReviewResponse toDto(Review review)
+    {
+        return new ReviewResponse(
+                review.getContent(),
+                review.getRating(),
+                review.getCreatedAt(),
+                userMapper.toDto(review.getUser()),
+                bookMapper.ToDto(review.getBook())
+        );
+    }
 
 }

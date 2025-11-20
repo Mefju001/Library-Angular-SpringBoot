@@ -2,13 +2,22 @@ package com.app.library.DTO.Mapper;
 
 import com.app.library.DTO.Response.FavoriteBooksResponse;
 import com.app.library.Entity.Favoritebooks;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
 @Component
-@Mapper(componentModel = "Spring",uses = {BookMapper.class})
-public interface FavoriteBooksMapper {
+public class FavoriteBooksMapper {
+    private final BookMapper bookMapper;
+    private final UserMapper userMapper;
 
-    FavoriteBooksResponse toDto(Favoritebooks favoritebooks);
+    public FavoriteBooksMapper(BookMapper bookMapper, UserMapper userMapper) {
+        this.bookMapper = bookMapper;
+        this.userMapper = userMapper;
+    }
+
+    public FavoriteBooksResponse toDto(Favoritebooks favoritebooks)
+    {
+        return new FavoriteBooksResponse(
+                bookMapper.ToDto(favoritebooks.getBook()),
+                userMapper.toDto(favoritebooks.getUser()));
+    }
 }

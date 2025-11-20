@@ -1,6 +1,7 @@
 package com.app.library.Controller;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
                     }
                     return error.getDefaultMessage();
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("error", "Validation failed", "details", errors));
@@ -51,8 +51,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleConstraintViolation(ConstraintViolationException ex) {
         List<String> errors = ex.getConstraintViolations()
                 .stream()
-                .map(violation -> violation.getMessage())
-                .collect(Collectors.toList());
+                .map(ConstraintViolation::getMessage)
+                .toList();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("error", "Constraint violations", "details", errors));

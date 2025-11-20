@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface LibraryRepository extends JpaRepository<Library, Integer> {
-    Library findLibraryByLocationContainingIgnoreCaseAndAddressContainsIgnoreCase(String location, String address);
-
-    List<Library> findLibraryByLocation(String location);
+    Library findLibraryByAddressContainingIgnoreCase(String address);
+    List<Library> findLibraryByAddress(String Address);
 }

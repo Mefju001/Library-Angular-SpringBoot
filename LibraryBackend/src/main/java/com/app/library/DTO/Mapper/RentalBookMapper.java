@@ -2,30 +2,29 @@ package com.app.library.DTO.Mapper;
 
 import com.app.library.DTO.Response.RentalBookResponse;
 import com.app.library.Entity.Rental;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-
 @Component
-@Mapper(componentModel = "Spring",uses =  {UserMapper.class,BookMapper.class})
-public interface RentalBookMapper {
+public class RentalBookMapper {
+    private final UserMapper userMapper;
+    private final BookMapper bookMapper;
 
-    @Mapping(source = "rentalId", target = "rentalId")
-    @Mapping(source = "user", target = "userResponse")
-    @Mapping(source = "book", target = "bookResponse")
-
-    @Mapping(target = "rentalStartDate", expression = "java(mapDate(rental.getRentalStartDate()))")
-    @Mapping(target = "rentalEndDate", expression = "java(mapDate(rental.getRentalEndDate()))")
-    @Mapping(target = "returnRequestDate", expression = "java(mapDate(rental.getReturnRequestDate()))")
-
-    @Mapping(source = "status", target = "status")
-    @Mapping(source = "penalty", target = "penalty")
-
-    RentalBookResponse toRentalBookResponse(Rental rental);
-
-    default String mapDate(LocalDate date) {
-        return date != null ? date.toString() : null;
+    public RentalBookMapper(UserMapper userMapper, BookMapper bookMapper) {
+        this.userMapper = userMapper;
+        this.bookMapper = bookMapper;
     }
+
+    public RentalBookResponse toDto(Rental rental)
+    {
+        return new RentalBookResponse(
+                userMapper.toDto(rental.getUser()),
+                bookMapper.ToDto(rental.getBook()),
+                rental.getRentalStartDate().toString(),
+                rental.getRentalEndDate().toString(),
+                rental.getReturnRequestDate().toString(),
+                rental.getStatus().toString(),
+                rental.getPenalty(),
+                rental.getExtensionCount());
+    }
+
 }

@@ -75,14 +75,14 @@ public class WebConfig implements WebMvcConfigurer {
                                 .permitAll()
                                 .requestMatchers("/Img/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
-                                /*.requestMatchers("/api/adminPanel/**").permitAll()
+                                .requestMatchers("/api/adminPanel/**").permitAll()
                                 .requestMatchers("/api/reviews/**").permitAll()
                                 .requestMatchers("/api/rentals/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/books/**").permitAll()    //hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/library/**").permitAll()       //hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/user/**").permitAll()  //hasAnyRole("ADMIN", "USER")
-                                */.anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 );
         http.cors(cors -> cors.configurationSource(request -> {
             CorsConfiguration config = new CorsConfiguration();
