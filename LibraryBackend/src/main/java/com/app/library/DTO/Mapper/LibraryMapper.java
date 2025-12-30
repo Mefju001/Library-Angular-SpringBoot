@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class LibraryMapper {
     public LibraryResponse toDto(Library library)
     {
-        return new LibraryResponse(library.getAddress(),  library.getMap());
+        return new LibraryResponse(library.getId(), library.getAddress(),  library.getMap());
     }
     public void updateTheLibrary(Library library, LibraryRequest libraryRequest)
     {

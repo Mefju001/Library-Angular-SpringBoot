@@ -15,7 +15,7 @@ The **Online Bookstore Management System** is a web-based app that allows users 
 - Responsive UI (Angular Material)
 - REST API built with Spring Boot
 
-## Technologies
+## Built With
 - **Frontend**: Angular, TypeScript, Angular Material
 - **Backend**: Java, Spring Boot, Spring Security, JWT
 - **Database**: MySQL (configurable)
@@ -23,4 +23,4 @@ The **Online Bookstore Management System** is a web-based app that allows users 
 Swagger UI → http://localhost:8080/swagger-ui.html
 
 # TO-DO list:
-Shop & Purchase, Newsletter, Help Chat,Forum, and Loyalty Program,Docker,Write unit & integration tests,Add reviews.
+Shop & Purchase,,Docker,Write unit & integration tests.

@@ -1,4 +1,4 @@
 package com.app.library.DTO.Response;
 
-public record FavoriteBooksResponse(BookResponse book, UserResponse user) {
+public record FavoriteBooksResponse(Integer id,BookResponse book, UserResponse user) {
 }

@@ -17,6 +17,7 @@ public class ReviewMapper {
     public ReviewResponse toDto(Review review)
     {
         return new ReviewResponse(
+                review.getId(),
                 review.getContent(),
                 review.getRating(),
                 review.getCreatedAt(),

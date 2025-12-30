@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class BookMapper {
     public BookResponse ToDto(Book book) {
        return new  BookResponse(
+               book.getId(),
                book.getTitle(),
                book.getAuthor().getName(),
                book.getAuthor().getSurname(),

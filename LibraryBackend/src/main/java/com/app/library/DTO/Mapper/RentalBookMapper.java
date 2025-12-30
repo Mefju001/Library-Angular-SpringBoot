@@ -17,6 +17,7 @@ public class RentalBookMapper {
     public RentalBookResponse toDto(Rental rental)
     {
         return new RentalBookResponse(
+                rental.getRentalId(),
                 userMapper.toDto(rental.getUser()),
                 bookMapper.ToDto(rental.getBook()),
                 rental.getRentalStartDate().toString(),

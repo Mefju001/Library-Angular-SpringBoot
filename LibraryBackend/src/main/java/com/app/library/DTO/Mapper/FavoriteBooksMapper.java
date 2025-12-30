@@ -17,6 +17,7 @@ public class FavoriteBooksMapper {
     public FavoriteBooksResponse toDto(Favoritebooks favoritebooks)
     {
         return new FavoriteBooksResponse(
+                favoritebooks.getId(),
                 bookMapper.ToDto(favoritebooks.getBook()),
                 userMapper.toDto(favoritebooks.getUser()));
     }

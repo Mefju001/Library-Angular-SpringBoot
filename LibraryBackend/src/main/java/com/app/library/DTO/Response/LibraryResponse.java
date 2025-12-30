@@ -1,5 +1,5 @@
 package com.app.library.DTO.Response;
 
-public record LibraryResponse(String address, String map) {
+public record LibraryResponse(int id,String address, String map) {
 
 }

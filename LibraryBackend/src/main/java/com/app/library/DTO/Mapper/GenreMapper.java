@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 public class GenreMapper {
     public GenreResponse toDto(Genre genre)
     {
-        return new GenreResponse(genre.getName());
+        return new GenreResponse(
+                genre.getId(),
+                genre.getName());
     }
 }

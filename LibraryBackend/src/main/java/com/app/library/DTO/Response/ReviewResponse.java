@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public record ReviewResponse(
+        Long id,
         String content,
         int rating,
         LocalDate createdAt,

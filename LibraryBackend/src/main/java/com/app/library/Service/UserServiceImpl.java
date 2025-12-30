@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse findbyid(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-        return new UserResponse(user.getName(),String.valueOf(user.getRoles()));
+        return new UserResponse(user.getId(), user.getName(),String.valueOf(user.getRoles()));
     }
 
     @Override

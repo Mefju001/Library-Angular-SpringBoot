@@ -18,7 +18,7 @@ public class LibraryBookMapper
     }
     public LibraryBookResponse toDto(LibraryBook libraryBook)
     {
-        return new LibraryBookResponse(bookMapper.ToDto(libraryBook.getBook()),libraryMapper.toDto(libraryBook.getLibrary()),libraryBook.getStock());
+        return new LibraryBookResponse(libraryBook.getId(), bookMapper.ToDto(libraryBook.getBook()),libraryMapper.toDto(libraryBook.getLibrary()),libraryBook.getStock());
     }
     public void UpdateLibraryBook(LibraryBook libraryBook, Library library, Book book,int stock)
     {
