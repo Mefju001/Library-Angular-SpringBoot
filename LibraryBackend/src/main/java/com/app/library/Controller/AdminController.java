@@ -62,13 +62,13 @@ public class AdminController {
             summary = "Aktualizuje książkę w bazie danych",
             description = "Aktualizuje dane istniejącej książki w bazie danych na podstawie przesłanego identyfikatora i nowych danych. Wymagane są uprawnienia administratora."
     )
-    public ResponseEntity<BookRequest> updateBook(
+    public ResponseEntity<BookResponse> updateBook(
             @Parameter(description = "Identyfikator książki, która ma zostać zaktualizowana", example = "123")
             @PathVariable Integer id,
 
             @Parameter(description = "Zaktualizowane dane książki", required = true)
             @RequestBody @Valid BookRequest bookRequest) {
-        BookRequest updatedBook = bookService.updateBook(id, bookRequest);
+        var updatedBook = bookService.updateBook(id, bookRequest);
         return ResponseEntity.ok(updatedBook);
     }
 

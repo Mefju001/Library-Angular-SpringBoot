@@ -116,7 +116,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public BookRequest updateBook(Integer id, BookRequest bookRequest) {
+    public BookResponse updateBook(Integer id, BookRequest bookRequest) {
         var book = bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Książka nie znaleziona"));
         bookMapper.updateTheBook(book,bookRequest,
                 genreService.getOrCreateGenre(bookRequest.genreName()),
@@ -124,7 +124,8 @@ public class BookServiceImpl implements BookService {
                 relationalEntityService.getOrCreateAuthor(bookRequest.authorName(), bookRequest.authorSurname()));
         bookRepository.save(book);
         mediator.send(new AuditRequest("Update", "Book", currentUser(), LocalDateTime.now(), "Aktualizacja istniejącego elementu w bazie danych", book));
-        return bookRequest;
+
+        return bookMapper.ToDto(book);
     }
 
     @Override
