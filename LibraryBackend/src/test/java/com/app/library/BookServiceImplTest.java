@@ -2,7 +2,6 @@ package com.app.library;
 
 import com.app.library.Builder.Book.BookBuilder;
 import com.app.library.DTO.Mapper.BookMapper;
-import com.app.library.DTO.Mapper.GenreMapper;
 import com.app.library.DTO.MediatorRequest.AuditRequest;
 import com.app.library.DTO.Request.BookRequest;
 import com.app.library.DTO.Response.BookResponse;
@@ -22,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +31,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -87,7 +84,7 @@ class BookServiceImplTest {
                 500,
                 10.0f);
     }
-    private final void setAuth()
+    private void setAuth()
     {
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);

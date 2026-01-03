@@ -17,7 +17,7 @@ public class GenreServiceImpl implements GenreService {
         this.genreRepository = genreRepository;
         this.genreMapper = genreMapper;
     }
-
+    @Override
     public Genre getOrCreateGenre(String name) {
         return genreRepository.findGenreByName(name)
                 .orElseGet(() -> genreRepository.save(new Genre(name)));

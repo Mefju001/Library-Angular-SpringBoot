@@ -21,6 +21,12 @@ public class Library {
         this.address = address;
     }
 
+    public Library(Integer id , String address, String map) {
+        this.address = address;
+        this.id = id;
+        this.map = map;
+    }
+
     public Integer getId() {
         return id;
     }

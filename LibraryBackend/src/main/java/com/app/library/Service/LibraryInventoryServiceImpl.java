@@ -50,6 +50,7 @@ public class LibraryInventoryServiceImpl implements LibraryInventoryService {
         var libraryBookDetails = mediator.send(new LibraryBookDetails(libraryBookRequest.book().isbn(),libraryBookRequest.library().address()));
         libraryBookMapper.UpdateLibraryBook(libraryBook,libraryBookDetails.library(),libraryBookDetails.book(),stock);
         libraryBook = libraryBookRepository.save(libraryBook);
+        mediator.send(new AuditRequest("Update","LibraryBook",CurrentUser(), LocalDateTime.now(),"Edycja dostępności ksiazki w danej bibliotece",libraryBook));
         return libraryBookMapper.toDto(libraryBook);
     }
 

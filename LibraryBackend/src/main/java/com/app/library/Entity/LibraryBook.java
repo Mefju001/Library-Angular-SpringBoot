@@ -27,6 +27,14 @@ public class LibraryBook {
         this.library = library;
         this.book = book;
     }
+    public LibraryBook(int id, Book book, Library library, int stock) {
+        this.book = book;
+        this.library = library;
+        Stock = stock;
+    }
+    public LibraryBook() {
+
+    }
 
     public int getStock() {
         return Stock;
