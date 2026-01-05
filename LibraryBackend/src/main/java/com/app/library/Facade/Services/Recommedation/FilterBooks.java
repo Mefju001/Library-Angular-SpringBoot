@@ -24,7 +24,7 @@ public class FilterBooks {
     public Set<BookResponse> selectAndSort(List<Book> allBooks, Set<Integer> excludedIds, List<Favoritebooks> favs, List<Rental> rents)
     {
         return allBooks.stream()
-                .filter(book -> !excludedIds.contains(book.getId())) // Użycie gotowej listy wykluczeń
+                .filter(book -> !excludedIds.contains(book.getId()))
                 .map(book -> new AbstractMap.SimpleEntry<>(book, scoreEngine.computeScore(book, favs, rents))) // <--- POPRAWNIE DELEGUJE OBLICZENIA
                 .filter(entry -> entry.getValue() > 0.2)
                 .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))

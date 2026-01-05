@@ -19,6 +19,17 @@ public class Promotions {
     @OneToMany(mappedBy = "promotions", cascade = CascadeType.ALL)
     private List<BookPromotion> bookPromotions;
 
+    public Promotions(DiscountType discountType, BigDecimal discountValue, Long id, Boolean isActive, String name) {
+        this.discountType = discountType;
+        this.discountValue = discountValue;
+        this.id = id;
+        this.isActive = isActive;
+        this.name = name;
+    }
+
+    public Promotions() {
+    }
+
     public Long getId() {
         return id;
     }
