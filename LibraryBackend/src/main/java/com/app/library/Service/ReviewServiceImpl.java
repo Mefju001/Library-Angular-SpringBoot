@@ -49,8 +49,8 @@ public class ReviewServiceImpl implements ReviewService {
                                         .user(user)
                                                 .book(book)
                                                         .build();
-        reviewRepository.save(review);
-        return reviewMapper.toDto(review);
+        var addedReview = reviewRepository.save(review);
+        return reviewMapper.toDto(addedReview);
     }
 
     @Override

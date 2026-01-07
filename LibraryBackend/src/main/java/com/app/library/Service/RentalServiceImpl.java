@@ -29,7 +29,7 @@ public class RentalServiceImpl implements RentalService {
     private final RentalProcessingFacade rentalProcessingFacade;
 
     @Autowired
-    RentalServiceImpl(RentalRepository rentalRepository, ReturnProcessingFacade returnProcessingFacade, RentalBookMapper rentalBookMapper, RentalProcessingFacade rentalProcessingFacade) {
+    public RentalServiceImpl(RentalRepository rentalRepository, ReturnProcessingFacade returnProcessingFacade, RentalBookMapper rentalBookMapper, RentalProcessingFacade rentalProcessingFacade) {
         this.returnProcessingFacade = returnProcessingFacade;
         this.rentalRepository = rentalRepository;
         this.rentalBookMapper = rentalBookMapper;
